@@ -61,6 +61,9 @@
   "dependencies": {
     "eventmit": "^1.0.2",
     "lit-html": "^1.2.1",
-    "text-caret-pos": "^1.0.1"
+    "text-caret-pos": "^1.0.1",
+    "@textlint/kernel": "^3.2.1",
+    "@textlint/textlint-plugin-markdown": "^5.1.12",
+    "textlint-rule-preset-ja-technical-writing": "^4.0.0"
   }
 }
