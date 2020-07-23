@@ -3,8 +3,8 @@ import { eventmit } from "eventmit";
 export type AnnotationItem = {
     start: number;
     end: number;
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
+    onMouseEnter: ({ rectItem }: { rectItem: RectItem }) => void;
+    onMouseLeave: ({ rectItem }: { rectItem: RectItem }) => void;
 };
 
 export type RectItem = { index: number; left: number; top: number; height: number; width: number };

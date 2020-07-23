@@ -1,10 +1,9 @@
 import textCaretPos from "text-caret-pos";
 import { html, render } from "lit-html";
-import { createTextCheckerStore, RectItem, TextCheckerState } from "./textchecker-store";
-import { AnnotationItem } from "..";
+import { AnnotationItem, createTextCheckerStore, RectItem, TextCheckerState } from "./textchecker-store";
 
 export type TextCheckerElementAttributes = {
-    target: string;
+    targetElement: HTMLTextAreaElement;
 };
 const Marker = (rect: RectItem, isHighLight: boolean = false) => {
     if (isHighLight) {
@@ -18,28 +17,22 @@ const Marker = (rect: RectItem, isHighLight: boolean = false) => {
     }
 };
 
-class TextCheckerElement extends HTMLElement implements TextCheckerElementAttributes {
-    target: string;
+export class TextCheckerElement extends HTMLElement {
     private annotationBox!: HTMLDivElement;
     private targetElement!: HTMLTextAreaElement;
     private store: ReturnType<typeof createTextCheckerStore>;
 
     constructor(args: TextCheckerElementAttributes) {
         super();
-        this.target = args.target;
+        this.targetElement = args.targetElement;
         this.store = createTextCheckerStore();
     }
 
     connectedCallback(): void {
-        const targetSelector = this.target;
-        if (!targetSelector) {
-            throw new Error("target attribute should be defined");
-        }
-        const target = document.querySelector(targetSelector) as HTMLTextAreaElement;
+        const target = this.targetElement;
         if (!target) {
             throw new Error("target element is not found");
         }
-        this.targetElement = target;
         const shadow = this.attachShadow({ mode: "open" });
         const overlay = document.createElement("div");
         overlay.setAttribute(
@@ -88,13 +81,13 @@ class TextCheckerElement extends HTMLElement implements TextCheckerElementAttrib
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: true
+                debug: false
             });
             const endCoordinate = textCaretPos.getCoordinates(this.targetElement, end, {
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: true
+                debug: false
             });
             const fontSize = Number(targetStyle.getPropertyValue("font-size").replace("px", ""));
             const rectItems: RectItem[] =
@@ -163,9 +156,13 @@ class TextCheckerElement extends HTMLElement implements TextCheckerElementAttrib
             const currentState = state.mouseHoverReactIdMap.get(item.index);
             const isIncludedMouse = isIncludedIndexes.includes(item.index);
             if (currentState === false && isIncludedMouse) {
-                state.annotationItems[item.index]?.onMouseEnter();
+                state.annotationItems[item.index]?.onMouseEnter({
+                    rectItem: item
+                });
             } else if (currentState === true && !isIncludedMouse) {
-                state.annotationItems[item.index]?.onMouseLeave();
+                state.annotationItems[item.index]?.onMouseLeave({
+                    rectItem: item
+                });
             }
             state.mouseHoverReactIdMap.set(item.index, isIncludedMouse);
         });
@@ -174,8 +171,6 @@ class TextCheckerElement extends HTMLElement implements TextCheckerElementAttrib
     };
 }
 
-export { TextCheckerElement };
-
-if (!window.customElements.get("textchecker-element")) {
-    window.customElements.define("textchecker-element", TextCheckerElement);
+if (!window.customElements.get("text-checker-element")) {
+    window.customElements.define("text-checker-element", TextCheckerElement);
 }
