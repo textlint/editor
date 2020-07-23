@@ -1,0 +1,57 @@
+{
+  "private": true,
+  "name": "@textlint/editor",
+  "version": "1.0.0",
+  "description": "textlint editor project.",
+  "homepage": "https://github.com/textlint/editor",
+  "bugs": {
+    "url": "https://github.com/textlint/editor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/textlint/editor.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "main": "lib/editor.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "workspaces": [
+    "packages/*",
+    "packages/@textlint/*"
+  ],
+  "files": [
+    "bin/",
+    "lib/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\""
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "singleQuote": false,
+    "printWidth": 120,
+    "tabWidth": 4,
+    "trailingComma": "none"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write"
+    ]
+  }
+}
