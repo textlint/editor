@@ -17,13 +17,11 @@ const Marker = (rect: RectItem, isHighLight: boolean = false) => {
         ></span>`;
     }
 };
+
 class TextCheckerElement extends HTMLElement implements TextCheckerElementAttributes {
     target: string;
     private annotationBox!: HTMLDivElement;
     private targetElement!: HTMLTextAreaElement;
-    private mouseStateMap = new Map();
-    private rectItems: RectItem[] = [];
-    private annotationItems: AnnotationItem[] = [];
     private store: ReturnType<typeof createTextCheckerStore>;
 
     constructor(args: TextCheckerElementAttributes) {
@@ -149,7 +147,8 @@ class TextCheckerElement extends HTMLElement implements TextCheckerElementAttrib
             x: event.clientX - clientRect.left,
             y: event.clientY - clientRect.top
         };
-        const isIncludedIndexes = this.rectItems
+        const state = this.store.get();
+        const isIncludedIndexes = state.rectItems
             .filter((rect) => {
                 return (
                     rect.left <= point.x &&
@@ -160,15 +159,15 @@ class TextCheckerElement extends HTMLElement implements TextCheckerElementAttrib
             })
             .map((item) => item.index);
         // call mouseover
-        this.rectItems.forEach((item) => {
-            const currentState = this.mouseStateMap.get(item.index);
+        state.rectItems.forEach((item) => {
+            const currentState = state.mouseHoverReactIdMap.get(item.index);
             const isIncludedMouse = isIncludedIndexes.includes(item.index);
             if (currentState === false && isIncludedMouse) {
-                this.annotationItems[item.index]?.onMouseEnter();
+                state.annotationItems[item.index]?.onMouseEnter();
             } else if (currentState === true && !isIncludedMouse) {
-                this.annotationItems[item.index]?.onMouseLeave();
+                state.annotationItems[item.index]?.onMouseLeave();
             }
-            this.mouseStateMap.set(item.index, isIncludedMouse);
+            state.mouseHoverReactIdMap.set(item.index, isIncludedMouse);
         });
         // update highlight
         this.store.highlightRectIndexes(isIncludedIndexes);

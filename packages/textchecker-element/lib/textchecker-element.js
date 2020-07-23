@@ -23,7 +23,7 @@ const createTextCheckerStore = () => {
 class TextCheckerElement extends HTMLElement {
     constructor(args) {
         super();
-        this.mouseStateMap = new Map();
+        this.mouseHoverReactIdMap = new Map();
         this.rectItems = [];
         this.annotationItems = [];
         this.renderAnnotationMarkers = ({ rectItems, highlightAnnotationItems = [] }) => {

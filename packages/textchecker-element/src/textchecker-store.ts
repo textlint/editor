@@ -11,6 +11,7 @@ export type RectItem = { index: number; left: number; top: number; height: numbe
 export type TextCheckerState = {
     rectItems: RectItem[];
     annotationItems: AnnotationItem[];
+    mouseHoverReactIdMap: Map<RectItem["index"], boolean>;
     highlightRectIdSet: Set<RectItem["index"]>;
 };
 export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>) => {
@@ -18,6 +19,7 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
         rectItems: [],
         annotationItems: [],
         highlightRectIdSet: new Set(),
+        mouseHoverReactIdMap: new Map(),
         ...initialState
     };
     const changeEvent = eventmit<void>();
@@ -31,6 +33,7 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
         dispose() {
             changeEvent.offAll();
         },
+
         highlightRectIndexes(indexes: RectItem["index"][]) {
             textCheckerState = {
                 ...textCheckerState,
