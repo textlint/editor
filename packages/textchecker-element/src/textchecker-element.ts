@@ -2,8 +2,10 @@ import textCaretPos from "text-caret-pos";
 import { html, render } from "lit-html";
 import { AnnotationItem, createTextCheckerStore, RectItem, TextCheckerState } from "./textchecker-store";
 
+const toPX = require("to-px");
 export type TextCheckerElementAttributes = {
     targetElement: HTMLTextAreaElement;
+    hoverPadding: number;
 };
 const Marker = (rect: RectItem, isHighLight: boolean = false) => {
     if (isHighLight) {
@@ -21,10 +23,12 @@ export class TextCheckerElement extends HTMLElement {
     private annotationBox!: HTMLDivElement;
     private targetElement!: HTMLTextAreaElement;
     private store: ReturnType<typeof createTextCheckerStore>;
+    private hoverPadding: number;
 
     constructor(args: TextCheckerElementAttributes) {
         super();
         this.targetElement = args.targetElement;
+        this.hoverPadding = args.hoverPadding;
         this.store = createTextCheckerStore();
     }
 
@@ -72,7 +76,18 @@ export class TextCheckerElement extends HTMLElement {
             })
             .join("");
         this.annotationBox.setAttribute("style", copyStyle + "pointer-events: none;");
-        //
+        // box
+        const fontSize: number = toPX(targetStyle.getPropertyValue("font-size")) ?? 16.123;
+        const boxMarginTop: number = toPX(targetStyle.getPropertyValue("margin-top")) ?? 0;
+        const boxMarginBottom: number = toPX(targetStyle.getPropertyValue("margin-bottom")) ?? 0;
+        const boxBorderWidth: number = toPX(targetStyle.getPropertyValue("border-width")) ?? 0;
+        const boxPaddingTop: number = toPX(targetStyle.getPropertyValue("padding-top")) ?? 0;
+        const boxPaddingBottom: number = toPX(targetStyle.getPropertyValue("padding-bottom")) ?? 0;
+        const boundingClientRect = target.getBoundingClientRect();
+        const boxAbsoluteX: number = boundingClientRect.x;
+        const boxAbsoluteY: number = boundingClientRect.y;
+        const boxWidth: number = boundingClientRect.width;
+        const boxHeight: number = boundingClientRect.height;
         const rectItems = annotationItems.flatMap((annotation, index) => {
             const start = annotation.start;
             const end = annotation.end;
@@ -89,7 +104,6 @@ export class TextCheckerElement extends HTMLElement {
                 returnDiv: true,
                 debug: false
             });
-            const fontSize = Number(targetStyle.getPropertyValue("font-size").replace("px", ""));
             const rectItems: RectItem[] =
                 startCoordinate.top === endCoordinate.top
                     ? [
@@ -98,7 +112,16 @@ export class TextCheckerElement extends HTMLElement {
                               left: target.offsetLeft - target.scrollLeft + startCoordinate.left,
                               top: target.offsetTop - target.scrollTop + startCoordinate.top,
                               height: fontSize, //startCoordinate.height,
-                              width: endCoordinate.left - startCoordinate.left
+                              width: endCoordinate.left - startCoordinate.left,
+                              boxMarginTop,
+                              boxMarginBottom,
+                              boxBorderWidth,
+                              boxAbsoluteX,
+                              boxAbsoluteY,
+                              boxWidth,
+                              boxHeight,
+                              boxPaddingTop,
+                              boxPaddingBottom
                           }
                       ]
                     : // two line
@@ -108,14 +131,31 @@ export class TextCheckerElement extends HTMLElement {
                               left: target.offsetLeft - target.scrollLeft + startCoordinate.left,
                               top: target.offsetTop - target.scrollTop + startCoordinate.top,
                               height: fontSize, //startCoordinate.height,
-                              width: (startCoordinate?._div?.getBoundingClientRect()?.width ?? 0) - startCoordinate.left
+                              width:
+                                  (startCoordinate?._div?.getBoundingClientRect()?.width ?? 0) - startCoordinate.left,
+                              boxMarginTop,
+                              boxMarginBottom,
+                              boxBorderWidth,
+                              boxAbsoluteX,
+                              boxAbsoluteY,
+                              boxWidth,
+                              boxHeight
                           },
                           {
                               index,
                               left: target.offsetLeft - target.scrollLeft,
                               top: target.offsetTop - target.scrollTop + endCoordinate.top,
                               height: fontSize,
-                              width: (startCoordinate?._div?.getBoundingClientRect()?.left ?? 0) + endCoordinate.left
+                              width: (startCoordinate?._div?.getBoundingClientRect()?.left ?? 0) + endCoordinate.left,
+                              boxMarginTop,
+                              boxMarginBottom,
+                              boxBorderWidth,
+                              boxAbsoluteX,
+                              boxAbsoluteY,
+                              boxWidth,
+                              boxHeight,
+                              boxPaddingTop,
+                              boxPaddingBottom
                           }
                       ];
             return rectItems;
@@ -132,22 +172,19 @@ export class TextCheckerElement extends HTMLElement {
     };
 
     onMouseUpdate = (event: MouseEvent) => {
-        const clientRect = (event.currentTarget as HTMLTextAreaElement)?.getBoundingClientRect() ?? {
-            left: 0,
-            top: 0
-        };
-        const point = {
-            x: event.clientX - clientRect.left,
-            y: event.clientY - clientRect.top
-        };
         const state = this.store.get();
+        const hoverPadding = this.hoverPadding;
         const isIncludedIndexes = state.rectItems
             .filter((rect) => {
+                const point = {
+                    x: event.clientX - rect.boxAbsoluteX,
+                    y: event.clientY - rect.boxAbsoluteY
+                };
                 return (
-                    rect.left <= point.x &&
-                    point.x <= rect.left + rect.width &&
-                    rect.top <= point.y &&
-                    point.y <= rect.top + rect.height
+                    rect.left - hoverPadding <= point.x &&
+                    point.x <= rect.left + hoverPadding + rect.width &&
+                    rect.top - hoverPadding <= point.y &&
+                    point.y <= rect.top + rect.height + hoverPadding
                 );
             })
             .map((item) => item.index);

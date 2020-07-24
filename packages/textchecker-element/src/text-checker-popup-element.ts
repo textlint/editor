@@ -1,17 +1,23 @@
 import { html, render } from "lit-html";
 import { eventmit } from "eventmit";
-import { RectItem } from "./textchecker-store";
 
 export type TextCheckerElementAttributes = {
     target?: HTMLElement;
 };
-type TextCheckerCard = {
+export type TextCheckerCard = {
     id: string;
     message: string;
 };
+export type TextCheckerCardRect = {
+    left: number;
+    top: number;
+    width: number;
+    height?: number;
+};
+
 type TextCheckerPopupState = {
     card?: TextCheckerCard;
-    targetRect?: RectItem;
+    targetRect?: TextCheckerCardRect;
 };
 const createTextCheckerPopupState = (state?: Partial<TextCheckerPopupState>) => {
     let currentState: TextCheckerPopupState = {
@@ -78,7 +84,7 @@ export class TextCheckerPopupElement extends HTMLElement {
         });
     }
 
-    public updateCard(card: TextCheckerCard, rect: RectItem) {
+    public updateCard(card: TextCheckerCard, rect: TextCheckerCardRect) {
         this.store.update({
             card,
             targetRect: rect

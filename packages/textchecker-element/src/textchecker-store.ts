@@ -6,8 +6,26 @@ export type AnnotationItem = {
     onMouseEnter: ({ rectItem }: { rectItem: RectItem }) => void;
     onMouseLeave: ({ rectItem }: { rectItem: RectItem }) => void;
 };
-
-export type RectItem = { index: number; left: number; top: number; height: number; width: number };
+/**
+ * RectItem is pixel based
+ */
+export type RectItem = {
+    index: number;
+    left: number;
+    top: number;
+    height: number;
+    width: number;
+    // box
+    boxPaddingTop: number;
+    boxPaddingBottom: number;
+    boxMarginTop: number;
+    boxMarginBottom: number;
+    boxBorderWidth: number;
+    boxAbsoluteX: number;
+    boxAbsoluteY: number;
+    boxWidth: number;
+    boxHeight: number;
+};
 export type TextCheckerState = {
     rectItems: RectItem[];
     annotationItems: AnnotationItem[];
@@ -37,7 +55,7 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
         highlightRectIndexes(indexes: RectItem["index"][]) {
             textCheckerState = {
                 ...textCheckerState,
-                highlightRectIdSet: new Set([...textCheckerState.highlightRectIdSet, ...indexes])
+                highlightRectIdSet: new Set(indexes)
             };
             changeEvent.emit();
         },
