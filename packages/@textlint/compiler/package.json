@@ -1,13 +1,14 @@
 {
-  "name": "textchecker-element",
+  "name": "@textlint/compiler",
   "version": "1.0.0",
-  "description": "Overlay text checker web compoentns.",
+  "description": "textlint compiler tool",
   "keywords": [
-    "webcomponent",
-    "customelement",
-    "spellchecker"
+    "textlint",
+    "webpack",
+    "bundler",
+    "compiler"
   ],
-  "homepage": "https://github.com/textlint/editor/tree/master/packages/textchecker-element/",
+  "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/compiler/",
   "bugs": {
     "url": "https://github.com/textlint/editor/issues"
   },
@@ -17,12 +18,10 @@
   },
   "license": "MIT",
   "author": "azu",
-  "sideEffects": [
-    "lib/textchecker-element.js"
-  ],
-  "main": "lib/textchecker-element.js",
-  "module": "module/textchecker-element.js",
-  "types": "lib/textchecker-element.d.ts",
+  "sideEffects": false,
+  "main": "lib/compiler.js",
+  "module": "module/compiler.js",
+  "types": "lib/compiler.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -33,7 +32,6 @@
     "module"
   ],
   "scripts": {
-    "dev": "parcel serve public/index.html",
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
@@ -51,20 +49,13 @@
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.26",
     "mocha": "^8.0.1",
-    "parcel-bundler": "^1.12.4",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "ts-node-test-register": "^8.0.1",
     "typescript": "^3.9.7"
   },
-  "dependencies": {
-    "@textlint/kernel": "^3.3.6",
-    "@textlint/textlint-plugin-markdown": "^5.2.6",
-    "eventmit": "^1.0.2",
-    "lit-html": "^1.2.1",
-    "text-caret-pos": "^1.0.1",
-    "textlint-rule-preset-ja-technical-writing": "^4.0.0",
-    "to-px": "^1.1.0"
+  "publishConfig": {
+    "access": "public"
   }
 }
