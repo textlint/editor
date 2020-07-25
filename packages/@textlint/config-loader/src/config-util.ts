@@ -1,6 +1,3 @@
-// LICENSE : MIT
-"use strict";
-
 export function isPluginRuleKey(key: string) {
     // @<owner>/<plugin><>rule>
     if (key[0] === "@" && key.indexOf("/textlint-plugin") !== -1) {

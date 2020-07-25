@@ -1,0 +1,66 @@
+{
+  "name": "@textlint/config-loader",
+  "version": "1.0.0",
+  "description": "Config loader for textlint. .textlintrc loader",
+  "keywords": [
+    "textlint"
+  ],
+  "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/config-loader/",
+  "bugs": {
+    "url": "https://github.com/textlint/editor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/textlint/editor.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "sideEffects": false,
+  "main": "lib/config-loader.js",
+  "module": "module/config-loader.js",
+  "types": "lib/config-loader.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "module"
+  ],
+  "scripts": {
+    "build": "tsc -p . && tsc --project ./tsconfig.module.json",
+    "clean": "rimraf lib/ module/",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "prepublish": "npm run --if-present build",
+    "test": "mocha \"test/**/*.ts\"",
+    "watch": "tsc -p . --watch"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "trailingComma": "none"
+  },
+  "dependencies": {
+    "@textlint/kernel": "^3.3.6",
+    "@textlint/types": "^1.4.5",
+    "@textlint/utils": "^1.1.4",
+    "debug": "^4.1.1",
+    "try-resolve": "^1.0.1",
+    "@textlint/module-interop": "^1.1.4"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.0.0",
+    "@types/node": "^14.0.26",
+    "mocha": "^8.0.1",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "ts-node-test-register": "^8.0.1",
+    "typescript": "^3.9.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
