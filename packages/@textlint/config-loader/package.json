@@ -16,9 +16,9 @@
   "license": "MIT",
   "author": "azu",
   "sideEffects": false,
-  "main": "lib/config-loader.js",
-  "module": "module/config-loader.js",
-  "types": "lib/config-loader.d.ts",
+  "main": "lib/index.js",
+  "module": "module/index.js",
+  "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"
