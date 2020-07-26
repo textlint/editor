@@ -33,7 +33,7 @@ Install with yarn and build before editing files.
 
 [Grammarly](https://grammarly.com/) and [Microsoft Editor](https://www.microsoft.com/microsoft-365/microsoft-editor) is useful and high-quality linting tools, but these require network access, and you must pass your text to their server. 
 
-[textlint](https://github.com/textlint/textlint) can be offline works.
+[textlint](https://github.com/textlint/textlint) can be works at offline.
 Because, textlint is written by JavaScript, textlint rules are also written by JavaScript.
 
 However, textlint is pluggable linting tools and textlint can not provide recommended/default ruleset. 
