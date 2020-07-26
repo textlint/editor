@@ -1,7 +1,7 @@
 import webpack from "webpack";
 import { generateCode } from "./CodeGenerator/worker-codegen";
 import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
-import * as fs from "fs/promises";
+import * as fs from "fs";
 import path from "path";
 // @ts-ignore
 import rimraf from "rimraf"
@@ -48,11 +48,11 @@ export const compile = async (options: compileOptions) => {
         throw new Error(`Unknown compileTarget: ${options.compileTarget}`);
     })();
     const tempDir = path.join(cwd, "__textlint_compier_temp");
-    await fs.mkdir(tempDir, {
+    await fs.promises.mkdir(tempDir, {
         recursive: true,
     });
     const inputFilePath = path.join(tempDir, "input.js");
-    await fs.writeFile(inputFilePath, code, "utf-8")
+    await fs.promises.writeFile(inputFilePath, code, "utf-8")
     const outputFilePath = options.outputDir;
     return new Promise((resolve, reject) => {
         const config = createWebpackConfig(inputFilePath, outputFilePath);
