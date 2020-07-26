@@ -28,8 +28,8 @@
     "lib/"
   ],
   "scripts": {
-    "build": "yarn workspaces -pt run build",
-    "test": "yarn workspaces -pt run test",
+    "build": "lerna run build",
+    "test": "lerna run test",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "website": "cd packages/textchecker-element && yarn run web"
   },
@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "husky": "^4.2.5",
+    "lerna": "^3.22.1",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5"
   },
