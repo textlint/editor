@@ -4,9 +4,10 @@ textlint editor project.
 
 ## Install
 
-Install with yarn
+Install with yarn and build before editing files.
 
     yarn install
+    yarn run build
 
 ## Usage
 
