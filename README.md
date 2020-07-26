@@ -26,7 +26,8 @@ Install with yarn and build before editing files.
 
 ## Purpose
 
-- Offline Work first
+- Privacy first
+    - Offline works
 - Create own textlint that is bundled with own configuration
     - Optimize your needs
     - [@textlint/compiler](packages/@textlint/compiler) is code generator
