@@ -1,6 +1,9 @@
 # textchecker-element
 
-Overlay text checker web compoentns.
+Overlay text checker Web Component.
+
+- Attach `<textarea>`
+- Overlay show information
 
 ## Install
 
