@@ -26,6 +26,9 @@
     "lib": "lib",
     "test": "test"
   },
+  "bin": {
+    "textlint-compiler": "./bin/cmd.js"
+  },
   "files": [
     "bin/",
     "lib/",
@@ -33,7 +36,6 @@
   ],
   "scripts": {
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",
-    "compile:webworker": "npm run build && node lib/worker-codegen.js > base.js && node lib/index.js",
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "prepublish": "npm run --if-present build",

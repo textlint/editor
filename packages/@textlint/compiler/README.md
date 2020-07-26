@@ -12,6 +12,11 @@ Install with [npm](https://www.npmjs.com/):
 
 - [ ] Write usage instructions
 
+## Demo
+
+    yarn run compile:textlint
+    yarn dev
+
 ## Changelog
 
 See [Releases page](https://github.com/textlint/editor/releases).

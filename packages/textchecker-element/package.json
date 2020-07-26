@@ -33,7 +33,11 @@
     "module"
   ],
   "scripts": {
+    "compile:textlint": "textlint-compiler --outputDir public",
+    "predev": "npm run compile:textlint",
     "dev": "parcel serve public/index.html",
+    "preweb": "npm run compile:textlint",
+    "web": "parcel build public/index.html",
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
@@ -56,15 +60,14 @@
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "ts-node-test-register": "^8.0.1",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "@textlint/compiler": "^1.0.0",
+    "textlint-rule-preset-ja-technical-writing": "^4.0.0"
   },
   "dependencies": {
-    "@textlint/kernel": "^3.3.6",
-    "@textlint/textlint-plugin-markdown": "^5.2.6",
     "eventmit": "^1.0.2",
     "lit-html": "^1.2.1",
     "text-caret-pos": "^1.0.1",
-    "textlint-rule-preset-ja-technical-writing": "^4.0.0",
     "to-px": "^1.1.0"
   },
   "browserslist": [

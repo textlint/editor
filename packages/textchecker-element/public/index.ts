@@ -24,7 +24,7 @@ function debounce(fn: () => void, delay: number) {
     };
 }
 
-const worker = new Worker('main.js');
+const worker = new Worker('textlint.js');
 const waiterForInit = () => {
     let initialized = false;
     let _resolve: null | ((init: boolean) => void) = null;
