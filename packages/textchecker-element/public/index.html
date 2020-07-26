@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>textchecker-element Playground</title>
     <style>
-        .main {
+        .main, .side {
             width: 800px;
             margin: auto;
             position: relative;
@@ -22,9 +22,12 @@
 </head>
 <body>
 <main class="main">
-    <label for="js-target"></label><textarea class="textarea" id="js-target">0123456789！ABCDEFGH？ 日本語もいけるかな？
-お刺身が食べれない</textarea>
+    <label for="js-target"></label><textarea class="textarea" id="js-target">0123456789！ABCDEFGH？
+    お刺身が食べれない</textarea>
 </main>
+<aside class="side">
+    <div id="js-status"></div>
+</aside>
 <script src="./index.ts"></script>
 </body>
 </html>

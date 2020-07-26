@@ -24,6 +24,9 @@ function debounce(fn: () => void, delay: number) {
     };
 }
 
+const updateStatus = (status: string) => {
+    document.querySelector("#js-status").textContent = status;
+}
 const worker = new Worker('textlint.js');
 const waiterForInit = () => {
     let initialized = false;
@@ -65,8 +68,9 @@ const lint = async (message: string): Promise<TextlintResult> => {
 }
 const update = debounce(async () => {
     console.time("lint");
+    updateStatus("linting...");
     const result = await lint(targetElement.value);
-    console.timeEnd("lint");
+    updateStatus("linted");
     const annotations = result.messages.map((message) => {
         const card = {
             id: message.ruleId + "::" + message.index,
@@ -94,6 +98,6 @@ const update = debounce(async () => {
         };
     });
     textChecker.updateAnnotations(annotations);
-}, 500);
+}, 200);
 targetElement.addEventListener("input", update);
 update();
