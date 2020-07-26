@@ -139,7 +139,9 @@ export class TextCheckerElement extends HTMLElement {
                               boxAbsoluteX,
                               boxAbsoluteY,
                               boxWidth,
-                              boxHeight
+                              boxHeight,
+                              boxPaddingTop,
+                              boxPaddingBottom
                           },
                           {
                               index,

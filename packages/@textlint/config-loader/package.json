@@ -46,9 +46,10 @@
     "@textlint/kernel": "^3.3.6",
     "@textlint/types": "^1.4.5",
     "@textlint/utils": "^1.1.4",
+    "@textlint/module-interop": "^1.1.4",
     "debug": "^4.1.1",
     "try-resolve": "^1.0.1",
-    "@textlint/module-interop": "^1.1.4"
+    "rc-config-loader": "^3.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.0.0",

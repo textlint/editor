@@ -66,5 +66,9 @@
     "text-caret-pos": "^1.0.1",
     "textlint-rule-preset-ja-technical-writing": "^4.0.0",
     "to-px": "^1.1.0"
-  }
+  },
+  "browserslist": [
+    "last 1 chrome version",
+    "last 1 firefox version"
+  ]
 }

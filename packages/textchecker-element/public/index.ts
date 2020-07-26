@@ -24,12 +24,50 @@ function debounce(fn: () => void, delay: number) {
     };
 }
 
-const linter = new (window as any).Textlint();
+const worker = new Worker('main.js');
+const waiterForInit = () => {
+    let initialized = false;
+    let _resolve: null | ((init: boolean) => void) = null;
+    const deferred = new Promise((resolve) => {
+        _resolve = resolve;
+    })
+    worker.addEventListener('message', function (event) {
+        if (event.data.command === "init") {
+            initialized = true;
+            _resolve(initialized);
+        }
+    }, {
+        once: true
+    })
+    return {
+        ready() {
+            return deferred;
+        }
+    }
+}
+const workerStatus = waiterForInit();
+const lint = async (message: string): Promise<TextlintResult> => {
+    await workerStatus.ready();
+    return new Promise((resolve, _reject) => {
+        worker.addEventListener('message', function (event) {
+            if (event.data.command === "lint:result") {
+                resolve(event.data.result);
+            }
+        }, {
+            once: true
+        });
+        return worker.postMessage({
+            command: "lint",
+            text: message,
+            ext: ".md"
+        });
+    });
+}
 const update = debounce(async () => {
-    const result: TextlintResult = await linter.lintText(targetElement.value);
-    const messages = result.messages;
-    console.log(result);
-    const annotations = messages.map((message) => {
+    console.time("lint");
+    const result = await lint(targetElement.value);
+    console.timeEnd("lint");
+    const annotations = result.messages.map((message) => {
         const card = {
             id: message.ruleId + "::" + message.index,
             message: message.message
@@ -37,7 +75,7 @@ const update = debounce(async () => {
         return {
             start: message.index,
             end: message.index + 1,
-            onMouseEnter: ({ rectItem }: { rectItem: RectItem }) => {
+            onMouseEnter: ({rectItem}: { rectItem: RectItem }) => {
                 textCheckerPopup.updateCard(card, {
                     top:
                         rectItem.boxBorderWidth +

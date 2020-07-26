@@ -1,47 +1,37 @@
-import type {
-    TextlintFilterRuleReporter,
-    TextlintKernelFilterRule,
-    TextlintKernelPlugin,
-    TextlintKernelRule,
-    TextlintPluginCreator
-} from "@textlint/kernel";
-import { TextlintRuleModule } from "@textlint/types";
-import { normalizeTextlintPresetSubRuleKey } from "@textlint/utils";
 import { TextLintModuleResolver } from "./textlint-module-resolver";
 import { isPresetRuleKey } from "./config-util";
-import { loadRulesConfigFromPresets } from "./preset-loader";
 import { TextlintRcConfig } from "./TextlintRcConfig";
 import { moduleInterop } from "@textlint/module-interop";
+import { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
 
 export const loadPlugins = ({
-    pluginsObject,
-    moduleResolver,
-    testReplaceDefinitions
-}: {
-    pluginsObject: TextlintRcConfig["plugins"];
+                                pluginsObject,
+                                moduleResolver,
+                                testReplaceDefinitions
+                            }: {
+    pluginsObject: NonNullable<TextlintRcConfig["plugins"]>;
     parentPresetName?: string;
     moduleResolver: TextLintModuleResolver;
-    testReplaceDefinitions?: {
-        id: string;
-        plugin: TextlintPluginCreator;
-    }[];
+    testReplaceDefinitions?: TextlintConfigDescriptor["plugins"];
 }): {
-    plugins: TextlintKernelPlugin[];
+    plugins: TextlintConfigDescriptor["plugins"];
     pluginsError: null | {
         message: string;
         errors: Error[];
     };
 } => {
-    // rules
+    const plugins: TextlintConfigDescriptor["plugins"] = [];
     const pluginErrors: Error[] = [];
-    const plugins: TextlintKernelPlugin[] = [];
     if (Array.isArray(pluginsObject)) {
         // { plugins: ["a", "b"] }
         pluginsObject.forEach((pluginId) => {
-            const plugin = moduleInterop(require(moduleResolver.resolvePluginPackageName(pluginId)));
+            const resolvedModule = moduleResolver.resolvePluginPackageName(pluginId);
+            const plugin = moduleInterop(require(resolvedModule.filePath));
             plugins.push({
                 pluginId: pluginId,
-                plugin
+                plugin,
+                filePath: resolvedModule.filePath,
+                moduleName: resolvedModule.moduleName
             });
         });
     } else {
@@ -51,19 +41,23 @@ export const loadPlugins = ({
                 // Test Replace logic
                 const replacedDefinition =
                     testReplaceDefinitions &&
-                    testReplaceDefinitions.find(({ id }) => {
-                        return id === pluginId;
+                    testReplaceDefinitions.find((definition) => {
+                        return definition.pluginId === pluginId;
                     });
-                // TODO: any to be remove
-                const pluginModule: any = replacedDefinition
-                    ? replacedDefinition.plugin
-                    : moduleInterop(require(moduleResolver.resolvePluginPackageName(pluginId)));
-                // plugin
-                plugins.push({
-                    pluginId: pluginId,
-                    plugin: pluginModule,
-                    options: pluginOptions
-                });
+                if (replacedDefinition) {
+                    // for debug
+                    plugins.push(replacedDefinition);
+                } else {
+                    const resolvedPlugin = moduleResolver.resolvePluginPackageName(pluginId);
+                    const pluginModule = moduleInterop(require(resolvedPlugin.filePath));
+                    plugins.push({
+                        pluginId: pluginId,
+                        plugin: pluginModule,
+                        options: pluginOptions,
+                        filePath: resolvedPlugin.filePath,
+                        moduleName: resolvedPlugin.moduleName
+                    });
+                }
             } catch (error) {
                 pluginErrors.push(error);
             }
@@ -75,50 +69,52 @@ export const loadPlugins = ({
             pluginErrors.length === 0
                 ? null
                 : {
-                      message: "Can not load plugin",
-                      errors: pluginErrors
-                  }
+                    message: "Can not load plugin",
+                    errors: pluginErrors
+                }
     };
 };
 export const loadFilterRules = ({
-    rulesObject,
-    moduleResolver,
-    testReplaceDefinitions
-}: {
-    rulesObject: TextlintRcConfig["filters"];
+                                    rulesObject,
+                                    moduleResolver,
+                                    testReplaceDefinitions
+                                }: {
+    rulesObject: NonNullable<TextlintRcConfig["filters"]>;
     moduleResolver: TextLintModuleResolver;
-    testReplaceDefinitions?: {
-        id: string;
-        rule: TextlintFilterRuleReporter;
-    }[];
+    testReplaceDefinitions?: TextlintConfigDescriptor["filterRules"];
 }): {
-    filterRules: TextlintKernelFilterRule[];
+    filterRules: TextlintConfigDescriptor["filterRules"];
     filterRulesError: null | {
         message: string;
         errors: Error[];
     };
 } => {
     // rules
-    const rules: TextlintKernelFilterRule[] = [];
+    const rules: TextlintConfigDescriptor["filterRules"] = [];
     const ruleErrors: Error[] = [];
     Object.entries(rulesObject).forEach(([ruleId, ruleOptions]) => {
         try {
             // Test Replace logic
             const replacedDefinition =
                 testReplaceDefinitions &&
-                testReplaceDefinitions.find(({ id }) => {
-                    return id === ruleId;
+                testReplaceDefinitions.find((definition) => {
+                    return definition.ruleId === ruleId;
                 });
-            // TODO: any to be remove
-            const ruleModule: any = replacedDefinition
-                ? replacedDefinition.rule
-                : moduleInterop(require(moduleResolver.resolveFilterRulePackageName(ruleId)));
-            // rule
-            rules.push({
-                ruleId: ruleId,
-                rule: ruleModule,
-                options: ruleOptions
-            });
+            if (replacedDefinition) {
+                // for debug
+                rules.push(replacedDefinition);
+            } else {
+                const resolvePackage = moduleResolver.resolveFilterRulePackageName(ruleId);
+                const ruleModule = moduleInterop(require(resolvePackage.filePath));
+                // rule
+                rules.push({
+                    ruleId: ruleId,
+                    rule: ruleModule,
+                    options: ruleOptions,
+                    filePath: resolvePackage.filePath,
+                    moduleName: resolvePackage.moduleName
+                });
+            }
         } catch (error) {
             ruleErrors.push(error);
         }
@@ -129,78 +125,66 @@ export const loadFilterRules = ({
             ruleErrors.length === 0
                 ? null
                 : {
-                      message: "Can not load filter rule",
-                      errors: ruleErrors
-                  }
+                    message: "Can not load filter rule",
+                    errors: ruleErrors
+                }
     };
 };
 export const loadRules = ({
-    parentPresetName,
-    rulesObject,
-    moduleResolver,
-    testReplaceDefinitions
-}: {
-    rulesObject: TextlintRcConfig["rules"];
-    parentPresetName?: string;
+                              rulesObject,
+                              moduleResolver,
+                              testReplaceDefinitions
+                          }: {
+    rulesObject: NonNullable<TextlintRcConfig["rules"]>;
     moduleResolver: TextLintModuleResolver;
-    testReplaceDefinitions?: {
-        id: string;
-        rule: TextlintRuleModule;
-    }[];
+    testReplaceDefinitions?: TextlintConfigDescriptor["rules"];
 }): {
-    rules: TextlintKernelRule[];
+    presets: TextlintConfigDescriptor["presets"];
+    rules: TextlintConfigDescriptor["rules"];
     rulesError: null | {
         message: string;
         errors: Error[];
     };
 } => {
     // rules
-    const rules: TextlintKernelRule[] = [];
+    const rules: TextlintConfigDescriptor["rules"] = [];
+    const presets: TextlintConfigDescriptor["presets"] = [];
     const ruleErrors: Error[] = [];
     Object.entries(rulesObject).forEach(([ruleId, ruleOptions]) => {
         try {
             // Test Replace logic
             const replacedDefinition =
                 testReplaceDefinitions &&
-                testReplaceDefinitions.find(({ id }) => {
-                    return id === ruleId;
+                testReplaceDefinitions.find((definition) => {
+                    return definition.ruleId === ruleId;
                 });
-            // TODO: any to be remove
-            const ruleModule: any = replacedDefinition
-                ? replacedDefinition.rule
-                : moduleInterop(require(moduleResolver.resolveRulePackageName(ruleId)));
-            if (isPresetRuleKey(ruleId)) {
-                // preset
-                const presetRuleObject = loadRulesConfigFromPresets([ruleId], moduleResolver);
-                const { rules, rulesError } = loadRules({
-                    parentPresetName: ruleId,
-                    rulesObject: presetRuleObject,
-                    moduleResolver,
-                    testReplaceDefinitions
-                });
-                if (rulesError) {
-                    rulesError.errors.forEach((error) => {
-                        ruleErrors.push(error);
+            if (replacedDefinition) {
+                // for debug
+                rules.push(replacedDefinition);
+            } else {
+                if (isPresetRuleKey(ruleId)) {
+                    // load preset
+                    const resolvePackage = moduleResolver.resolvePresetPackageName(ruleId);
+                    const ruleModule = moduleInterop(require(resolvePackage.filePath));
+                    presets.push({
+                        id: ruleId,
+                        preset: ruleModule,
+                        filePath: resolvePackage.filePath,
+                        moduleName: resolvePackage.moduleName
                     });
                 } else {
-                    rules.forEach((rule) => {
-                        rules.push(rule);
+                    // load rule
+                    const resolvePackage = moduleResolver.resolveRulePackageName(ruleId);
+                    const ruleModule = moduleInterop(require(resolvePackage.filePath));
+                    // rule
+                    rules.push({
+                        ruleId: ruleId,
+                        rule: ruleModule,
+                        options: ruleOptions,
+                        filePath: resolvePackage.filePath,
+                        moduleName: resolvePackage.moduleName
                     });
                 }
-            } else {
-                const normalizedKey = parentPresetName
-                    ? // preset-name/rule-name
-                      normalizeTextlintPresetSubRuleKey({
-                          preset: parentPresetName,
-                          rule: ruleId
-                      })
-                    : ruleId;
-                // rule
-                rules.push({
-                    ruleId: normalizedKey,
-                    rule: ruleModule,
-                    options: ruleOptions
-                });
             }
         } catch (error) {
             ruleErrors.push(error);
@@ -208,12 +192,13 @@ export const loadRules = ({
     });
     return {
         rules,
+        presets,
         rulesError:
             ruleErrors.length === 0
                 ? null
                 : {
-                      message: "Can not load rule",
-                      errors: ruleErrors
-                  }
+                    message: "Can not load rule",
+                    errors: ruleErrors
+                }
     };
 };

@@ -3,6 +3,7 @@ import { moduleInterop } from "@textlint/module-interop";
 import { TextLintModuleResolver } from "./textlint-module-resolver";
 import { normalizeTextlintPresetSubRuleKey } from "@textlint/utils";
 import { isPresetRuleKey } from "./config-util";
+import { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
 
 /**
  * Convert config of preset to rawRulesConfig flat path format.
@@ -60,7 +61,7 @@ export function createFlatPresetRulesConfigFromRawPresetRuleConfig(
         return mapped;
     }
     Object.keys(rulesConfig).forEach((ruleName) => {
-        const normalizedKey = normalizeTextlintPresetSubRuleKey({ preset: presetName, rule: ruleName });
+        const normalizedKey = normalizeTextlintPresetSubRuleKey({preset: presetName, rule: ruleName});
         mapped[normalizedKey] = rulesConfig[ruleName];
     });
     return mapped;
@@ -83,8 +84,8 @@ export function loadRulesConfigFromPresets(
         [index: string]: boolean | {};
     } = {};
     presetNames.forEach((presetName) => {
-        const pkgPath = moduleResolver.resolvePresetPackageName(presetName);
-        const preset = moduleInterop(require(pkgPath));
+        const presetPackageName = moduleResolver.resolvePresetPackageName(presetName);
+        const preset = moduleInterop(require(presetPackageName.filePath));
         if (!preset.hasOwnProperty("rules")) {
             throw new Error(`${presetName} has not rules`);
         }
@@ -98,4 +99,30 @@ export function loadRulesConfigFromPresets(
         );
     });
     return presetRulesConfig;
+}
+
+
+export function loadPreset(
+    presetName: string,
+    moduleResolver: TextLintModuleResolver
+): TextlintConfigDescriptor["rules"] {
+    const presetPackageName = moduleResolver.resolvePresetPackageName(presetName);
+    const preset = moduleInterop(require(presetPackageName.filePath));
+    if (!preset.hasOwnProperty("rules")) {
+        throw new Error(`${presetName} has not rules`);
+    }
+    if (!preset.hasOwnProperty("rulesConfig")) {
+        throw new Error(`${presetName} has not rulesConfig`);
+    }
+    // we should use preset.rules → some preset use different name actual rule
+    return Object.keys(preset).map(ruleId => {
+        const normalizedKey = normalizeTextlintPresetSubRuleKey({preset: presetName, rule: ruleId});
+        return {
+            ruleId: normalizedKey,
+            rule: preset.rules[ruleId],
+            options: preset.rulesConfig[ruleId],
+            filePath: "",
+            moduleName: ""
+        };
+    })
 }

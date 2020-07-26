@@ -1,13 +1,13 @@
 export type TextlintRcConfig = {
-    plugins:
+    plugins?:
         | string[]
         | {
               [index: string]: boolean | {};
           };
-    filters: {
+    filters?: {
         [index: string]: boolean | {};
     };
-    rules: {
+    rules?: {
         [index: string]: boolean | {};
     };
 };

@@ -20,14 +20,16 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/@textlint/*"
+    "packages/@textlint/*",
+    "examples/*"
   ],
   "files": [
     "bin/",
     "lib/"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\""
   },
   "publishConfig": {
