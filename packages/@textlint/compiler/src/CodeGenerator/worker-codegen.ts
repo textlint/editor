@@ -87,7 +87,9 @@ const dictionaryStorage = openStorage("kuromoji");
 const BrowserDictionaryLoader = require("kuromoji/src/loader/BrowserDictionaryLoader");
 const zlib = require("zlibjs/bin/gunzip.min.js");
 BrowserDictionaryLoader.prototype.loadArrayBuffer = async function (url, callback) {
-    const cachedDictBuffer = await dictionaryStorage.get(url);
+    // https://github.com/takuyaa/kuromoji.js/issues/37
+    const fixedURL = url.replace("https:/", "https://");
+    const cachedDictBuffer = await dictionaryStorage.get(fixedURL);
     if (cachedDictBuffer) {
         // console.log("return cache", cachedDictBuffer);
         return callback(null, cachedDictBuffer);
@@ -99,8 +101,8 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = async function (url, callbac
         response.arrayBuffer().then(function (arraybuffer) {
             var gz = new zlib.Zlib.Gunzip(new Uint8Array(arraybuffer));
             var typed_array = gz.decompress();
-            return dictionaryStorage.set(url, typed_array.buffer).then(() => {
-                // console.log("cached", url);
+            return dictionaryStorage.set(fixedURL, typed_array.buffer).then(() => {
+                // console.log("cached", fixedURL);
                 callback(null, typed_array.buffer);
             });
         });
