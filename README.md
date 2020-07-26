@@ -26,19 +26,23 @@ Install with yarn and build before editing files.
 
 ## Purpose
 
-- Work first
-    - copy text and overlay mode
-- WebComponent
-- textlint worker
-- Offline support
+- Offline Work first
+- Create own textlint that is bundled with own configuration
+    - Optimize your needs
+    - [@textlint/compiler](packages/@textlint/compiler) is code generator
 
-## WebComponent
+[Grammarly](https://grammarly.com/) and [Microsoft Editor](https://www.microsoft.com/microsoft-365/microsoft-editor) is useful and high-quality linting tools, but these require network access, and you must pass your text to their server. 
 
-Avoid side-effect on website.
+[textlint](https://github.com/textlint/textlint) can be offline works.
+Because, textlint is written by JavaScript, textlint rules are also written by JavaScript.
 
-- TextChecker
-- Controller
-- Portal Overlay
+However, textlint is pluggable linting tools and textlint can not provide recommended/default ruleset. 
+
+@textlint/editor project resolve this issue using [@textlint/compiler](packages/@textlint/compiler) that generate optimized code from your textlint configuration.
+
+![Architecture](docs/resources/textlint_editor.png)
+
+<!-- https://excalidraw.com/#json=5173529272123392,zEJpgAvspIPHh-IExwh69w -->
 
 ## Architecture
 
@@ -55,6 +59,14 @@ Avoid side-effect on website.
     - spellchecker backend api
 
 FrontEnd and BackEnd is separated.
+
+### WebComponent
+
+Avoid side-effect on website.
+
+- TextChecker
+- Controller
+- Portal Overlay
 
 ### Compiler target
 
