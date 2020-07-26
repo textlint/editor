@@ -94,7 +94,7 @@ BrowserDictionaryLoader.prototype.loadArrayBuffer = async function (url, callbac
         // console.log("return cache", cachedDictBuffer);
         return callback(null, cachedDictBuffer);
     }
-    fetch(url).then(function (response) {
+    fetch(fixedURL).then(function (response) {
         if (!response.ok){
             return callback(response.statusText, null);
         }
