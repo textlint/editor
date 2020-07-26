@@ -44,6 +44,10 @@ However, textlint is pluggable linting tools and textlint can not provide recomm
 
 <!-- https://excalidraw.com/#json=5173529272123392,zEJpgAvspIPHh-IExwh69w -->
 
+For example, WebExtension download own optimized textlint that is generated code [@textlint/compiler](packages/@textlint/compiler), and use it for linting.
+
+So, we can focus on the compiler and frontend of editor.
+
 ## Architecture
 
 - FrontEnd
@@ -83,6 +87,8 @@ Compiler compilertextlint + rule + textlintrc into a single library code.
 - Main Thread code(just web)
     - kvstorage cache
     - libraryTarget: web
+
+Also, We can provide [@textlint/compiler](packages/@textlint/compiler) as a service using [codesandbox](https://codesandbox.io)
 
 ### API
 
