@@ -77,8 +77,21 @@ self.addEventListener('message', (event) => {
                     result
                 });
             });
+        case "fix":
+            return kernel.fixText(data.text, {
+                rules: allRules,
+                filterRules: filterRules,
+                plugins: plugins,
+                filePath: "/path/to/README" + data.ext,
+                ext: data.ext,
+            }).then(result => {
+                return self.postMessage({
+                    command: "fix:result",
+                    result
+                });
+            });
         default:
-            console.log("Unknown command" + data.command);
+            console.log("Unknown command: " + data.command);
     }
 });
 

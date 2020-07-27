@@ -187,14 +187,12 @@ export class TextCheckerElement extends HTMLElement {
     onMouseUpdate = (event: MouseEvent) => {
         const state = this.store.get();
         const hoverPadding = this.hoverPadding;
-        console.log(state.rectItems);
         const isIncludedIndexes = state.rectItems
             .filter((rect) => {
                 const point = {
                     x: event.clientX - rect.boxAbsoluteX,
                     y: event.clientY - rect.boxAbsoluteY
                 };
-                console.log(point, rect);
                 return (
                     rect.left - hoverPadding <= point.x &&
                     point.x <= rect.left + hoverPadding + rect.width &&

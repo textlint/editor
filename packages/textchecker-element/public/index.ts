@@ -1,6 +1,6 @@
 import { TextCheckerElement } from "../src/textchecker-element";
 import { TextCheckerPopupElement } from "../src/text-checker-popup-element";
-import type { TextlintResult } from "@textlint/types";
+import type { TextlintResult, TextlintFixResult } from "@textlint/types";
 import { RectItem } from "../src/textchecker-store";
 
 const updateStatus = (status: string) => {
@@ -49,7 +49,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
         }
     }
     const workerStatus = waiterForInit();
-    const lint = async (message: string): Promise<TextlintResult> => {
+    const lintText = async (message: string): Promise<TextlintResult> => {
         await workerStatus.ready();
         return new Promise((resolve, _reject) => {
             worker.addEventListener('message', function (event) {
@@ -65,11 +65,29 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                 ext: ".md"
             });
         });
-    }
+    };
+    const fixText = async (message: string): Promise<TextlintFixResult> => {
+        await workerStatus.ready();
+        return new Promise((resolve, _reject) => {
+            worker.addEventListener('message', function (event) {
+                if (event.data.command === "fix:result") {
+                    resolve(event.data.result);
+                }
+            }, {
+                once: true
+            });
+            return worker.postMessage({
+                command: "fix",
+                text: message,
+                ext: ".md"
+            });
+        });
+    };
+
     const update = debounce(async () => {
         console.time("lint");
         updateStatus("linting...");
-        const result = await lint(targetElement.value);
+        const result = await lintText(targetElement.value);
         updateStatus("linted");
         const annotations = result.messages.map((message) => {
             const card = {
@@ -80,16 +98,39 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                 start: message.index,
                 end: message.index + 1,
                 onMouseEnter: ({rectItem}: { rectItem: RectItem }) => {
-                    textCheckerPopup.updateCard(card, {
-                        top:
-                            rectItem.boxBorderWidth +
-                            rectItem.boxMarginTop +
-                            rectItem.boxPaddingTop +
-                            rectItem.boxAbsoluteY +
-                            rectItem.top +
-                            rectItem.height,
-                        left: rectItem.boxAbsoluteX + rectItem.left,
-                        width: rectItem.width
+                    textCheckerPopup.updateCard({
+                        card: card,
+                        rect: {
+                            top:
+                                rectItem.boxBorderWidth +
+                                rectItem.boxMarginTop +
+                                rectItem.boxPaddingTop +
+                                rectItem.boxAbsoluteY +
+                                rectItem.top +
+                                rectItem.height,
+                            left: rectItem.boxAbsoluteX + rectItem.left,
+                            width: rectItem.width
+                        },
+                        handlers: {
+                            async onFixIt() {
+                                console.log("onFixIt");
+                                const currentText = targetElement.value;
+                                const fixResult = await fixText(currentText);
+                                console.log(currentText, "!==", fixResult.output)
+                                if (currentText === targetElement.value && currentText !== fixResult.output) {
+                                    targetElement.value = fixResult.output;
+                                    update();
+                                    textCheckerPopup.dismissCard(card);
+                                }
+                                console.log("fixResult", fixResult);
+                            },
+                            onIgnore() {
+                                console.log("onIgnore");
+                            },
+                            onSeeDocument() {
+                                console.log("onSeeDocument");
+                            }
+                        }
                     });
                 },
                 onMouseLeave() {
