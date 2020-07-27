@@ -66,6 +66,7 @@ export class TextCheckerElement extends HTMLElement {
             })
             .join("");
         this.annotationBox.setAttribute("style", `color: transparent; position: absolute; pointer-events: none; ${copyStyle}`)
+        // Ref: https://github.com/yuku/textoverlay
         // update annotation box that align with target textarea
         // top-left (0,0)
         // read styles form target element
