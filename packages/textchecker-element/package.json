@@ -20,9 +20,9 @@
   "sideEffects": [
     "lib/textchecker-element.js"
   ],
-  "main": "lib/textchecker-element.js",
-  "module": "module/textchecker-element.js",
-  "types": "lib/textchecker-element.d.ts",
+  "main": "lib/index.js",
+  "module": "module/index.js",
+  "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"

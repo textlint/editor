@@ -1,7 +1,7 @@
 import { html, render } from "lit-html";
 import { eventmit } from "eventmit";
 
-export type TextCheckerElementAttributes = {
+export type TextCheckerPopupElementAttributes = {
     target?: HTMLElement;
 };
 export type TextCheckerCard = {
