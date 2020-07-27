@@ -41,7 +41,7 @@ export class TextCheckerElement extends HTMLElement {
         const overlay = document.createElement("div");
         overlay.setAttribute(
             "style",
-            "color: transparent; border: 1px dotted blue; position: absolute; top: 0px; left: 0px; pointer-events: none;"
+            "color: transparent; border: 1px dotted blue; overflow: hidden; position: absolute; top: 0px; left: 0px; pointer-events: none;"
         );
         const annotationBox = document.createElement("div");
         overlay.append(annotationBox);
@@ -65,7 +65,7 @@ export class TextCheckerElement extends HTMLElement {
                 return `${attr}: ${targetStyle.getPropertyValue(attr)};`;
             })
             .join("");
-        this.annotationBox.setAttribute("style", `color: transparent; position: absolute; pointer-events: none; ${copyStyle}`)
+        this.annotationBox.setAttribute("style", `color: transparent; overflow: hidden; position: absolute; pointer-events: none; ${copyStyle}`)
         // Ref: https://github.com/yuku/textoverlay
         // update annotation box that align with target textarea
         // top-left (0,0)
