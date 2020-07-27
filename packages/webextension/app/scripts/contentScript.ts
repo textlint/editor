@@ -4,9 +4,7 @@ import { browser } from "webextension-polyfill-ts";
 import { TextCheckerElement, TextCheckerElementRectItem, TextCheckerPopupElement } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 
-(function main() {
-
-    const targetElement = document.querySelector("textarea") as HTMLTextAreaElement;
+const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
     if (!targetElement) {
         return;
     }
@@ -83,4 +81,7 @@ import { TextlintResult } from "@textlint/types";
     }, 200);
     targetElement.addEventListener("input", update);
     update();
-})();
+};
+
+const targetElement = document.querySelectorAll("textarea");
+targetElement.forEach(element => attachTextChecker(element));

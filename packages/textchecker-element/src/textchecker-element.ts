@@ -37,11 +37,11 @@ export class TextCheckerElement extends HTMLElement {
         if (!target) {
             throw new Error("target element is not found");
         }
-        const shadow = this.attachShadow({ mode: "open" });
+        const shadow = this.attachShadow({mode: "open"});
         const overlay = document.createElement("div");
         overlay.setAttribute(
             "style",
-            "border: 1px dotted blue; position: absolute; top: 0px; left: 0px; pointer-events: none;"
+            "color: transparent; border: 1px dotted blue; position: absolute; top: 0px; left: 0px; pointer-events: none;"
         );
         const annotationBox = document.createElement("div");
         overlay.append(annotationBox);
@@ -58,24 +58,34 @@ export class TextCheckerElement extends HTMLElement {
         const targetStyle = window.getComputedStyle(target);
         const copyAttributes = [
             "box-sizing",
-            "top",
-            "left",
-            "width",
-            "height",
-            "position",
-            "pointer-events",
             "overflow",
-            "border",
-            "border-radius",
-            "padding",
-            "margin"
         ] as const;
         const copyStyle = copyAttributes
             .map((attr) => {
                 return `${attr}: ${targetStyle.getPropertyValue(attr)};`;
             })
             .join("");
-        this.annotationBox.setAttribute("style", copyStyle + "pointer-events: none;");
+        this.annotationBox.setAttribute("style", `color: transparent; position: absolute; pointer-events: none; ${copyStyle}`)
+        // update annotation box that align with target textarea
+        // top-left (0,0)
+        // read styles form target element
+        const top = target.offsetTop;
+        const left = target.offsetLeft;
+        const height = target.offsetHeight;
+        const width = target.clientWidth +
+            parseInt(targetStyle.borderLeftWidth || '0', 10) +
+            parseInt(targetStyle.borderRightWidth || '0', 10);
+        // const textareaScrollTop = target.scrollTop;
+        const textareaZIndex = targetStyle.zIndex !== null &&
+        targetStyle.zIndex !== 'auto'
+            ? +targetStyle.zIndex :
+            0;
+        // updates style
+        this.annotationBox.style.zIndex = `${textareaZIndex + 1}`;
+        this.annotationBox.style.left = `${left}px`;
+        this.annotationBox.style.top = `${top}px`;
+        this.annotationBox.style.height = `${height}px`;
+        this.annotationBox.style.width = `${width}px`;
         // box
         const fontSize: number = toPX(targetStyle.getPropertyValue("font-size")) ?? 16.123;
         const boxMarginTop: number = toPX(targetStyle.getPropertyValue("margin-top")) ?? 0;
@@ -107,59 +117,59 @@ export class TextCheckerElement extends HTMLElement {
             const rectItems: RectItem[] =
                 startCoordinate.top === endCoordinate.top
                     ? [
-                          {
-                              index,
-                              left: target.offsetLeft - target.scrollLeft + startCoordinate.left,
-                              top: target.offsetTop - target.scrollTop + startCoordinate.top,
-                              height: fontSize, //startCoordinate.height,
-                              width: endCoordinate.left - startCoordinate.left,
-                              boxMarginTop,
-                              boxMarginBottom,
-                              boxBorderWidth,
-                              boxAbsoluteX,
-                              boxAbsoluteY,
-                              boxWidth,
-                              boxHeight,
-                              boxPaddingTop,
-                              boxPaddingBottom
-                          }
-                      ]
+                        {
+                            index,
+                            left: startCoordinate.left,
+                            top: startCoordinate.top,
+                            height: fontSize, //startCoordinate.height,
+                            width: endCoordinate.left - startCoordinate.left,
+                            boxMarginTop,
+                            boxMarginBottom,
+                            boxBorderWidth,
+                            boxAbsoluteX,
+                            boxAbsoluteY,
+                            boxWidth,
+                            boxHeight,
+                            boxPaddingTop,
+                            boxPaddingBottom
+                        }
+                    ]
                     : // two line
-                      [
-                          {
-                              index,
-                              left: target.offsetLeft - target.scrollLeft + startCoordinate.left,
-                              top: target.offsetTop - target.scrollTop + startCoordinate.top,
-                              height: fontSize, //startCoordinate.height,
-                              width:
-                                  (startCoordinate?._div?.getBoundingClientRect()?.width ?? 0) - startCoordinate.left,
-                              boxMarginTop,
-                              boxMarginBottom,
-                              boxBorderWidth,
-                              boxAbsoluteX,
-                              boxAbsoluteY,
-                              boxWidth,
-                              boxHeight,
-                              boxPaddingTop,
-                              boxPaddingBottom
-                          },
-                          {
-                              index,
-                              left: target.offsetLeft - target.scrollLeft,
-                              top: target.offsetTop - target.scrollTop + endCoordinate.top,
-                              height: fontSize,
-                              width: (startCoordinate?._div?.getBoundingClientRect()?.left ?? 0) + endCoordinate.left,
-                              boxMarginTop,
-                              boxMarginBottom,
-                              boxBorderWidth,
-                              boxAbsoluteX,
-                              boxAbsoluteY,
-                              boxWidth,
-                              boxHeight,
-                              boxPaddingTop,
-                              boxPaddingBottom
-                          }
-                      ];
+                    [
+                        {
+                            index,
+                            left: startCoordinate.left,
+                            top: startCoordinate.top,
+                            height: fontSize, //startCoordinate.height,
+                            width:
+                                (startCoordinate?._div?.getBoundingClientRect()?.width ?? 0) - startCoordinate.left,
+                            boxMarginTop,
+                            boxMarginBottom,
+                            boxBorderWidth,
+                            boxAbsoluteX,
+                            boxAbsoluteY,
+                            boxWidth,
+                            boxHeight,
+                            boxPaddingTop,
+                            boxPaddingBottom
+                        },
+                        {
+                            index,
+                            left: 0,
+                            top: endCoordinate.top,
+                            height: fontSize,
+                            width: (startCoordinate?._div?.getBoundingClientRect()?.left ?? 0) + endCoordinate.left,
+                            boxMarginTop,
+                            boxMarginBottom,
+                            boxBorderWidth,
+                            boxAbsoluteX,
+                            boxAbsoluteY,
+                            boxWidth,
+                            boxHeight,
+                            boxPaddingTop,
+                            boxPaddingBottom
+                        }
+                    ];
             return rectItems;
         });
         this.store.update({
@@ -176,12 +186,14 @@ export class TextCheckerElement extends HTMLElement {
     onMouseUpdate = (event: MouseEvent) => {
         const state = this.store.get();
         const hoverPadding = this.hoverPadding;
+        console.log(state.rectItems);
         const isIncludedIndexes = state.rectItems
             .filter((rect) => {
                 const point = {
                     x: event.clientX - rect.boxAbsoluteX,
                     y: event.clientY - rect.boxAbsoluteY
                 };
+                console.log(point, rect);
                 return (
                     rect.left - hoverPadding <= point.x &&
                     point.x <= rect.left + hoverPadding + rect.width &&
