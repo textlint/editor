@@ -31,8 +31,7 @@ const waiterForInit = () => {
     }
 }
 const workerStatus = waiterForInit();
-const lint = async (message: string): Promise<TextlintResult> => {
-    console.log("worker", worker);
+const lintText = async (message: string, ext: string): Promise<TextlintResult> => {
     await workerStatus.ready();
     return new Promise((resolve, _reject) => {
         worker.addEventListener('message', function (event) {
@@ -45,7 +44,24 @@ const lint = async (message: string): Promise<TextlintResult> => {
         return worker.postMessage({
             command: "lint",
             text: message,
-            ext: ".md"
+            ext
+        });
+    });
+};
+const fixText = async (message: string, ext: string): Promise<TextlintResult> => {
+    await workerStatus.ready();
+    return new Promise((resolve, _reject) => {
+        worker.addEventListener('message', function (event) {
+            if (event.data.command === "fix:result") {
+                resolve(event.data.result);
+            }
+        }, {
+            once: true
+        });
+        return worker.postMessage({
+            command: "fix",
+            text: message,
+            ext
         });
     });
 };
@@ -55,29 +71,24 @@ browser.runtime.onConnect.addListener(port => {
     if (port.name !== "textlint-editor") {
         return;
     }
-    port.onMessage.addListener((message) => {
-        if (message.command === "lint") {
-            return lint(message.text).then(result => {
-                console.log("lint", result);
-                port.postMessage({
-                    command: "lint::result",
-                    result
+    port.onMessage.addListener((message: { text: string; ext: string; command: "lint" | "fix" }) => {
+        switch (message.command) {
+            case "lint":
+                return lintText(message.text, message.ext).then(result => {
+                    port.postMessage({
+                        command: "lint::result",
+                        result
+                    });
                 });
-            });
+            case "fix":
+                return fixText(message.text, message.ext).then(result => {
+                    port.postMessage({
+                        command: "fix::result",
+                        result
+                    });
+                });
         }
-        console.log(message);
+        console.log("Unknown message: ", message);
         return;
     });
 });
-
-// @ts-ignore
-browser.runtime.onMessage.addListener((message) => {
-    if (message.command === "lint") {
-        return lint(message.text).then(result => {
-            console.log("lint", result);
-            return result;
-        });
-    }
-    console.log(message);
-});
-

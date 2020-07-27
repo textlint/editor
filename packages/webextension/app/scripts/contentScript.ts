@@ -1,8 +1,8 @@
 // @ts-ignore - replace webcomponent to shim
 import '@webcomponents/custom-elements'
 import { browser } from "webextension-polyfill-ts";
-import { TextCheckerElement, TextCheckerElementRectItem, TextCheckerPopupElement } from "textchecker-element";
-import { TextlintResult } from "@textlint/types";
+import { TextCheckerElement, TextCheckerCard, TextCheckerPopupElement,TextCheckerElementRectItem } from "textchecker-element";
+import { TextlintFixResult, TextlintResult } from "@textlint/types";
 
 const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
     if (!targetElement) {
@@ -33,43 +33,89 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
     const port = browser.runtime.connect({
         name: "textlint-editor"
     });
-    const lint = (message: string): Promise<TextlintResult> => {
-        port.postMessage({
-            command: "lint",
-            text: message
-        });
+    const lintText = (message: string): Promise<TextlintResult> => {
         return new Promise((resolve) => {
             const callback = function (response: any) {
-                console.log("receive", response);
-                resolve(response.result);
+                console.log("lint result", response);
+                if (response.command === "lint::result") {
+                    resolve(response.result);
+                }
                 port.onMessage.removeListener(callback);
             };
             port.onMessage.addListener(callback);
+            port.postMessage({
+                command: "lint",
+                text: message,
+                ext: ".md"
+            });
         })
     }
+
+    const fixText = async (message: string): Promise<TextlintFixResult> => {
+        return new Promise((resolve, _reject) => {
+            const callback = function (response: any) {
+                console.log("fix result", response);
+                if (response.command === "fix::result") {
+                    resolve(response.result);
+                }
+                port.onMessage.removeListener(callback);
+            };
+            port.onMessage.addListener(callback);
+            port.postMessage({
+                command: "fix",
+                text: message,
+                ext: ".md"
+            });
+        });
+    };
+
     const update = debounce(async () => {
         console.time("lint");
-        const result = await lint(targetElement.value);
+        const result = await lintText(targetElement.value);
         console.timeEnd("lint");
         const annotations = result.messages.map((message) => {
-            const card = {
+            const card: TextCheckerCard = {
                 id: message.ruleId + "::" + message.index,
-                message: message.message
+                message: message.message,
+                fixable: Boolean(message.fix)
             };
             return {
                 start: message.index,
                 end: message.index + 1,
                 onMouseEnter: ({rectItem}: { rectItem: TextCheckerElementRectItem }) => {
-                    textCheckerPopup.updateCard(card, {
-                        top:
-                            rectItem.boxBorderWidth +
-                            rectItem.boxMarginTop +
-                            rectItem.boxPaddingTop +
-                            rectItem.boxAbsoluteY +
-                            rectItem.top +
-                            rectItem.height,
-                        left: rectItem.boxAbsoluteX + rectItem.left,
-                        width: rectItem.width
+                    textCheckerPopup.updateCard({
+                        card: card,
+                        rect: {
+                            top:
+                                rectItem.boxBorderWidth +
+                                rectItem.boxMarginTop +
+                                rectItem.boxPaddingTop +
+                                rectItem.boxAbsoluteY +
+                                rectItem.top +
+                                rectItem.height,
+                            left: rectItem.boxAbsoluteX + rectItem.left,
+                            width: rectItem.width
+                        },
+                        handlers: {
+                            async onFixIt() {
+                                console.log("onFixIt");
+                                const currentText = targetElement.value;
+                                const fixResult = await fixText(currentText);
+                                console.log(currentText, "!==", fixResult.output)
+                                if (currentText === targetElement.value && currentText !== fixResult.output) {
+                                    targetElement.value = fixResult.output;
+                                    update();
+                                    textCheckerPopup.dismissCard(card);
+                                }
+                                console.log("fixResult", fixResult);
+                            },
+                            onIgnore() {
+                                console.log("onIgnore");
+                            },
+                            onSeeDocument() {
+                                console.log("onSeeDocument");
+                            }
+                        }
                     });
                 },
                 onMouseLeave() {

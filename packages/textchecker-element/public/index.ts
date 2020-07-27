@@ -1,7 +1,5 @@
-import { TextCheckerElement } from "../src/textchecker-element";
-import { TextCheckerCard, TextCheckerPopupElement } from "../src/text-checker-popup-element";
+import { TextCheckerElement, TextCheckerElementRectItem, TextCheckerCard, TextCheckerPopupElement } from "../src/index";
 import type { TextlintResult, TextlintFixResult } from "@textlint/types";
-import { RectItem } from "../src/textchecker-store";
 
 const updateStatus = (status: string) => {
     document.querySelector("#js-status").textContent = status;
@@ -98,7 +96,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
             return {
                 start: message.index,
                 end: message.index + 1,
-                onMouseEnter: ({rectItem}: { rectItem: RectItem }) => {
+                onMouseEnter: ({rectItem}: { rectItem: TextCheckerElementRectItem }) => {
                     textCheckerPopup.updateCard({
                         card: card,
                         rect: {
