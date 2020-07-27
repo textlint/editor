@@ -1,5 +1,5 @@
 import { TextCheckerElement } from "../src/textchecker-element";
-import { TextCheckerPopupElement } from "../src/text-checker-popup-element";
+import { TextCheckerCard, TextCheckerPopupElement } from "../src/text-checker-popup-element";
 import type { TextlintResult, TextlintFixResult } from "@textlint/types";
 import { RectItem } from "../src/textchecker-store";
 
@@ -90,9 +90,10 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
         const result = await lintText(targetElement.value);
         updateStatus("linted");
         const annotations = result.messages.map((message) => {
-            const card = {
+            const card: TextCheckerCard = {
                 id: message.ruleId + "::" + message.index,
-                message: message.message
+                message: message.message,
+                fixable: Boolean(message.fix)
             };
             return {
                 start: message.index,
