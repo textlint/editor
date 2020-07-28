@@ -28,7 +28,7 @@
     "lib/"
   ],
   "scripts": {
-    "build": "lerna run build",
+    "build": "lerna run build --ignore \"@textlint/webextension\"",
     "test": "echo 'no test' && exit 0;",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "website": "cd packages/textchecker-element && yarn run web"

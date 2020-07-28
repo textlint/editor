@@ -1,5 +1,6 @@
 {
-  "name": "textlint-editor",
+  "private": true,
+  "name": "@textlint/webextension",
   "version": "0.0.1",
   "description": "textlint editor",
   "scripts": {
