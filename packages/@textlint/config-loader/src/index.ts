@@ -7,14 +7,12 @@ export {
     TextlintLintConfigLoaderResult,
     TextlintLoadPackagesFromRawConfigOptions,
     TextlintLoadPackagesFromRawConfigResult
-} from "./config-loader"
-export {
-    TextlintRcConfig
-} from "./TextlintRcConfig"
+} from "./config-loader";
+export { TextlintRcConfig } from "./TextlintRcConfig";
 export {
     TextlintConfigDescriptor,
     TextlintConfigFilterRule,
     TextlintConfigPlugin,
     TextlintConfigRule,
     TextlintConfigRulePreset
-} from "./TextlintConfigDescriptor"
+} from "./TextlintConfigDescriptor";

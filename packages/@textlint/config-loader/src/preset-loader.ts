@@ -61,7 +61,7 @@ export function createFlatPresetRulesConfigFromRawPresetRuleConfig(
         return mapped;
     }
     Object.keys(rulesConfig).forEach((ruleName) => {
-        const normalizedKey = normalizeTextlintPresetSubRuleKey({preset: presetName, rule: ruleName});
+        const normalizedKey = normalizeTextlintPresetSubRuleKey({ preset: presetName, rule: ruleName });
         mapped[normalizedKey] = rulesConfig[ruleName];
     });
     return mapped;
@@ -101,7 +101,6 @@ export function loadRulesConfigFromPresets(
     return presetRulesConfig;
 }
 
-
 export function loadPreset(
     presetName: string,
     moduleResolver: TextLintModuleResolver
@@ -115,8 +114,8 @@ export function loadPreset(
         throw new Error(`${presetName} has not rulesConfig`);
     }
     // we should use preset.rules → some preset use different name actual rule
-    return Object.keys(preset).map(ruleId => {
-        const normalizedKey = normalizeTextlintPresetSubRuleKey({preset: presetName, rule: ruleId});
+    return Object.keys(preset).map((ruleId) => {
+        const normalizedKey = normalizeTextlintPresetSubRuleKey({ preset: presetName, rule: ruleId });
         return {
             ruleId: normalizedKey,
             rule: preset.rules[ruleId],
@@ -124,5 +123,5 @@ export function loadPreset(
             filePath: "",
             moduleName: ""
         };
-    })
+    });
 }

@@ -4,25 +4,25 @@ import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
 import * as fs from "fs";
 import path from "path";
 // @ts-ignore
-import rimraf from "rimraf"
+import rimraf from "rimraf";
 
 export const createWebpackConfig = (inputFilePath: string, outputDir: string): webpack.Configuration => {
     return {
-        mode: 'production',
+        mode: "production",
         devtool: false,
         entry: {
-            "textlint": inputFilePath
+            textlint: inputFilePath
         },
         output: {
-            library: 'textlint',
-            libraryTarget: 'self' as any, // umd
+            library: "textlint",
+            libraryTarget: "self" as any, // umd
             path: outputDir
         },
         plugins: [
             // https://github.com/azu/kuromojin injection
             // 1.x 2.x supports
             new webpack.DefinePlugin({
-                'process.env.KUROMOJIN_DIC_PATH': JSON.stringify("https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict")
+                "process.env.KUROMOJIN_DIC_PATH": JSON.stringify("https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict")
             })
         ],
         node: {
@@ -49,14 +49,14 @@ export const compile = async (options: compileOptions) => {
     })();
     const tempDir = path.join(cwd, "__textlint_compier_temp");
     await fs.promises.mkdir(tempDir, {
-        recursive: true,
+        recursive: true
     });
     const inputFilePath = path.join(tempDir, "input.js");
-    await fs.promises.writeFile(inputFilePath, code, "utf-8")
+    await fs.promises.writeFile(inputFilePath, code, "utf-8");
     const outputFilePath = options.outputDir;
     return new Promise((resolve, reject) => {
         const config = createWebpackConfig(inputFilePath, outputFilePath);
-        webpack([config], (error: Error & { details?: string; }, stats) => {
+        webpack([config], (error: Error & { details?: string }, stats) => {
             if (error) {
                 console.error(error.stack || error);
                 if (error.details) {
@@ -74,7 +74,7 @@ export const compile = async (options: compileOptions) => {
                 console.warn(info.warnings);
             }
             resolve();
-        })
+        });
     }).finally(() => {
         return rimraf.sync(tempDir);
     });

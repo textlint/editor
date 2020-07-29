@@ -10,54 +10,62 @@ export const generateCode = async (options: CodeGeneraterOptions) => {
             packageOptions.rawConfig.plugins = Array.isArray(packageOptions.rawConfig?.plugins)
                 ? ["@textlint/text", "@textlint/markdown"].concat(packageOptions.rawConfig?.plugins ?? [])
                 : {
-                    "@textlint/text": true,
-                    "@textlint/markdown": true,
-                    ...packageOptions.rawConfig?.plugins
-                }
-            return packageOptions
+                      "@textlint/text": true,
+                      "@textlint/markdown": true,
+                      ...packageOptions.rawConfig?.plugins
+                  };
+            return packageOptions;
         }
     });
     if (configResult.ok === false) {
         console.error(configResult.error.message, configResult.error.errors);
         throw new Error(configResult.error.message);
     }
-    const {config} = configResult;
+    const { config } = configResult;
     const stringify = (item: any[]): string => {
         // unwrap code
         return JSON.stringify(item, null, 4)
             .replace(/"(moduleInterop\(require\('.*?'\)\))"/g, "$1")
-            .replace(/"(presetToKernelRules\(.+\))"/g, "$1")
-    }
+            .replace(/"(presetToKernelRules\(.+\))"/g, "$1");
+    };
 
     return `// Generated webworker code by textlint-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { presetToKernelRules, openStorage } from "@textlint/runtime-helper"
 const kernel = new TextlintKernel();
-const presetRules = ${stringify(config.presets.map(preset => {
-        return `presetToKernelRules(moduleInterop(require('${preset.moduleName}')), '${preset.id}')`;
-    }))}.flat();
-const rules = ${stringify(config.rules.flatMap(rule => {
-        return {
-            ruleId: rule.ruleId,
-            rule: `moduleInterop(require('${rule.moduleName}'))`,
-            options: rule.options
-        }
-    }))};
-const filterRules = ${stringify(config.filterRules.map(rule => {
-        return {
-            ruleId: rule.ruleId,
-            rule: `moduleInterop(require('${rule.moduleName}'))`,
-            options: rule.options
-        }
-    }))};
-const plugins = ${stringify(config.plugins.map(plugin => {
-        return {
-            pluginId: plugin.pluginId,
-            plugin: `moduleInterop(require('${plugin.moduleName}'))`,
-            options: plugin.options
-        }
-    }))};
+const presetRules = ${stringify(
+        config.presets.map((preset) => {
+            return `presetToKernelRules(moduleInterop(require('${preset.moduleName}')), '${preset.id}')`;
+        })
+    )}.flat();
+const rules = ${stringify(
+        config.rules.flatMap((rule) => {
+            return {
+                ruleId: rule.ruleId,
+                rule: `moduleInterop(require('${rule.moduleName}'))`,
+                options: rule.options
+            };
+        })
+    )};
+const filterRules = ${stringify(
+        config.filterRules.map((rule) => {
+            return {
+                ruleId: rule.ruleId,
+                rule: `moduleInterop(require('${rule.moduleName}'))`,
+                options: rule.options
+            };
+        })
+    )};
+const plugins = ${stringify(
+        config.plugins.map((plugin) => {
+            return {
+                pluginId: plugin.pluginId,
+                plugin: `moduleInterop(require('${plugin.moduleName}'))`,
+                options: plugin.options
+            };
+        })
+    )};
 
 
 const allRules = rules.concat(presetRules);
@@ -151,4 +159,4 @@ self.postMessage({
     command: "init"
 });
 `;
-}
+};

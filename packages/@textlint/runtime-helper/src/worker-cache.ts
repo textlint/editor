@@ -16,5 +16,5 @@ export function openStorage<V>(dbName: string) {
         clear(): Promise<void> {
             return storage.clear();
         }
-    }
+    };
 }

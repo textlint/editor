@@ -5,7 +5,9 @@ import { createFullPackageName } from "./textlint-package-name-util";
 import tryResolve from "try-resolve";
 
 const moduleCache = new Map<string, string>();
-const tryResolveModuleName = (moduleName: string): {
+const tryResolveModuleName = (
+    moduleName: string
+): {
     moduleName: string;
     filePath: string;
 } | null => {
@@ -14,7 +16,7 @@ const tryResolveModuleName = (moduleName: string): {
         return {
             moduleName,
             filePath: cachedFilePath
-        }
+        };
     }
     const ret: string | undefined = tryResolve(moduleName);
     if (ret) {
@@ -22,10 +24,10 @@ const tryResolveModuleName = (moduleName: string): {
         return {
             moduleName,
             filePath: ret
-        }
+        };
     }
     return null;
-}
+};
 
 export interface ConfigModulePrefix {
     CONFIG_PACKAGE_PREFIX: string;
@@ -65,7 +67,9 @@ export class TextLintModuleResolver {
      * @param {string} packageName
      * @returns {string} return path to module
      */
-    resolveRulePackageName(packageName: string): {
+    resolveRulePackageName(
+        packageName: string
+    ): {
         moduleName: string;
         filePath: string;
     } {
@@ -78,7 +82,7 @@ export class TextLintModuleResolver {
         }
         const resultPackageName = tryResolveModuleName(path.join(baseDir, packageName));
         if (resultPackageName) {
-            return resultPackageName
+            return resultPackageName;
         }
         throw new ReferenceError(`Failed to load textlint's rule module: "${packageName}" is not found.
 See FAQ: https://github.com/textlint/textlint/blob/master/docs/faq/failed-to-load-textlints-module.md
@@ -90,7 +94,9 @@ See FAQ: https://github.com/textlint/textlint/blob/master/docs/faq/failed-to-loa
      * @param {string} packageName
      * @returns {string} return path to module
      */
-    resolveFilterRulePackageName(packageName: string): {
+    resolveFilterRulePackageName(
+        packageName: string
+    ): {
         moduleName: string;
         filePath: string;
     } {
@@ -115,7 +121,9 @@ See FAQ: https://github.com/textlint/textlint/blob/master/docs/faq/failed-to-loa
      * @param {string} packageName
      * @returns {string} return path to module
      */
-    resolvePluginPackageName(packageName: string): {
+    resolvePluginPackageName(
+        packageName: string
+    ): {
         moduleName: string;
         filePath: string;
     } {
@@ -141,7 +149,9 @@ See FAQ: https://github.com/textlint/textlint/blob/master/docs/faq/failed-to-loa
      * The user must specify preset- prefix to these `packageName`.
      * @returns {string} return path to module
      */
-    resolvePresetPackageName(packageName: string): {
+    resolvePresetPackageName(
+        packageName: string
+    ): {
         moduleName: string;
         filePath: string;
     } {

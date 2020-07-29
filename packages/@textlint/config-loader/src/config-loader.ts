@@ -4,7 +4,6 @@ import { loadFilterRules, loadPlugins, loadRules } from "./loader";
 import { TextlintRcConfig } from "./TextlintRcConfig";
 import type { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
 
-
 export type TextlintConfigLoaderOptions = {
     cwd?: string;
     configFilePath?: string;
@@ -15,7 +14,9 @@ export type TextlintConfigLoaderOptions = {
      */
     node_moduleDir?: string;
     // pre process
-    preLoadingPackage?: (packages: TextlintLoadPackagesFromRawConfigOptions) => TextlintLoadPackagesFromRawConfigOptions;
+    preLoadingPackage?: (
+        packages: TextlintLoadPackagesFromRawConfigOptions
+    ) => TextlintLoadPackagesFromRawConfigOptions;
     /**
      * This definitions replace id to rule module
      * It is useful for replacing specific ruleId with specific rule module.
@@ -29,34 +30,34 @@ export type TextlintConfigLoaderOptions = {
 };
 export type TextlintLintConfigLoaderResult =
     | {
-    ok: true;
-    config: TextlintConfigDescriptor; // Core Option object
-    configFilePath: string;
-}
+          ok: true;
+          config: TextlintConfigDescriptor; // Core Option object
+          configFilePath: string;
+      }
     | {
-    // load config error
-    ok: false;
-    configFilePath?: string;
-    rawConfig?: TextlintRcConfig;
-    error: {
-        message: string;
-        errors: Error[];
-    };
-};
+          // load config error
+          ok: false;
+          configFilePath?: string;
+          rawConfig?: TextlintRcConfig;
+          error: {
+              message: string;
+              errors: Error[];
+          };
+      };
 
 export type TextlintConfigLoaderRawResult =
     | {
-    ok: true;
-    configFilePath: string;
-    rawConfig: TextlintRcConfig;
-}
+          ok: true;
+          configFilePath: string;
+          rawConfig: TextlintRcConfig;
+      }
     | {
-    ok: false;
-    error: {
-        message: string;
-        errors: Error[];
-    };
-};
+          ok: false;
+          error: {
+              message: string;
+              errors: Error[];
+          };
+      };
 export type TextlintLoadPackagesFromRawConfigOptions = {
     /**
      * Loaded config object
@@ -80,17 +81,17 @@ export type TextlintLoadPackagesFromRawConfigOptions = {
 };
 export type TextlintLoadPackagesFromRawConfigResult =
     | {
-    ok: true;
-    config: TextlintConfigDescriptor; // Core Option object
-}
+          ok: true;
+          config: TextlintConfigDescriptor; // Core Option object
+      }
     | {
-    // load config error
-    ok: false;
-    error: {
-        message: string;
-        errors: Error[];
-    };
-};
+          // load config error
+          ok: false;
+          error: {
+              message: string;
+              errors: Error[];
+          };
+      };
 
 /**
  * Load packages in RawConfig and return loaded config object
@@ -105,19 +106,19 @@ export const loadPackagesFromRawConfig = (
         rulesBaseDirectory: options.node_moduleDir
     });
     // rules
-    const {rules, presets, rulesError} = loadRules({
+    const { rules, presets, rulesError } = loadRules({
         rulesObject: options.rawConfig.rules ?? {},
         moduleResolver,
         testReplaceDefinitions: options.testReplaceDefinitions?.rule
     });
     // filterRules
-    const {filterRules, filterRulesError} = loadFilterRules({
+    const { filterRules, filterRulesError } = loadFilterRules({
         rulesObject: options.rawConfig.filters ?? {},
         moduleResolver,
         testReplaceDefinitions: options.testReplaceDefinitions?.filterRules
     });
     // plugins
-    const {plugins, pluginsError} = loadPlugins({
+    const { plugins, pluginsError } = loadPlugins({
         pluginsObject: options.rawConfig.plugins ?? {},
         moduleResolver,
         testReplaceDefinitions: options.testReplaceDefinitions?.plugins
@@ -170,9 +171,7 @@ export const loadConfig = (options: TextlintConfigLoaderOptions): TextlintLintCo
         testReplaceDefinitions: options.testReplaceDefinitions
     };
     const result = loadPackagesFromRawConfig(
-        options.preLoadingPackage
-            ? options.preLoadingPackage(packageOptions)
-            : packageOptions
+        options.preLoadingPackage ? options.preLoadingPackage(packageOptions) : packageOptions
     );
     if (!result.ok) {
         return {

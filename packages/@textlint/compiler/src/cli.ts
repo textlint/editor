@@ -22,7 +22,7 @@ export const cli = meow(
                 isRequired: true
             },
             textlintrc: {
-                type: "string",
+                type: "string"
             },
             compileTarget: {
                 type: "string",
@@ -57,17 +57,19 @@ export const run = (
         compileTarget: flags.compileTarget as "webworker",
         outputDir: path.join(flags.cwd, flags.outputDir),
         mode: flags.mode as "production" | "development"
-    }).then(() => {
-        return {
-            exitStatus: 0,
-            stdout: null,
-            stderr: null
-        }
-    }).catch((error) => {
-        return {
-            exitStatus: 1,
-            stderr: null,
-            stdout: error
-        }
     })
+        .then(() => {
+            return {
+                exitStatus: 0,
+                stdout: null,
+                stderr: null
+            };
+        })
+        .catch((error) => {
+            return {
+                exitStatus: 1,
+                stderr: null,
+                stdout: error
+            };
+        });
 };

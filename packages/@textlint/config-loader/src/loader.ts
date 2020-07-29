@@ -5,10 +5,10 @@ import { moduleInterop } from "@textlint/module-interop";
 import { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
 
 export const loadPlugins = ({
-                                pluginsObject,
-                                moduleResolver,
-                                testReplaceDefinitions
-                            }: {
+    pluginsObject,
+    moduleResolver,
+    testReplaceDefinitions
+}: {
     pluginsObject: NonNullable<TextlintRcConfig["plugins"]>;
     parentPresetName?: string;
     moduleResolver: TextLintModuleResolver;
@@ -69,16 +69,16 @@ export const loadPlugins = ({
             pluginErrors.length === 0
                 ? null
                 : {
-                    message: "Can not load plugin",
-                    errors: pluginErrors
-                }
+                      message: "Can not load plugin",
+                      errors: pluginErrors
+                  }
     };
 };
 export const loadFilterRules = ({
-                                    rulesObject,
-                                    moduleResolver,
-                                    testReplaceDefinitions
-                                }: {
+    rulesObject,
+    moduleResolver,
+    testReplaceDefinitions
+}: {
     rulesObject: NonNullable<TextlintRcConfig["filters"]>;
     moduleResolver: TextLintModuleResolver;
     testReplaceDefinitions?: TextlintConfigDescriptor["filterRules"];
@@ -125,16 +125,16 @@ export const loadFilterRules = ({
             ruleErrors.length === 0
                 ? null
                 : {
-                    message: "Can not load filter rule",
-                    errors: ruleErrors
-                }
+                      message: "Can not load filter rule",
+                      errors: ruleErrors
+                  }
     };
 };
 export const loadRules = ({
-                              rulesObject,
-                              moduleResolver,
-                              testReplaceDefinitions
-                          }: {
+    rulesObject,
+    moduleResolver,
+    testReplaceDefinitions
+}: {
     rulesObject: NonNullable<TextlintRcConfig["rules"]>;
     moduleResolver: TextLintModuleResolver;
     testReplaceDefinitions?: TextlintConfigDescriptor["rules"];
@@ -197,8 +197,8 @@ export const loadRules = ({
             ruleErrors.length === 0
                 ? null
                 : {
-                    message: "Can not load rule",
-                    errors: ruleErrors
-                }
+                      message: "Can not load rule",
+                      errors: ruleErrors
+                  }
     };
 };

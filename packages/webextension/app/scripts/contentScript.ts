@@ -1,7 +1,12 @@
 // @ts-ignore - replace webcomponent to shim
-import '@webcomponents/custom-elements'
+import "@webcomponents/custom-elements";
 import { browser } from "webextension-polyfill-ts";
-import { TextCheckerElement, TextCheckerCard, TextCheckerPopupElement,TextCheckerElementRectItem } from "textchecker-element";
+import {
+    TextCheckerElement,
+    TextCheckerCard,
+    TextCheckerPopupElement,
+    TextCheckerElementRectItem
+} from "textchecker-element";
 import { TextlintFixResult, TextlintResult } from "@textlint/types";
 
 const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
@@ -48,8 +53,8 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                 text: message,
                 ext: ".md"
             });
-        })
-    }
+        });
+    };
 
     const fixText = async (message: string): Promise<TextlintFixResult> => {
         return new Promise((resolve, _reject) => {
@@ -82,7 +87,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
             return {
                 start: message.index,
                 end: message.index + 1,
-                onMouseEnter: ({rectItem}: { rectItem: TextCheckerElementRectItem }) => {
+                onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
                     textCheckerPopup.updateCard({
                         card: card,
                         rect: {
@@ -101,7 +106,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                                 console.log("onFixIt");
                                 const currentText = targetElement.value;
                                 const fixResult = await fixText(currentText);
-                                console.log(currentText, "!==", fixResult.output)
+                                console.log(currentText, "!==", fixResult.output);
                                 if (currentText === targetElement.value && currentText !== fixResult.output) {
                                     targetElement.value = fixResult.output;
                                     update();
@@ -130,4 +135,4 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
 };
 
 const targetElement = document.querySelectorAll("textarea");
-targetElement.forEach(element => attachTextChecker(element));
+targetElement.forEach((element) => attachTextChecker(element));

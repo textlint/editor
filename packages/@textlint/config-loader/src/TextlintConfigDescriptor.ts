@@ -9,12 +9,12 @@ export type TextlintConfigRulePreset = {
     id: string;
     preset: {
         rules: {
-            [index: string]: TextlintRuleModule
-        },
+            [index: string]: TextlintRuleModule;
+        };
         rulesConfig: {
-            [index: string]: TextlintRuleOptions | boolean
-        }
-    },
+            [index: string]: TextlintRuleOptions | boolean;
+        };
+    };
     filePath: string;
     moduleName: string;
 };
