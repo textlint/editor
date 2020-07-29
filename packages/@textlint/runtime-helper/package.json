@@ -1,6 +1,6 @@
 {
   "name": "@textlint/runtime-helper",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "A runtime helper",
   "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/runtime-helper/",
   "bugs": {
@@ -40,11 +40,11 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^1.0.0",
+    "@textlint/config-loader": "^0.1.1",
     "@textlint/kernel": "^3.3.6",
+    "@textlint/module-interop": "^1.1.4",
     "@textlint/types": "^1.4.5",
     "@textlint/utils": "^1.1.4",
-    "@textlint/module-interop": "^1.1.4",
     "kv-storage-polyfill": "^2.0.0"
   },
   "devDependencies": {

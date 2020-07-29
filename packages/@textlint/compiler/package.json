@@ -1,6 +1,6 @@
 {
   "name": "@textlint/compiler",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "textlint compiler tool",
   "keywords": [
     "textlint",
@@ -50,12 +50,12 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^1.0.0",
+    "@textlint/config-loader": "^0.1.1",
     "@textlint/kernel": "^3.3.6",
-    "@textlint/runtime-helper": "^1.0.0",
-    "webpack": "^4.44.0",
+    "@textlint/runtime-helper": "^0.1.1",
     "meow": "^7.0.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "webpack": "^4.44.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.0.0",
