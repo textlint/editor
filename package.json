@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@textlint/editor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "textlint editor project.",
   "homepage": "https://github.com/textlint/editor",
   "bugs": {
