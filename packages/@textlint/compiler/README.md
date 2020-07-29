@@ -10,7 +10,16 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
-- [ ] Write usage instructions
+    Usage
+      $ textlint-compiler 
+ 
+    Options
+      --cwd              current working directory
+      --textlintrc       [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
+      --output-dir       [path:String] output file path that is written of reported result.
+ 
+    Examples
+      $ textlint-compiler --output-dir ./dist
 
 ## Demo
 
