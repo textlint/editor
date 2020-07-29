@@ -3,7 +3,7 @@ import type { TextlintResult, TextlintFixResult } from "@textlint/types";
 
 const updateStatus = (status: string) => {
     document.querySelector("#js-status").textContent = status;
-}
+};
 const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
     const textChecker = new TextCheckerElement({
         targetElement: targetElement,
@@ -25,38 +25,46 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
         };
     }
 
-    const worker = new Worker('textlint.js');
+    const worker = new Worker("textlint.js");
     const waiterForInit = () => {
         let initialized = false;
         let _resolve: null | ((init: boolean) => void) = null;
         const deferred = new Promise((resolve) => {
             _resolve = resolve;
-        })
-        worker.addEventListener('message', function (event) {
-            if (event.data.command === "init") {
-                initialized = true;
-                _resolve(initialized);
+        });
+        worker.addEventListener(
+            "message",
+            function (event) {
+                if (event.data.command === "init") {
+                    initialized = true;
+                    _resolve(initialized);
+                }
+            },
+            {
+                once: true
             }
-        }, {
-            once: true
-        })
+        );
         return {
             ready() {
                 return deferred;
             }
-        }
-    }
+        };
+    };
     const workerStatus = waiterForInit();
     const lintText = async (message: string): Promise<TextlintResult> => {
         await workerStatus.ready();
         return new Promise((resolve, _reject) => {
-            worker.addEventListener('message', function (event) {
-                if (event.data.command === "lint:result") {
-                    resolve(event.data.result);
+            worker.addEventListener(
+                "message",
+                function (event) {
+                    if (event.data.command === "lint:result") {
+                        resolve(event.data.result);
+                    }
+                },
+                {
+                    once: true
                 }
-            }, {
-                once: true
-            });
+            );
             return worker.postMessage({
                 command: "lint",
                 text: message,
@@ -67,13 +75,17 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
     const fixText = async (message: string): Promise<TextlintFixResult> => {
         await workerStatus.ready();
         return new Promise((resolve, _reject) => {
-            worker.addEventListener('message', function (event) {
-                if (event.data.command === "fix:result") {
-                    resolve(event.data.result);
+            worker.addEventListener(
+                "message",
+                function (event) {
+                    if (event.data.command === "fix:result") {
+                        resolve(event.data.result);
+                    }
+                },
+                {
+                    once: true
                 }
-            }, {
-                once: true
-            });
+            );
             return worker.postMessage({
                 command: "fix",
                 text: message,
@@ -82,7 +94,19 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
         });
     };
 
+    let onComposition = false;
+    const compositionStart = () => {
+        onComposition = true;
+    };
+    const compositionEnd = () => {
+        onComposition = false;
+    };
+
     const update = debounce(async () => {
+        // stop lint on IME composition
+        if (onComposition) {
+            return;
+        }
         console.time("lint");
         updateStatus("linting...");
         const result = await lintText(targetElement.value);
@@ -96,7 +120,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
             return {
                 start: message.index,
                 end: message.index + 1,
-                onMouseEnter: ({rectItem}: { rectItem: TextCheckerElementRectItem }) => {
+                onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
                     textCheckerPopup.updateCard({
                         card: card,
                         rect: {
@@ -115,7 +139,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                                 console.log("onFixIt");
                                 const currentText = targetElement.value;
                                 const fixResult = await fixText(currentText);
-                                console.log(currentText, "!==", fixResult.output)
+                                console.log(currentText, "!==", fixResult.output);
                                 if (currentText === targetElement.value && currentText !== fixResult.output) {
                                     targetElement.value = fixResult.output;
                                     update();
@@ -139,9 +163,11 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
         });
         textChecker.updateAnnotations(annotations);
     }, 200);
+    targetElement.addEventListener("compositionstart", compositionStart);
+    targetElement.addEventListener("compositionend", compositionEnd);
     targetElement.addEventListener("input", update);
     update();
 };
 
 const targetElement = document.querySelectorAll("textarea");
-targetElement.forEach(element => attachTextChecker(element));
+targetElement.forEach((element) => attachTextChecker(element));
