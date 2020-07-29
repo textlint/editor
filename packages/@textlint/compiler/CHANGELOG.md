@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.2](https://github.com/textlint/editor/compare/v0.1.1...v0.1.2) (2020-07-29)
+
+
+### Bug Fixes
+
+* **compiler:** export all ([35631f9](https://github.com/textlint/editor/commit/35631f93546fb579ce93db6fe244a4bcce6c536f))
+
+
+
+
+
 ## 0.1.1 (2020-07-29)
 
 
