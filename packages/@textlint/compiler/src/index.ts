@@ -1,1 +1,1 @@
-export { createWebpackConfig } from "./compiler";
+export { createWebpackConfig, compile, compileOptions } from "./compiler";
