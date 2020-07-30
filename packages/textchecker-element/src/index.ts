@@ -1,8 +1,10 @@
-export { RectItem as TextCheckerElementRectItem } from "./textchecker-store";
-export { TextCheckerElement, TextCheckerElementAttributes } from "./textchecker-element";
+export { TextCheckerElementRectItem } from "./text-checker-store";
+export { TextCheckerElement, TextCheckerElementAttributes } from "./text-checker-element";
 export {
     TextCheckerPopupElement,
     TextCheckerPopupElementAttributes,
     TextCheckerCard,
     TextCheckerCardRect
 } from "./text-checker-popup-element";
+
+export { attachToTextArea } from "./attach-to-text-area";

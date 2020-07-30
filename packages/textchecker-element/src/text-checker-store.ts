@@ -3,13 +3,13 @@ import { eventmit } from "eventmit";
 export type AnnotationItem = {
     start: number;
     end: number;
-    onMouseEnter: ({ rectItem }: { rectItem: RectItem }) => void;
-    onMouseLeave: ({ rectItem }: { rectItem: RectItem }) => void;
+    onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => void;
+    onMouseLeave: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => void;
 };
 /**
  * RectItem is pixel based
  */
-export type RectItem = {
+export type TextCheckerElementRectItem = {
     index: number;
     left: number;
     top: number;
@@ -27,10 +27,10 @@ export type RectItem = {
     boxHeight: number;
 };
 export type TextCheckerState = {
-    rectItems: RectItem[];
+    rectItems: TextCheckerElementRectItem[];
     annotationItems: AnnotationItem[];
-    mouseHoverReactIdMap: Map<RectItem["index"], boolean>;
-    highlightRectIdSet: Set<RectItem["index"]>;
+    mouseHoverReactIdMap: Map<TextCheckerElementRectItem["index"], boolean>;
+    highlightRectIdSet: Set<TextCheckerElementRectItem["index"]>;
 };
 export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>) => {
     let textCheckerState: TextCheckerState = {
@@ -52,7 +52,7 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
             changeEvent.offAll();
         },
 
-        highlightRectIndexes(indexes: RectItem["index"][]) {
+        highlightRectIndexes(indexes: TextCheckerElementRectItem["index"][]) {
             textCheckerState = {
                 ...textCheckerState,
                 highlightRectIdSet: new Set(indexes)

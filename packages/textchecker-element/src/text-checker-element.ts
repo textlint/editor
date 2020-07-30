@@ -1,13 +1,18 @@
 import textCaretPos from "text-caret-pos";
 import { html, render } from "lit-html";
-import { AnnotationItem, createTextCheckerStore, RectItem, TextCheckerState } from "./textchecker-store";
+import {
+    AnnotationItem,
+    createTextCheckerStore,
+    TextCheckerElementRectItem,
+    TextCheckerState
+} from "./text-checker-store";
 
 const toPX = require("to-px");
 export type TextCheckerElementAttributes = {
     targetElement: HTMLTextAreaElement;
     hoverPadding: number;
 };
-const Marker = (rect: RectItem, isHighLight: boolean = false) => {
+const Marker = (rect: TextCheckerElementRectItem, isHighLight: boolean = false) => {
     if (isHighLight) {
         return html`<span
             style="pointer-events: none; border: 2px dotted red; position: absolute; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: ${rect.height}px;"
@@ -113,7 +118,7 @@ export class TextCheckerElement extends HTMLElement {
                 returnDiv: true,
                 debug: false
             });
-            const rectItems: RectItem[] =
+            const rectItems: TextCheckerElementRectItem[] =
                 startCoordinate.top === endCoordinate.top
                     ? [
                           {

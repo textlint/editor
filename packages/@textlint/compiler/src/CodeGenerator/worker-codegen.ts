@@ -70,7 +70,7 @@ const plugins = ${stringify(
 
 const allRules = rules.concat(presetRules);
 self.addEventListener('message', (event) => {
-    var data = event.data;
+    const data = event.data;
     const rules = data.ruleId === undefined
         ? allRules
         : allRules.filter(rule => rule.ruleId === data.ruleId);
