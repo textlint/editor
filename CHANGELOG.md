@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/textlint/editor/compare/v0.2.0...v0.2.1) (2020-07-30)
+
+
+### Bug Fixes
+
+* **textchecker-element:** use import ([99bbaec](https://github.com/textlint/editor/commit/99bbaecb16a0775085c9be7b7f54d500266ff2e0))
+
+
+
+
+
 # [0.2.0](https://github.com/textlint/editor/compare/v0.1.2...v0.2.0) (2020-07-30)
 
 
