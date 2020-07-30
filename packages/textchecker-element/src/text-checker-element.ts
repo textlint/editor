@@ -6,8 +6,9 @@ import {
     TextCheckerElementRectItem,
     TextCheckerState
 } from "./text-checker-store";
+// @ts-ignore
+import toPX from "to-px";
 
-const toPX = require("to-px");
 export type TextCheckerElementAttributes = {
     targetElement: HTMLTextAreaElement;
     hoverPadding: number;
