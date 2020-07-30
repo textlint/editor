@@ -71,10 +71,16 @@ const plugins = ${stringify(
 const allRules = rules.concat(presetRules);
 self.addEventListener('message', (event) => {
     var data = event.data;
+    var rules;
+    if (data.ruleId) {
+        rules = allRules.filter(rule => rule.ruleId === data.ruleId)
+    } else {
+        rules = allRules;
+    }
     switch (data.command) {
         case "lint":
             return kernel.lintText(data.text, {
-                rules: allRules,
+                rules: rules,
                 filterRules: filterRules,
                 plugins: plugins,
                 filePath: "/path/to/README" + data.ext,
@@ -87,7 +93,7 @@ self.addEventListener('message', (event) => {
             });
         case "fix":
             return kernel.fixText(data.text, {
-                rules: allRules,
+                rules: rules,
                 filterRules: filterRules,
                 plugins: plugins,
                 filePath: "/path/to/README" + data.ext,

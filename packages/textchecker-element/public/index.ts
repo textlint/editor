@@ -72,7 +72,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
             });
         });
     };
-    const fixText = async (message: string): Promise<TextlintFixResult> => {
+    const fixText = async (message: string, ruleId: string): Promise<TextlintFixResult> => {
         await workerStatus.ready();
         return new Promise((resolve, _reject) => {
             worker.addEventListener(
@@ -89,6 +89,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
             return worker.postMessage({
                 command: "fix",
                 text: message,
+                ruleId,
                 ext: ".md"
             });
         });
@@ -138,7 +139,7 @@ const attachTextChecker = (targetElement: HTMLTextAreaElement) => {
                             async onFixIt() {
                                 console.log("onFixIt");
                                 const currentText = targetElement.value;
-                                const fixResult = await fixText(currentText);
+                                const fixResult = await fixText(currentText, message.ruleId);
                                 console.log(currentText, "!==", fixResult.output);
                                 if (currentText === targetElement.value && currentText !== fixResult.output) {
                                     targetElement.value = fixResult.output;
