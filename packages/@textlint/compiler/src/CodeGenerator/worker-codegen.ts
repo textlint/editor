@@ -1,5 +1,47 @@
 import { loadConfig } from "@textlint/config-loader";
 import { CodeGeneraterOptions } from "./CodeGeneraterOptions";
+import type { TextlintResult, TextlintFixResult } from "@textlint/types";
+import type { TextlintKernelRule, TextlintKernelFilterRule, TextlintKernelPlugin } from "@textlint/kernel";
+
+export type TextlintWorkerCommandLint = {
+    command: "lint";
+    text: string;
+    ruleId?: string;
+};
+export type TextlintWorkerCommandFix = {
+    command: "fix";
+    text: string;
+    ext: string;
+    ruleId?: string;
+};
+export type TextlintWorkerCommandMergeConfig = {
+    command: "merge-config";
+    config: {
+        rules: Omit<TextlintKernelRule, "rule">[];
+        filterRules: Omit<TextlintKernelFilterRule, "rule">[];
+        plugins: Omit<TextlintKernelPlugin, "plugin">[];
+    };
+};
+export type TextlintWorkerCommand =
+    | TextlintWorkerCommandLint
+    | TextlintWorkerCommandFix
+    | TextlintWorkerCommandMergeConfig;
+
+export type TextlintWorkerCommandResponseInit = {
+    command: "init";
+};
+export type TextlintWorkerCommandResponseLint = {
+    command: "lint:result";
+    result: TextlintResult;
+};
+export type TextlintWorkerCommandResponseFix = {
+    command: "fix:result";
+    result: TextlintFixResult;
+};
+export type TextlintWorkerCommandResponse =
+    | TextlintWorkerCommandResponseInit
+    | TextlintWorkerCommandResponseLint
+    | TextlintWorkerCommandResponseFix;
 
 export const generateCode = async (options: CodeGeneraterOptions) => {
     const configResult = await loadConfig({
@@ -66,20 +108,45 @@ const plugins = ${stringify(
             };
         })
     )};
-
-
 const allRules = rules.concat(presetRules);
+const config = {
+    rules: allRules,
+    filterRules: filterRules,
+    plugins: plugins
+};
+const assignConfig = (overrideConfig) => {
+    if (overrideConfig.rules) {
+        config.rules = config.rules.map(rule => {
+            const override = overrideConfig.rules.find(o => o.ruleId === rule.ruleId);
+            return { ...rule, ...override };
+        });
+    }
+    if (overrideConfig.filterRules) {
+        config.filterRules = config.filterRules.map(rule => {
+            const override = overrideConfig.filterRules.find(o => o.ruleId === rule.ruleId);
+            return { ...rule, ...override };
+        });
+    }
+    if (overrideConfig.plugins) {
+        config.plugins = config.plugins.map(rule => {
+            const override = overrideConfig.plugins.find(o => o.pluginId === rule.pluginId);
+            return { ...rule, ...override };
+        });
+    }
+};
 self.addEventListener('message', (event) => {
     const data = event.data;
     const rules = data.ruleId === undefined
-        ? allRules
-        : allRules.filter(rule => rule.ruleId === data.ruleId);
+        ? config.rules
+        : config.rules.filter(rule => rule.ruleId === data.ruleId);
     switch (data.command) {
+        case "merge-config":
+            return assignConfig(data.config);
         case "lint":
             return kernel.lintText(data.text, {
                 rules: rules,
-                filterRules: filterRules,
-                plugins: plugins,
+                filterRules: config.filterRules,
+                plugins: config.plugins,
                 filePath: "/path/to/README" + data.ext,
                 ext: data.ext,
             }).then(result => {
@@ -91,8 +158,8 @@ self.addEventListener('message', (event) => {
         case "fix":
             return kernel.fixText(data.text, {
                 rules: rules,
-                filterRules: filterRules,
-                plugins: plugins,
+                filterRules: config.filterRules,
+                plugins: config.plugins,
                 filePath: "/path/to/README" + data.ext,
                 ext: data.ext,
             }).then(result => {

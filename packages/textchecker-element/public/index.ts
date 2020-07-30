@@ -2,6 +2,11 @@ import { attachToTextArea } from "../src/index";
 import { TextlintFixResult, TextlintResult } from "@textlint/types";
 import { AttachTextAreaParams } from "../src/attach-to-text-area";
 import { TextlintMessage } from "@textlint/types/src/Message/TextlintResult";
+import type {
+    TextlintWorkerCommandLint,
+    TextlintWorkerCommandFix,
+    TextlintWorkerCommandResponse
+} from "@textlint/compiler";
 
 const updateStatus = (status: string) => {
     document.querySelector("#js-status").textContent = status;
@@ -16,7 +21,8 @@ const waiterForInit = (worker: Worker) => {
     worker.addEventListener(
         "message",
         function (event) {
-            if (event.data.command === "init") {
+            const data: TextlintWorkerCommandResponse = event.data;
+            if (data.command === "init") {
                 initialized = true;
                 _resolve && _resolve(initialized);
             }
@@ -41,8 +47,9 @@ const createTextlint = ({ ext }: { ext: string }) => {
             worker.addEventListener(
                 "message",
                 function (event) {
-                    if (event.data.command === "lint:result") {
-                        resolve(event.data.result);
+                    const data: TextlintWorkerCommandResponse = event.data;
+                    if (data.command === "lint:result") {
+                        resolve(data.result);
                     }
                     updateStatus("linted");
                 },
@@ -54,7 +61,7 @@ const createTextlint = ({ ext }: { ext: string }) => {
                 command: "lint",
                 text,
                 ext: ext
-            });
+            } as TextlintWorkerCommandLint);
         });
     };
     const fixText: AttachTextAreaParams["fixText"] = async ({
@@ -69,8 +76,9 @@ const createTextlint = ({ ext }: { ext: string }) => {
             worker.addEventListener(
                 "message",
                 function (event) {
-                    if (event.data.command === "fix:result") {
-                        resolve(event.data.result);
+                    const data: TextlintWorkerCommandResponse = event.data;
+                    if (data.command === "fix:result") {
+                        resolve(data.result);
                     }
                     updateStatus("fixed");
                 },
@@ -83,7 +91,7 @@ const createTextlint = ({ ext }: { ext: string }) => {
                 text,
                 ruleId: message.ruleId,
                 ext: ext
-            });
+            } as TextlintWorkerCommandFix);
         });
     };
     return {
