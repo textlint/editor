@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/textlint/editor/compare/v0.1.2...v0.2.0) (2020-07-30)
+
+
+### Features
+
+* fixText command should respect ruleId ([#10](https://github.com/textlint/editor/issues/10)) ([69e68f1](https://github.com/textlint/editor/commit/69e68f18ca1917de7d448285e167add2c8226ed1))
+
+
+
+
+
 ## [0.1.2](https://github.com/textlint/editor/compare/v0.1.1...v0.1.2) (2020-07-29)
 
 
