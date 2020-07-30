@@ -71,12 +71,9 @@ const plugins = ${stringify(
 const allRules = rules.concat(presetRules);
 self.addEventListener('message', (event) => {
     var data = event.data;
-    var rules;
-    if (data.ruleId) {
-        rules = allRules.filter(rule => rule.ruleId === data.ruleId)
-    } else {
-        rules = allRules;
-    }
+    const rules = data.ruleId === undefined
+        ? allRules
+        : allRules.filter(rule => rule.ruleId === data.ruleId);
     switch (data.command) {
         case "lint":
             return kernel.lintText(data.text, {
