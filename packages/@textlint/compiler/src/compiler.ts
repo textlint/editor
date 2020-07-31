@@ -6,9 +6,15 @@ import path from "path";
 // @ts-ignore
 import rimraf from "rimraf";
 
-export const createWebpackConfig = (inputFilePath: string, outputDir: string): webpack.Configuration => {
+interface WebpackConfig {
+    inputFilePath: string;
+    outputDir: string;
+    mode: "production" | "development";
+}
+
+export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackConfig): webpack.Configuration => {
     return {
-        mode: "production",
+        mode: mode,
         devtool: false,
         entry: {
             textlint: inputFilePath
@@ -55,7 +61,11 @@ export const compile = async (options: compileOptions) => {
     await fs.promises.writeFile(inputFilePath, code, "utf-8");
     const outputFilePath = options.outputDir;
     return new Promise((resolve, reject) => {
-        const config = createWebpackConfig(inputFilePath, outputFilePath);
+        const config = createWebpackConfig({
+            inputFilePath: inputFilePath,
+            outputDir: outputFilePath,
+            mode: options.mode
+        });
         webpack([config], (error: Error & { details?: string }, stats) => {
             if (error) {
                 console.error(error.stack || error);
