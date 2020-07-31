@@ -17,6 +17,7 @@ export const cli = meow(
  
     Examples
       $ textlint-website-generator --output-dir ./dist
+      $ textlint-website-generator --output-dir ./dist --title "rule tester" --placeholder "default text"
 `,
     {
         flags: {

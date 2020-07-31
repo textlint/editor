@@ -10,7 +10,19 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
-- [ ] Write usage instructions
+    Usage
+      $ textlint-website-generator 
+ 
+    Options
+      --title            [String] Website page title
+      --placeholder      [String] Placeholder text in generated website
+      --cwd              current working directory
+      --textlintrc       [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
+      --output-dir       [path:String] output file path that is written of reported result.
+ 
+    Examples
+      $ textlint-website-generator --output-dir ./dist
+      $ textlint-website-generator --output-dir ./dist --title "rule tester" --placeholder "default text"
 
 ## Changelog
 
