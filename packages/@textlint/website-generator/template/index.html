@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <style>
+        .main {
+            width: 800px;
+            margin: auto;
+            position: relative;
+
+            display: flex;
+            align-items: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 10em;
+            font-size: 24px;
+        }
+
+        .side {
+            position: fixed;
+            font-size: 18px;
+            padding: 0.5em;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+<main class="main">
+    <textarea class="textarea">{{placeholder}}</textarea>
+</main>
+<aside class="side">
+    <div id="js-status" class="status"></div>
+</aside>
+<script type="module" src="./index.js"></script>
+</body>
+</html>
