@@ -1,14 +1,16 @@
-import { attachToTextArea } from "../src/index";
-import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
-import { AttachTextAreaParams } from "../src/attach-to-text-area";
+import { attachToTextArea, AttachTextAreaParams } from "../src/index";
+import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import type {
     TextlintWorkerCommandFix,
     TextlintWorkerCommandLint,
     TextlintWorkerCommandResponse
 } from "@textlint/compiler";
 
+const statusElement = document.querySelector("#js-status");
 const updateStatus = (status: string) => {
-    document.querySelector("#js-status").textContent = status;
+    if (statusElement) {
+        statusElement.textContent = status;
+    }
 };
 const worker = new Worker("textlint.js");
 const waiterForInit = (worker: Worker) => {
@@ -100,10 +102,14 @@ const createTextlint = ({ ext }: { ext: string }) => {
 };
 
 (async () => {
+    const text = new URL(location.href).searchParams.get("text");
     const targetElement = document.querySelectorAll("textarea");
     const textlint = createTextlint({ ext: ".md" });
     await workerStatus.ready();
     targetElement.forEach((element) => {
+        if (text) {
+            element.value = text;
+        }
         attachToTextArea({
             textAreaElement: element,
             lintingDebounceMs: 200,

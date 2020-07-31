@@ -7,4 +7,4 @@ export {
     TextCheckerCardRect
 } from "./text-checker-popup-element";
 
-export { attachToTextArea } from "./attach-to-text-area";
+export { attachToTextArea, AttachTextAreaParams } from "./attach-to-text-area";
