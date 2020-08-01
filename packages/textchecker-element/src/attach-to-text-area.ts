@@ -39,7 +39,7 @@ export type AttachTextAreaParams = {
 export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintText, fixText }: AttachTextAreaParams) => {
     const textChecker = new TextCheckerElement({
         targetElement: textAreaElement,
-        hoverPadding: 4
+        hoverPadding: 10
     });
     const textCheckerPopup = new TextCheckerPopupElement();
     textAreaElement.before(textChecker);

@@ -1,5 +1,9 @@
 import { browser } from "webextension-polyfill-ts";
-import { TextlintResult } from "@textlint/types";
+import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
+import { TextlintWorkerCommandFix, TextlintWorkerCommandLint, TextlintWorkerCommandResponse } from "@textlint/compiler";
+import { AttachTextAreaParams } from "textchecker-element";
+import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
+import * as Comlink from "comlink";
 
 browser.runtime.onInstalled.addListener((details) => {
     console.log("previousVersion", details.previousVersion);
@@ -10,7 +14,7 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 });
 
 const worker = new Worker("download/textlint.js");
-const waiterForInit = () => {
+const waiterForInit = (worker: Worker) => {
     let initialized = false;
     let _resolve: null | ((init: boolean) => void) = null;
     const deferred = new Promise((resolve) => {
@@ -19,7 +23,8 @@ const waiterForInit = () => {
     worker.addEventListener(
         "message",
         function (event) {
-            if (event.data.command === "init") {
+            const data: TextlintWorkerCommandResponse = event.data;
+            if (data.command === "init") {
                 initialized = true;
                 _resolve && _resolve(initialized);
             }
@@ -34,73 +39,75 @@ const waiterForInit = () => {
         }
     };
 };
-const workerStatus = waiterForInit();
-const lintText = async (message: string, ext: string): Promise<TextlintResult> => {
-    await workerStatus.ready();
-    return new Promise((resolve, _reject) => {
-        worker.addEventListener(
-            "message",
-            function (event) {
-                if (event.data.command === "lint:result") {
-                    resolve(event.data.result);
+
+const workerStatus = waiterForInit(worker);
+
+const createTextlint = ({ ext }: { ext: string }) => {
+    const lintText: AttachTextAreaParams["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult> => {
+        return new Promise((resolve, _reject) => {
+            worker.addEventListener(
+                "message",
+                function (event) {
+                    const data: TextlintWorkerCommandResponse = event.data;
+                    if (data.command === "lint:result") {
+                        resolve(data.result);
+                    }
+                },
+                {
+                    once: true
                 }
-            },
-            {
-                once: true
-            }
-        );
-        return worker.postMessage({
-            command: "lint",
-            text: message,
-            ext
+            );
+            return worker.postMessage({
+                command: "lint",
+                text,
+                ext: ext
+            } as TextlintWorkerCommandLint);
         });
-    });
-};
-const fixText = async (message: string, ext: string): Promise<TextlintResult> => {
-    await workerStatus.ready();
-    return new Promise((resolve, _reject) => {
-        worker.addEventListener(
-            "message",
-            function (event) {
-                if (event.data.command === "fix:result") {
-                    resolve(event.data.result);
+    };
+    const fixText: AttachTextAreaParams["fixText"] = async ({
+        text,
+        message
+    }: {
+        text: string;
+        message: TextlintMessage;
+    }): Promise<TextlintFixResult> => {
+        return new Promise((resolve, _reject) => {
+            worker.addEventListener(
+                "message",
+                function (event) {
+                    const data: TextlintWorkerCommandResponse = event.data;
+                    if (data.command === "fix:result") {
+                        resolve(data.result);
+                    }
+                },
+                {
+                    once: true
                 }
-            },
-            {
-                once: true
-            }
-        );
-        return worker.postMessage({
-            command: "fix",
-            text: message,
-            ext
+            );
+            return worker.postMessage({
+                command: "fix",
+                text,
+                ruleId: message.ruleId,
+                ext: ext
+            } as TextlintWorkerCommandFix);
         });
-    });
+    };
+    return {
+        lintText,
+        fixText
+    };
 };
 // receive
-browser.runtime.onConnect.addListener((port) => {
-    console.log(port);
-    if (port.name !== "textlint-editor") {
+const textlint = createTextlint({ ext: ".md" });
+const backgroundExposedObject = {
+    lintText: textlint.lintText,
+    fixText: textlint.fixText
+};
+export type backgroundExposedObject = typeof backgroundExposedObject;
+browser.runtime.onConnect.addListener(async (port) => {
+    if (isMessagePort(port)) {
         return;
     }
-    port.onMessage.addListener((message: { text: string; ext: string; command: "lint" | "fix" }) => {
-        switch (message.command) {
-            case "lint":
-                return lintText(message.text, message.ext).then((result) => {
-                    port.postMessage({
-                        command: "lint::result",
-                        result
-                    });
-                });
-            case "fix":
-                return fixText(message.text, message.ext).then((result) => {
-                    port.postMessage({
-                        command: "fix::result",
-                        result
-                    });
-                });
-        }
-        console.log("Unknown message: ", message);
-        return;
-    });
+    await workerStatus.ready();
+    Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
 });
