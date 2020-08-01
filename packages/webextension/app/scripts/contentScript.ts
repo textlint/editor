@@ -8,11 +8,12 @@ import type { backgroundExposedObject } from "./background";
 
 const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(browser.runtime.connect()));
 const targetElement = document.querySelectorAll("textarea");
-targetElement.forEach((element) =>
-    attachToTextArea({
+targetElement.forEach((element) => {
+    const extOfTextarea = ".md";
+    return attachToTextArea({
         textAreaElement: element,
-        lintText: port.lintText,
-        fixText: port.fixText,
+        lintText: (args) => port.lintText({ ...args, ext: extOfTextarea }),
+        fixText: (args) => port.fixText({ ...args, ext: extOfTextarea }),
         lintingDebounceMs: 200
-    })
-);
+    });
+});

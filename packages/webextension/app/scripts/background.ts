@@ -1,7 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import { TextlintWorkerCommandFix, TextlintWorkerCommandLint, TextlintWorkerCommandResponse } from "@textlint/compiler";
-import { AttachTextAreaParams } from "textchecker-element";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 
@@ -42,66 +41,61 @@ const waiterForInit = (worker: Worker) => {
 
 const workerStatus = waiterForInit(worker);
 
-const createTextlint = ({ ext }: { ext: string }) => {
-    const lintText: AttachTextAreaParams["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult> => {
-        return new Promise((resolve, _reject) => {
-            worker.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "lint:result") {
-                        resolve(data.result);
-                    }
-                },
-                {
-                    once: true
+const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult> => {
+    return new Promise((resolve, _reject) => {
+        worker.addEventListener(
+            "message",
+            function (event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "lint:result") {
+                    resolve(data.result);
                 }
-            );
-            return worker.postMessage({
-                command: "lint",
-                text,
-                ext: ext
-            } as TextlintWorkerCommandLint);
-        });
-    };
-    const fixText: AttachTextAreaParams["fixText"] = async ({
-        text,
-        message
-    }: {
-        text: string;
-        message: TextlintMessage;
-    }): Promise<TextlintFixResult> => {
-        return new Promise((resolve, _reject) => {
-            worker.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "fix:result") {
-                        resolve(data.result);
-                    }
-                },
-                {
-                    once: true
+            },
+            {
+                once: true
+            }
+        );
+        return worker.postMessage({
+            command: "lint",
+            text,
+            ext
+        } as TextlintWorkerCommandLint);
+    });
+};
+const fixText = async ({
+    text,
+    ext,
+    message
+}: {
+    text: string;
+    ext: string;
+    message: TextlintMessage;
+}): Promise<TextlintFixResult> => {
+    return new Promise((resolve, _reject) => {
+        worker.addEventListener(
+            "message",
+            function (event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "fix:result") {
+                    resolve(data.result);
                 }
-            );
-            return worker.postMessage({
-                command: "fix",
-                text,
-                ruleId: message.ruleId,
-                ext: ext
-            } as TextlintWorkerCommandFix);
-        });
-    };
-    return {
-        lintText,
-        fixText
-    };
+            },
+            {
+                once: true
+            }
+        );
+        return worker.postMessage({
+            command: "fix",
+            text,
+            ruleId: message.ruleId,
+            ext: ext
+        } as TextlintWorkerCommandFix);
+    });
 };
 // receive
-const textlint = createTextlint({ ext: ".md" });
 const backgroundExposedObject = {
-    lintText: textlint.lintText,
-    fixText: textlint.fixText
+    lintText: lintText,
+    fixText: fixText
 };
 export type backgroundExposedObject = typeof backgroundExposedObject;
 browser.runtime.onConnect.addListener(async (port) => {
