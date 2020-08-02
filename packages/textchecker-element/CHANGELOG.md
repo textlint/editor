@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/textlint/editor/compare/v0.3.0...v0.4.0) (2020-08-02)
+
+
+### Bug Fixes
+
+* **compiler:** change way that is applying patch for kuromoji ([de26db2](https://github.com/textlint/editor/commit/de26db2aefb7ca80d7cfd5d1d948892d3c766271))
+
+
+### Features
+
+* **textchecker-element:** implement LintEngine API ([8cd5b1a](https://github.com/textlint/editor/commit/8cd5b1a7fa3abcddb85aa42daecb9db511782c41))
+
+
+
+
+
 # [0.3.0](https://github.com/textlint/editor/compare/v0.2.2...v0.3.0) (2020-07-31)
 
 
