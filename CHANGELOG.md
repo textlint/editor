@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/textlint/editor/compare/v0.4.0...v0.4.1) (2020-08-02)
+
+
+### Bug Fixes
+
+*  add --create-release=github ([13078ae](https://github.com/textlint/editor/commit/13078ae1f34c2579ce7b8f98a95b826480bb6788))
+
+
+
+
+
 # [0.4.0](https://github.com/textlint/editor/compare/v0.3.0...v0.4.0) (2020-08-02)
 
 

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@textlint/webextension",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "textlint editor",
   "scripts": {
     "dev": "webextension-toolbox dev",
@@ -23,7 +23,7 @@
     "enable-webcomponents-in-content-scripts": "^1.0.7",
     "idb": "^5.0.4",
     "minimatch": "^3.0.4",
-    "textchecker-element": "^0.4.0",
+    "textchecker-element": "^0.4.1",
     "webextension-polyfill-ts": "^0.19.0"
   }
 }
