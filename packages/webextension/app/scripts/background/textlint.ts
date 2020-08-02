@@ -1,5 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
-import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
+import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
+import type { LintEngineAPI } from "textchecker-element";
 import { TextlintWorkerCommandFix, TextlintWorkerCommandLint, TextlintWorkerCommandResponse } from "@textlint/compiler";
 
 browser.runtime.onInstalled.addListener((details) => {
@@ -49,14 +50,14 @@ const createWorkerRef = (worker: Worker) => {
 export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/textlint.js") => {
     const defaultWorker = new Worker(defaultWorkerUrl);
     const workerRef = createWorkerRef(defaultWorker);
-    const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult> => {
+    const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
         return new Promise((resolve, _reject) => {
             workerRef.current.addEventListener(
                 "message",
                 function (event) {
                     const data: TextlintWorkerCommandResponse = event.data;
                     if (data.command === "lint:result") {
-                        resolve(data.result);
+                        resolve([data.result]);
                     }
                 },
                 {
@@ -77,7 +78,7 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/
     }: {
         text: string;
         ext: string;
-        message: TextlintMessage;
+        message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
         return new Promise((resolve, _reject) => {
             workerRef.current.addEventListener(
@@ -95,14 +96,34 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/
             return workerRef.current.postMessage({
                 command: "fix",
                 text,
-                ruleId: message.ruleId,
+                ruleId: message?.ruleId,
                 ext: ext
             } as TextlintWorkerCommandFix);
         });
     };
     return {
-        lintText,
-        fixText,
+        createLintEngine({ ext }: { ext: string }) {
+            const lintEngine: LintEngineAPI = {
+                lintText: ({ text }) => lintText({ text, ext }),
+                fixText: async ({ text, message }): Promise<{ output: string }> => {
+                    if (!message.fix || !message.fix.range) {
+                        return { output: text };
+                    }
+                    // replace fix.range[0, 1] with fix.text
+                    return {
+                        output:
+                            text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
+                    };
+                },
+                fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
+                    return fixText({ text, ext });
+                },
+                fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
+                    return fixText({ text, message, ext });
+                }
+            };
+            return lintEngine;
+        },
         ready() {
             return workerRef.ready();
         },

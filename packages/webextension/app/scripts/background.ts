@@ -3,6 +3,8 @@ import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
 import { openDatabase } from "./background/openDatabase";
+import { LintEngineAPI } from "textchecker-element";
+import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 
 browser.runtime.onInstalled.addListener((details) => {
     console.log("previousVersion", details.previousVersion);
@@ -63,10 +65,8 @@ type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 
 type DataBase = ReturnType<typeof openDatabase>;
 export type backgroundExposedObject = {
-    lintText: ReturnType<typeof createTextlintWorker>["lintText"];
-    fixText: ReturnType<typeof createTextlintWorker>["fixText"];
     addScript: ThenArg<DataBase>["addScript"];
-};
+} & LintEngineAPI;
 browser.runtime.onConnect.addListener(async (port) => {
     if (isMessagePort(port)) {
         return;
@@ -78,22 +78,56 @@ browser.runtime.onConnect.addListener(async (port) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
         return createTextlintWorker(URL.createObjectURL(blob));
     });
-    // TODO multiple worker?
-    const lintText:ReturnType<typeof createTextlintWorker>["lintText"] = ()
+    console.log("[Background] workers", workers);
+    // Support multiple workers
+    const ext = ".md";
+    const lintEngine: LintEngineAPI = {
+        async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
+            console.log("[Background] text", text);
+            const allLintResults = await Promise.all(
+                workers.map((worker) => {
+                    return worker.createLintEngine({ ext }).lintText({ text });
+                })
+            );
+            return allLintResults.flat();
+        },
+        async fixText({ text, message }): Promise<{ output: string }> {
+            if (!message.fix || !message.fix.range) {
+                return { output: text };
+            }
+            // replace fix.range[0, 1] with fix.text
+            return {
+                output: text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
+            };
+        },
+        async fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
+            return workers.slice(1).reduce((promise, worker) => {
+                return promise.then(() => {
+                    return worker.createLintEngine({ ext }).fixAll({ text });
+                });
+            }, workers[0].createLintEngine({ ext }).fixAll({ text }));
+        },
+        fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
+            return workers.slice(1).reduce((promise, worker) => {
+                return promise.then(() => {
+                    return worker.createLintEngine({ ext }).fixRule({ text, message });
+                });
+            }, workers[0].createLintEngine({ ext }).fixRule({ text, message }));
+        }
+    };
     const backgroundExposedObject: backgroundExposedObject = {
-        lintText: textlint.lintText,
-        fixText: textlint.fixText,
+        ...lintEngine,
         addScript: (script) => {
             return db.addScript(script);
         }
     };
     port.onDisconnect.addListener(() => {
-        console.log("dispose worker");
+        console.log("[Background] dispose worker");
         workers.forEach((worker) => {
             worker.dispose();
         });
     });
-    console.log(port.sender);
+    console.log("[Background] content port", port);
     await Promise.all(workers.map((worker) => worker.ready()));
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
 });

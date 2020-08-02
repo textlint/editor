@@ -16,7 +16,7 @@ async function installHandler() {
     console.log(content);
     // Save to DB
     await port.addScript({
-        name: "default",
+        name: location.href,
         code: content,
         pattern: "**/*"
     });
