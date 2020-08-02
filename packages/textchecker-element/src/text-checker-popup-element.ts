@@ -98,19 +98,31 @@ export class TextCheckerPopupElement extends HTMLElement {
     padding: var(--padding);
 }
 
-.popup-listItem--icon {
+.popup-listItem--icon, .popup-listItem--iconImage {
     padding-right: 12px; 
-    fill: ${normalColor}
+    fill: ${normalColor};
+    width: 24px;
+    height: 24px;
+    min-height: 24px;
+    min-width: 24px;
 }
+
 .popup-listItem:first-child {
     padding-top: var(--padding);
     padding-bottom: var(--padding);
 }
+
 .popup-listItem-message {
     font-size: 12px;
     margin: 0;
     padding: 0 0 6px 0;
 }
+
+.popup-listItem--ruleName {
+    font-size: 12px;
+    margin: 0 0.5em;
+}
+
 .popup-listItem-content {
     font-size: 16px;
     /* align icon + text */
@@ -124,6 +136,8 @@ export class TextCheckerPopupElement extends HTMLElement {
     background-color: ${highLightColor};
 }
 .popup-listItem:hover .popup-listItem--icon {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
 }
 `;
 
@@ -167,24 +181,25 @@ export class TextCheckerPopupElement extends HTMLElement {
         const itemPadding = 16;
         // TODO: more correct handle
         const firstLine = state.card.message.split(/\n/)[0];
+        const fixIcon = html`<svg
+            class="popup-listItem--icon"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M7.5 5.6L5 7L6.4 4.5L5 2L7.5 3.4L10 2L8.6 4.5L10 7L7.5 5.6ZM19.5 15.4L22 14L20.6 16.5L22 19L19.5 17.6L17 19L18.4 16.5L17 14L19.5 15.4ZM22 2L20.6 4.5L22 7L19.5 5.6L17 7L18.4 4.5L17 2L19.5 3.4L22 2ZM13.34 12.78L15.78 10.34L13.66 8.22L11.22 10.66L13.34 12.78ZM14.37 7.29L16.71 9.63C17.1 10 17.1 10.65 16.71 11.04L5.04 22.71C4.65 23.1 4 23.1 3.63 22.71L1.29 20.37C0.899998 20 0.899998 19.35 1.29 18.96L12.96 7.29C13.35 6.9 14 6.9 14.37 7.29Z"
+            />
+        </svg>`;
         const items = [
             state.card.fixable
                 ? {
                       message: firstLine,
-                      label: "Fix it!",
+                      label: html`Fix it!`,
                       onClick: state.handlers?.onFixText,
-                      icon: html`<svg
-                          class="popup-listItem--icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                      >
-                          <path
-                              d="M7.5 5.6L5 7L6.4 4.5L5 2L7.5 3.4L10 2L8.6 4.5L10 7L7.5 5.6ZM19.5 15.4L22 14L20.6 16.5L22 19L19.5 17.6L17 19L18.4 16.5L17 14L19.5 15.4ZM22 2L20.6 4.5L22 7L19.5 5.6L17 7L18.4 4.5L17 2L19.5 3.4L22 2ZM13.34 12.78L15.78 10.34L13.66 8.22L11.22 10.66L13.34 12.78ZM14.37 7.29L16.71 9.63C17.1 10 17.1 10.65 16.71 11.04L5.04 22.71C4.65 23.1 4 23.1 3.63 22.71L1.29 20.37C0.899998 20 0.899998 19.35 1.29 18.96L12.96 7.29C13.35 6.9 14 6.9 14.37 7.29Z"
-                          />
-                      </svg>`
+                      icon: fixIcon
                   }
                 : {
                       message: state.card.message
@@ -192,45 +207,24 @@ export class TextCheckerPopupElement extends HTMLElement {
             ...(state.card.fixable
                 ? [
                       {
-                          label: `Fix this rule: ${state.card.messageRuleId} problems`,
+                          label: html`Fix
+                              <span class="popup-listItem--ruleName">${state.card.messageRuleId}</span> problems`,
                           onClick: state.handlers?.onFixRule,
-                          icon: html`<svg
-                              class="popup-listItem--icon"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                          >
-                              <path
-                                  d="M7.5 5.6L5 7L6.4 4.5L5 2L7.5 3.4L10 2L8.6 4.5L10 7L7.5 5.6ZM19.5 15.4L22 14L20.6 16.5L22 19L19.5 17.6L17 19L18.4 16.5L17 14L19.5 15.4ZM22 2L20.6 4.5L22 7L19.5 5.6L17 7L18.4 4.5L17 2L19.5 3.4L22 2ZM13.34 12.78L15.78 10.34L13.66 8.22L11.22 10.66L13.34 12.78ZM14.37 7.29L16.71 9.63C17.1 10 17.1 10.65 16.71 11.04L5.04 22.71C4.65 23.1 4 23.1 3.63 22.71L1.29 20.37C0.899998 20 0.899998 19.35 1.29 18.96L12.96 7.29C13.35 6.9 14 6.9 14.37 7.29Z"
-                              />
-                          </svg>`
+                          icon: fixIcon
                       }
                   ]
                 : []),
             ...(state.card.fixable
                 ? [
                       {
-                          label: `Fix all problems`,
+                          label: html`Fix all problems`,
                           onClick: state.handlers?.onFixAll,
-                          icon: html`<svg
-                              class="popup-listItem--icon"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                          >
-                              <path
-                                  d="M7.5 5.6L5 7L6.4 4.5L5 2L7.5 3.4L10 2L8.6 4.5L10 7L7.5 5.6ZM19.5 15.4L22 14L20.6 16.5L22 19L19.5 17.6L17 19L18.4 16.5L17 14L19.5 15.4ZM22 2L20.6 4.5L22 7L19.5 5.6L17 7L18.4 4.5L17 2L19.5 3.4L22 2ZM13.34 12.78L15.78 10.34L13.66 8.22L11.22 10.66L13.34 12.78ZM14.37 7.29L16.71 9.63C17.1 10 17.1 10.65 16.71 11.04L5.04 22.71C4.65 23.1 4 23.1 3.63 22.71L1.29 20.37C0.899998 20 0.899998 19.35 1.29 18.96L12.96 7.29C13.35 6.9 14 6.9 14.37 7.29Z"
-                              />
-                          </svg>`
+                          icon: fixIcon
                       }
                   ]
                 : []),
             {
-                label: "Ignore",
+                label: html`Ignore`,
                 onClick: state.handlers?.onIgnore,
                 icon: html`<svg
                     class="popup-listItem--icon"
@@ -248,10 +242,10 @@ export class TextCheckerPopupElement extends HTMLElement {
                 </svg> `
             },
             {
-                label: "See documentation",
+                label: html`See documentation`,
                 onClick: state.handlers?.onSeeDocument,
                 icon: html`<svg
-                    class="popup-listItem--icon"
+                    class="popup-listItem--iconImage"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
@@ -311,7 +305,7 @@ export class TextCheckerPopupElement extends HTMLElement {
             })}
         </ul>`;
         // https://www.figma.com/file/9kRm0Cr869zbdACytRE74R/textlint-editor?node-id=4%3A2
-        const style = `position: fixed; z-index: 2147483644; width: ${rect.width}px; min-width: 300px; top: ${
+        const style = `position: fixed; z-index: 2147483644; min-width: 300px; max-width: 800px; top: ${
             rect.top
         }px; left: ${rect.left - itemPadding}px;`;
         this.overlay.setAttribute("style", style);
