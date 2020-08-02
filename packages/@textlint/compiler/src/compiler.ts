@@ -12,11 +12,31 @@ interface WebpackConfig {
     mode: "production" | "development";
 }
 
-function onFile(file: string) {
-    console.log("[@textlint/compiler] Discovered new fs.read:", file);
-}
-
 export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackConfig): webpack.Configuration => {
+    const experimentalInlining = Boolean(process.env.TEXLINT_COMPILER_INLINING);
+    // inline fs.readFile
+    // babel-scripts did it
+    const fsInliningRule = {
+        test: /\.m?js$/,
+        include: /textlint-rule-/,
+        use: {
+            loader: "babel-loader",
+            options: {
+                plugins: [
+                    [
+                        "babel-plugin-static-fs",
+                        {
+                            target: "browser",
+                            dynamic: true,
+                            onFile: function onFile(file: string) {
+                                console.log("[@textlint/compiler] Discovered new fs.read:", file);
+                            }
+                        }
+                    ]
+                ]
+            }
+        }
+    };
     return {
         mode: mode,
         devtool: false,
@@ -41,29 +61,7 @@ export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackC
             )
         ],
         module: {
-            // inline fs.readFile like textlint-rule-terminology
-            // babel-scripts did it
-            rules: [
-                {
-                    test: /\.m?js$/,
-                    exclude: /@babel(?:\/|\\{1,2})runtime|core-js/,
-                    use: {
-                        loader: "babel-loader",
-                        options: {
-                            plugins: [
-                                [
-                                    "babel-plugin-static-fs",
-                                    {
-                                        target: "browser",
-                                        dynamic: true,
-                                        onFile: onFile
-                                    }
-                                ]
-                            ]
-                        }
-                    }
-                }
-            ]
+            rules: experimentalInlining ? [fsInliningRule] : []
         },
         node: {
             fs: "empty"
