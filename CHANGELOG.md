@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.2](https://github.com/textlint/editor/compare/v0.4.1...v0.4.2) (2020-08-02)
+
+
+### Bug Fixes
+
+* **website-generator:** update template ([498ab81](https://github.com/textlint/editor/commit/498ab81910f2d41c632c9aba7943a04434bf7ca1))
+
+
+
+
+
 ## [0.4.1](https://github.com/textlint/editor/compare/v0.4.0...v0.4.1) (2020-08-02)
 
 

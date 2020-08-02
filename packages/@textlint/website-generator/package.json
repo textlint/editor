@@ -1,6 +1,6 @@
 {
   "name": "@textlint/website-generator",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Website generator using @textlint/compiler",
   "keywords": [
     "textlint"
