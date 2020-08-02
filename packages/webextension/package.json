@@ -8,20 +8,22 @@
     "build": "webextension-toolbox build"
   },
   "devDependencies": {
-
     "copy-webpack-plugin": "^6.0.3",
     "ts-loader": "^8.0.1",
     "webextension-toolbox": "^3.0.0",
     "webpack": "^4.44.0",
-    "webpack-watched-glob-entries-plugin": "^2.1.6"
+    "webpack-watched-glob-entries-plugin": "^2.1.6",
+    "@types/minimatch": "^3.0.3"
   },
   "dependencies": {
     "@textlint/types": "^1.4.5",
+    "minimatch": "^3.0.4",
     "@webcomponents/custom-elements": "^1.4.2",
-    "enable-webcomponents-in-content-scripts": "^1.0.7",
-    "textchecker-element": "^0.3.0",
-    "webextension-polyfill-ts": "^0.19.0",
     "comlink": "^4.3.0",
-    "comlink-extension": "^1.0.8"
+    "comlink-extension": "^1.0.8",
+    "enable-webcomponents-in-content-scripts": "^1.0.7",
+    "idb": "^5.0.4",
+    "textchecker-element": "^0.3.0",
+    "webextension-polyfill-ts": "^0.19.0"
   }
 }

@@ -18,6 +18,19 @@ const createCompositionHandler = () => {
     };
 };
 
+/**
+ * Lint Server API
+ */
+export type LintEngineAPI = {
+    lintText({ text }: { text: string }): Promise<TextlintResult[]>;
+    // fix all text with all rule
+    fixAll({ text }: { text: string }): Promise<TextlintFixResult>;
+    // fix all with with a rule
+    fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult>;
+    // fix the text
+    fixText({ text, message }: { text: string; message: TextlintMessage }): Promise<{ output: string }>;
+};
+
 export type AttachTextAreaParams = {
     /**
      * target textarea element
@@ -28,15 +41,14 @@ export type AttachTextAreaParams = {
      * default: 200ms
      */
     lintingDebounceMs: number;
-    // process
-    lintText: ({ text }: { text: string }) => Promise<TextlintResult>;
-    fixText: ({ text, message }: { text: string; message: TextlintMessage }) => Promise<TextlintFixResult>;
+    // user should implement LintEngineAPI and pass it
+    lintEngine: LintEngineAPI;
 };
 
 /**
  * Attach text-checker component to `<textarea>` element
  */
-export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintText, fixText }: AttachTextAreaParams) => {
+export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngine }: AttachTextAreaParams) => {
     const textChecker = new TextCheckerElement({
         targetElement: textAreaElement,
         hoverPadding: 10
@@ -52,58 +64,77 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintText,
             return;
         }
         const text = textAreaElement.value;
-        const result = await lintText({
+        const results = await lintEngine.lintText({
             text
         });
-        const annotations = result.messages.map((message) => {
-            const card: TextCheckerCard = {
-                id: message.ruleId + "::" + message.index,
-                message: message.message,
-                fixable: Boolean(message.fix)
-            };
-            return {
-                start: message.index,
-                end: message.index + 1,
-                onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
-                    textCheckerPopup.updateCard({
-                        card: card,
-                        rect: {
-                            top:
-                                rectItem.boxBorderWidth +
-                                rectItem.boxMarginTop +
-                                rectItem.boxPaddingTop +
-                                rectItem.boxAbsoluteY +
-                                rectItem.top +
-                                rectItem.height,
-                            left: rectItem.boxAbsoluteX + rectItem.left,
-                            width: rectItem.width
-                        },
-                        handlers: {
-                            async onFixIt() {
-                                const currentText = text;
-                                const fixResult = await fixText({
-                                    text,
-                                    message
-                                });
-                                if (currentText === text && currentText !== fixResult.output) {
-                                    textAreaElement.value = fixResult.output;
-                                    await update();
-                                    textCheckerPopup.dismissCard(card);
+        const updateText = async (newText: string, card: TextCheckerCard) => {
+            const currentText = textAreaElement.value;
+            if (currentText === text && currentText !== newText) {
+                textAreaElement.value = newText;
+                await update();
+                textCheckerPopup.dismissCard(card);
+            }
+        };
+        const annotations = results.flatMap((result) => {
+            return result.messages.map((message) => {
+                const card: TextCheckerCard = {
+                    id: message.ruleId + "::" + message.index,
+                    message: message.message,
+                    messageRuleId: message.ruleId,
+                    fixable: Boolean(message.fix)
+                };
+                return {
+                    start: message.index,
+                    end: message.index + 1,
+                    onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
+                        textCheckerPopup.updateCard({
+                            card: card,
+                            rect: {
+                                top:
+                                    rectItem.boxBorderWidth +
+                                    rectItem.boxMarginTop +
+                                    rectItem.boxPaddingTop +
+                                    rectItem.boxAbsoluteY +
+                                    rectItem.top +
+                                    rectItem.height,
+                                left: rectItem.boxAbsoluteX + rectItem.left,
+                                width: rectItem.width
+                            },
+                            handlers: {
+                                async onFixText() {
+                                    const fixResults = await lintEngine.fixText({
+                                        text,
+                                        message
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                async onFixAll() {
+                                    const fixResults = await lintEngine.fixAll({
+                                        text
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                async onFixRule() {
+                                    const fixResults = await lintEngine.fixRule({
+                                        text,
+                                        message
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                onIgnore() {
+                                    console.log("onIgnore");
+                                },
+                                onSeeDocument() {
+                                    console.log("onSeeDocument");
                                 }
-                            },
-                            onIgnore() {
-                                console.log("onIgnore");
-                            },
-                            onSeeDocument() {
-                                console.log("onSeeDocument");
                             }
-                        }
-                    });
-                },
-                onMouseLeave() {
-                    textCheckerPopup.dismissCard(card);
-                }
-            };
+                        });
+                    },
+                    onMouseLeave() {
+                        textCheckerPopup.dismissCard(card);
+                    }
+                };
+            });
         });
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);

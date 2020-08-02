@@ -46,7 +46,7 @@ const createWorkerRef = (worker: Worker) => {
         }
     };
 };
-export const createTextlintPage = (defaultWorkerUrl: string | URL = "download/textlint.js") => {
+export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/textlint.js") => {
     const defaultWorker = new Worker(defaultWorkerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult> => {
@@ -105,6 +105,9 @@ export const createTextlintPage = (defaultWorkerUrl: string | URL = "download/te
         fixText,
         ready() {
             return workerRef.ready();
+        },
+        dispose() {
+            return workerRef.current.terminate();
         },
         updateWorker(workerUrl: string | URL) {
             workerRef.updateWorker(new Worker(workerUrl));

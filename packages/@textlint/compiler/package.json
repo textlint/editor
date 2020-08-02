@@ -52,6 +52,7 @@
   "dependencies": {
     "@textlint/config-loader": "^0.3.0",
     "@textlint/kernel": "^3.3.6",
+    "@textlint/types": "^1.4.5",
     "@textlint/runtime-helper": "^0.3.0",
     "meow": "^7.0.1",
     "rimraf": "^3.0.2",
