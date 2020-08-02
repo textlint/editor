@@ -1,6 +1,7 @@
 import { eventmit } from "eventmit";
 
 export type AnnotationItem = {
+    id: string; // unique id
     start: number;
     end: number;
     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => void;
@@ -10,7 +11,7 @@ export type AnnotationItem = {
  * RectItem is pixel based
  */
 export type TextCheckerElementRectItem = {
-    index: number;
+    id: AnnotationItem["id"];
     left: number;
     top: number;
     height: number;
@@ -33,8 +34,8 @@ export type TextCheckerState = {
     visibleHeight: number;
     rectItems: TextCheckerElementRectItem[];
     annotationItems: AnnotationItem[];
-    mouseHoverReactIdMap: Map<TextCheckerElementRectItem["index"], boolean>;
-    highlightRectIdSet: Set<TextCheckerElementRectItem["index"]>;
+    mouseHoverReactIdMap: Map<TextCheckerElementRectItem["id"], boolean>;
+    highlightRectIdSet: Set<TextCheckerElementRectItem["id"]>;
 };
 export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>) => {
     let textCheckerState: TextCheckerState = {
@@ -60,10 +61,10 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
             changeEvent.offAll();
         },
 
-        highlightRectIndexes(indexes: TextCheckerElementRectItem["index"][]) {
+        highlightRectIndexes(idList: TextCheckerElementRectItem["id"][]) {
             textCheckerState = {
                 ...textCheckerState,
-                highlightRectIdSet: new Set(indexes)
+                highlightRectIdSet: new Set(idList)
             };
             changeEvent.emit();
         },

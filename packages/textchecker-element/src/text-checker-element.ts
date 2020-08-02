@@ -174,7 +174,7 @@ export class TextCheckerElement extends HTMLElement {
                 startCoordinate.top === endCoordinate.top
                     ? [
                           {
-                              index,
+                              id: annotation.id,
                               // left and top is visible position
                               // annotationBox(textarea) also scroll with same position of actual textarea
                               left: startCoordinate.left - visibleArea.left,
@@ -195,7 +195,7 @@ export class TextCheckerElement extends HTMLElement {
                     : // two line
                       [
                           {
-                              index,
+                              id: annotation.id,
                               left: startCoordinate.left - visibleArea.left,
                               top: startCoordinate.top - visibleArea.top,
                               height: fontSize, //startCoordinate.height,
@@ -212,7 +212,7 @@ export class TextCheckerElement extends HTMLElement {
                               boxPaddingBottom
                           },
                           {
-                              index,
+                              id: annotation.id,
                               left: -visibleArea.left,
                               top: endCoordinate.top - visibleArea.top,
                               height: fontSize,
@@ -230,7 +230,6 @@ export class TextCheckerElement extends HTMLElement {
                       ];
             return rectItems;
         });
-        console.log("rectItems.length", rectItems.length);
         this.store.update({
             annotationItems,
             rectItems
@@ -258,21 +257,27 @@ export class TextCheckerElement extends HTMLElement {
                     point.y <= rect.top + rect.height + hoverPadding
                 );
             })
-            .map((item) => item.index);
+            .map((item) => item.id);
         // call mouseover
-        state.rectItems.forEach((item) => {
-            const currentState = state.mouseHoverReactIdMap.get(item.index);
-            const isIncludedMouse = isIncludedIndexes.includes(item.index);
+        // naive implementation
+        // TODO: https://github.com/mourner/flatbush is useful for search
+        state.rectItems.forEach((rectItem) => {
+            const currentState = state.mouseHoverReactIdMap.get(rectItem.id);
+            const isIncludedMouse = isIncludedIndexes.includes(rectItem.id);
             if (currentState === false && isIncludedMouse) {
-                state.annotationItems[item.index]?.onMouseEnter({
-                    rectItem: item
-                });
+                state.annotationItems
+                    .find((item) => item.id === rectItem.id)
+                    ?.onMouseEnter({
+                        rectItem: rectItem
+                    });
             } else if (currentState === true && !isIncludedMouse) {
-                state.annotationItems[item.index]?.onMouseLeave({
-                    rectItem: item
-                });
+                state.annotationItems
+                    .find((item) => item.id === rectItem.id)
+                    ?.onMouseLeave({
+                        rectItem: rectItem
+                    });
             }
-            state.mouseHoverReactIdMap.set(item.index, isIncludedMouse);
+            state.mouseHoverReactIdMap.set(rectItem.id, isIncludedMouse);
         });
         // update highlight
         this.store.highlightRectIndexes(isIncludedIndexes);

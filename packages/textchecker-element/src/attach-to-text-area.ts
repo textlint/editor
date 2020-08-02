@@ -84,6 +84,7 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
                     fixable: Boolean(message.fix)
                 };
                 return {
+                    id: `${message.ruleId}::${message.line}:${message.column}`,
                     start: message.index,
                     end: message.index + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
