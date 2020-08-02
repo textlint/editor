@@ -6,7 +6,8 @@ import { createEndpoint } from "comlink-extension";
 import * as Comlink from "comlink";
 import type { backgroundExposedObject } from "./background";
 
-const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(browser.runtime.connect()));
+const rawPort = browser.runtime.connect();
+const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(rawPort));
 const targetElement = document.querySelectorAll("textarea");
 
 async function contentScriptMain() {
@@ -26,7 +27,11 @@ async function contentScriptMain() {
     });
 }
 
-console.log("[ContentScript]", "main");
-contentScriptMain().catch((error) => {
-    console.error("[texlint editor ContentScriptError]", error);
+console.log("[ContentScript]", "main loaded");
+rawPort.onMessage.addListener((event) => {
+    if (event === "textlint-editor-boot") {
+        contentScriptMain().catch((error) => {
+            console.error("[texlint editor ContentScriptError]", error);
+        });
+    }
 });

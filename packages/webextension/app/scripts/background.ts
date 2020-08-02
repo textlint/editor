@@ -78,7 +78,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
         return createTextlintWorker(URL.createObjectURL(blob));
     });
-    console.log("[Background] workers", workers);
+    console.log("[Background] workers started", workers);
     // Support multiple workers
     const ext = ".md";
     const lintEngine: LintEngineAPI = {
@@ -128,6 +128,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         });
     });
     console.log("[Background] content port", port);
-    await Promise.all(workers.map((worker) => worker.ready()));
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
+    await Promise.all(workers.map((worker) => worker.ready()));
+    port.postMessage("textlint-editor-boot");
 });
