@@ -32,10 +32,10 @@
     "test": "echo 'no test' && exit 0;",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "website": "cd packages/textchecker-element && yarn run web",
-    "versionup": "lerna version --conventional-commits",
-    "versionup:patch": "lerna version patch --conventional-commits",
-    "versionup:minor": "lerna version minor --conventional-commits",
-    "versionup:major": "lerna version major --conventional-commits",
+    "versionup": "lerna version --conventional-commits --create-release=github",
+    "versionup:patch": "lerna version patch --conventional-commits --create-release=github",
+    "versionup:minor": "lerna version minor --conventional-commits --create-release=github",
+    "versionup:major": "lerna version major --conventional-commits --create-release=github",
     "release": "lerna publish from-package"
   },
   "publishConfig": {
