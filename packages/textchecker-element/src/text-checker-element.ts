@@ -157,7 +157,7 @@ export class TextCheckerElement extends HTMLElement {
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: true
+                debug: false
             });
             // Stop to search if out of visible
             if (startCoordinate.top + fontSize < visibleArea.top) {
@@ -168,7 +168,7 @@ export class TextCheckerElement extends HTMLElement {
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: true
+                debug: false
             });
             const rectItems: TextCheckerElementRectItem[] =
                 startCoordinate.top === endCoordinate.top
