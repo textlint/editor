@@ -1,5 +1,7 @@
-// @ts-ignore - replace webcomponent to shim
-import "@webcomponents/custom-elements";
+// Load webcomponents polyfill for Chrome Extension
+if (window.customElements === null || window.customElements === undefined) {
+    require("@webcomponents/custom-elements");
+}
 import { browser } from "webextension-polyfill-ts";
 import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { createEndpoint } from "comlink-extension";

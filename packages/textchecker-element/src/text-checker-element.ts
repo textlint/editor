@@ -144,7 +144,7 @@ export class TextCheckerElement extends HTMLElement {
         //          non-visible = drop from `rectItems`
         const annotationItemsByDescendingOrder = annotationItems.slice().reverse();
         let stopSearchAboveIsNotVisible = false;
-        const rectItems = annotationItemsByDescendingOrder.flatMap((annotation, index) => {
+        const rectItems = annotationItemsByDescendingOrder.flatMap((annotation) => {
             // already the annotation is not visible, skip it
             if (stopSearchAboveIsNotVisible) {
                 return [];

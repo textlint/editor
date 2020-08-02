@@ -101,25 +101,40 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/
             } as TextlintWorkerCommandFix);
         });
     };
+    const log = (...args: any[]) => {
+        console.log("[Background]", ...args);
+    };
     return {
         createLintEngine({ ext }: { ext: string }) {
             const lintEngine: LintEngineAPI = {
-                lintText: ({ text }) => lintText({ text, ext }),
+                lintText: ({ text }) =>
+                    lintText({ text, ext }).then((result) => {
+                        log("lintText", result);
+                        return result;
+                    }),
                 fixText: async ({ text, message }): Promise<{ output: string }> => {
                     if (!message.fix || !message.fix.range) {
                         return { output: text };
                     }
                     // replace fix.range[0, 1] with fix.text
-                    return {
+                    const result = {
                         output:
                             text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
                     };
+                    log("fixText", result);
+                    return result;
                 },
                 fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
-                    return fixText({ text, ext });
+                    return fixText({ text, ext }).then((result) => {
+                        log("fixAll", result);
+                        return result;
+                    });
                 },
                 fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
-                    return fixText({ text, message, ext });
+                    return fixText({ text, message, ext }).then((result) => {
+                        log("fixRule", result);
+                        return result;
+                    });
                 }
             };
             return lintEngine;
