@@ -101,18 +101,33 @@ browser.runtime.onConnect.addListener(async (port) => {
             };
         },
         async fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
-            return workers.slice(1).reduce((promise, worker) => {
+            let output = text;
+            return workers.reduce((promise, worker) => {
                 return promise.then(() => {
-                    return worker.createLintEngine({ ext }).fixAll({ text });
+                    return worker
+                        .createLintEngine({ ext })
+                        .fixAll({ text: output })
+                        .then((result) => {
+                            output = result.output;
+                            return result;
+                        });
                 });
-            }, workers[0].createLintEngine({ ext }).fixAll({ text }));
+            }, (Promise.resolve() as any) as Promise<TextlintFixResult>);
         },
         fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
-            return workers.slice(1).reduce((promise, worker) => {
+            let output = text;
+            return workers.reduce((promise, worker) => {
                 return promise.then(() => {
-                    return worker.createLintEngine({ ext }).fixRule({ text, message });
+                    return worker
+                        .createLintEngine({ ext })
+                        .fixRule({ text: output, message })
+                        .then((result) => {
+                            output = result.output;
+                            console.log(output, result);
+                            return result;
+                        });
                 });
-            }, workers[0].createLintEngine({ ext }).fixRule({ text, message }));
+            }, (Promise.resolve() as any) as Promise<TextlintFixResult>);
         }
     };
     const backgroundExposedObject: backgroundExposedObject = {

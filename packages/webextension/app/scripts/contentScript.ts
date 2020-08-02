@@ -17,7 +17,6 @@ async function contentScriptMain() {
         fixAll: port.fixAll,
         fixRule: port.fixRule
     };
-    console.log("[ContentScript]", lintEngine);
     targetElement.forEach((element) => {
         return attachToTextArea({
             textAreaElement: element,
@@ -30,6 +29,7 @@ async function contentScriptMain() {
 console.log("[ContentScript]", "main loaded");
 rawPort.onMessage.addListener((event) => {
     if (event === "textlint-editor-boot") {
+        console.log("[ContentScript]", "boot event received");
         contentScriptMain().catch((error) => {
             console.error("[texlint editor ContentScriptError]", error);
         });
