@@ -123,7 +123,6 @@ browser.runtime.onConnect.addListener(async (port) => {
                         .fixRule({ text: output, message })
                         .then((result) => {
                             output = result.output;
-                            console.log(output, result);
                             return result;
                         });
                 });

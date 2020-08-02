@@ -58,92 +58,86 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
     document.body.append(textCheckerPopup);
 
     const compositionHandler = createCompositionHandler();
-    const update = pDebounce(
-        async () => {
-            // stop lint on IME composition
-            if (compositionHandler.onComposition) {
-                return;
-            }
-            const text = textAreaElement.value;
-            const results = await lintEngine.lintText({
-                text
-            });
-            const updateText = async (newText: string, card: TextCheckerCard) => {
-                const currentText = textAreaElement.value;
-                if (currentText === text && currentText !== newText) {
-                    textAreaElement.value = newText;
-                    await update();
-                    textCheckerPopup.dismissCard(card);
-                }
-            };
-            const annotations = results.flatMap((result) => {
-                return result.messages.map((message) => {
-                    const card: TextCheckerCard = {
-                        id: message.ruleId + "::" + message.index,
-                        message: message.message,
-                        messageRuleId: message.ruleId,
-                        fixable: Boolean(message.fix)
-                    };
-                    return {
-                        start: message.index,
-                        end: message.index + 1,
-                        onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
-                            textCheckerPopup.updateCard({
-                                card: card,
-                                rect: {
-                                    top:
-                                        rectItem.boxBorderWidth +
-                                        rectItem.boxMarginTop +
-                                        rectItem.boxPaddingTop +
-                                        rectItem.boxAbsoluteY +
-                                        rectItem.top +
-                                        rectItem.height,
-                                    left: rectItem.boxAbsoluteX + rectItem.left,
-                                    width: rectItem.width
-                                },
-                                handlers: {
-                                    async onFixText() {
-                                        const fixResults = await lintEngine.fixText({
-                                            text,
-                                            message
-                                        });
-                                        await updateText(fixResults.output, card);
-                                    },
-                                    async onFixAll() {
-                                        const fixResults = await lintEngine.fixAll({
-                                            text
-                                        });
-                                        await updateText(fixResults.output, card);
-                                    },
-                                    async onFixRule() {
-                                        const fixResults = await lintEngine.fixRule({
-                                            text,
-                                            message
-                                        });
-                                        await updateText(fixResults.output, card);
-                                    },
-                                    onIgnore() {
-                                        console.log("onIgnore");
-                                    },
-                                    onSeeDocument() {
-                                        console.log("onSeeDocument");
-                                    }
-                                }
-                            });
-                        },
-                        onMouseLeave() {
-                            textCheckerPopup.dismissCard(card);
-                        }
-                    };
-                });
-            });
-            textChecker.updateAnnotations(annotations);
-        },
-        lintingDebounceMs,
-        {
-            leading: true
+    const update = pDebounce(async () => {
+        // stop lint on IME composition
+        if (compositionHandler.onComposition) {
+            return;
         }
-    );
+        const text = textAreaElement.value;
+        const results = await lintEngine.lintText({
+            text
+        });
+        const updateText = async (newText: string, card: TextCheckerCard) => {
+            const currentText = textAreaElement.value;
+            if (currentText === text && currentText !== newText) {
+                textAreaElement.value = newText;
+                await update();
+                textCheckerPopup.dismissCard(card);
+            }
+        };
+        const annotations = results.flatMap((result) => {
+            return result.messages.map((message) => {
+                const card: TextCheckerCard = {
+                    id: message.ruleId + "::" + message.index,
+                    message: message.message,
+                    messageRuleId: message.ruleId,
+                    fixable: Boolean(message.fix)
+                };
+                return {
+                    start: message.index,
+                    end: message.index + 1,
+                    onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
+                        textCheckerPopup.updateCard({
+                            card: card,
+                            rect: {
+                                top:
+                                    rectItem.boxBorderWidth +
+                                    rectItem.boxMarginTop +
+                                    rectItem.boxPaddingTop +
+                                    rectItem.boxAbsoluteY +
+                                    rectItem.top +
+                                    rectItem.height,
+                                left: rectItem.boxAbsoluteX + rectItem.left,
+                                width: rectItem.width
+                            },
+                            handlers: {
+                                async onFixText() {
+                                    const fixResults = await lintEngine.fixText({
+                                        text,
+                                        message
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                async onFixAll() {
+                                    const fixResults = await lintEngine.fixAll({
+                                        text
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                async onFixRule() {
+                                    const fixResults = await lintEngine.fixRule({
+                                        text,
+                                        message
+                                    });
+                                    await updateText(fixResults.output, card);
+                                },
+                                onIgnore() {
+                                    console.log("onIgnore");
+                                },
+                                onSeeDocument() {
+                                    console.log("onSeeDocument");
+                                }
+                            }
+                        });
+                    },
+                    onMouseLeave() {
+                        textCheckerPopup.dismissCard(card);
+                    }
+                };
+            });
+        });
+        textChecker.updateAnnotations(annotations);
+    }, lintingDebounceMs);
     // add event handlers
     textAreaElement.addEventListener("compositionstart", compositionHandler);
     textAreaElement.addEventListener("compositionend", compositionHandler);
@@ -152,18 +146,21 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
     // when resize element, update annotation
     // @ts-expect-error
     const resizeObserver = new ResizeObserver(() => {
+        textChecker.resetAnnotations();
         console.log("textarea resize");
         update();
     });
     resizeObserver.observe(textAreaElement);
     // when scroll window, update annotation
-    window.addEventListener("scroll", function () {
+    window.addEventListener("scroll", () => {
         console.log("window scroll");
+        textChecker.resetAnnotations();
         update();
     });
-    // when scroll the element, update annoation
-    textAreaElement.addEventListener("scroll", function () {
+    // when scroll the element, update annotation
+    textAreaElement.addEventListener("scroll", () => {
         console.log("textarea scroll");
+        textChecker.resetAnnotations();
         update();
     });
 };

@@ -45,24 +45,44 @@ export class TextCheckerElement extends HTMLElement {
         }
         const shadow = this.attachShadow({ mode: "open" });
         const overlay = document.createElement("div");
+        overlay.className = "overlay";
         overlay.setAttribute(
             "style",
             "color: transparent; border: 1px dotted blue; position: absolute; top: 0px; left: 0px; pointer-events: none;"
         );
         const annotationBox = document.createElement("div");
+        annotationBox.className = "annotationBox";
         overlay.append(annotationBox);
         shadow.append(overlay);
         this.annotationBox = annotationBox;
         this.targetElement.addEventListener("mousemove", this.onMouseUpdate);
+        // when scroll the element, update annoation
+        this.targetElement.addEventListener("scroll", this.updateOnScroll);
         this.store.onChange(() => {
             this.renderAnnotationMarkers(this.store.get());
+        });
+    }
+
+    updateOnScroll = () => {};
+
+    disconnectedCallback() {
+        this.targetElement.removeEventListener("mousemove", this.onMouseUpdate);
+        this.targetElement.removeEventListener("scroll", this.updateOnScroll);
+    }
+
+    resetAnnotations() {
+        if (this.store.get().rectItems.length === 0) {
+            return; // no update
+        }
+        this.store.update({
+            rectItems: []
         });
     }
 
     updateAnnotations(annotationItems: AnnotationItem[]) {
         const target = this.targetElement;
         const targetStyle = window.getComputedStyle(target);
-        const copyAttributes = ["box-sizing", "overflow"] as const;
+        const copyAttributes = ["box-sizing"] as const;
         const copyStyle = copyAttributes
             .map((attr) => {
                 return `${attr}: ${targetStyle.getPropertyValue(attr)};`;
@@ -70,16 +90,18 @@ export class TextCheckerElement extends HTMLElement {
             .join("");
         this.annotationBox.setAttribute(
             "style",
-            `color: transparent; position: absolute; pointer-events: none; ${copyStyle}`
+            `color: transparent; overflow:hidden; position: absolute; pointer-events: none; ${copyStyle}`
         );
         // Ref: https://github.com/yuku/textoverlay
+        // Outer position
         // update annotation box that align with target textarea
         // top-left (0,0)
         // read styles form target element
-        const top = target.offsetTop;
-        const left = target.offsetLeft;
-        const height = target.offsetHeight;
-        const width =
+        const offsetTop = target.offsetTop;
+        const offsetLeft = target.offsetLeft;
+        const offsetHeight = target.offsetHeight;
+        console.log({ offsetTop, offsetLeft, offsetHeight });
+        const offsetWidth =
             target.clientWidth +
             parseInt(targetStyle.borderLeftWidth || "0", 10) +
             parseInt(targetStyle.borderRightWidth || "0", 10);
@@ -87,10 +109,10 @@ export class TextCheckerElement extends HTMLElement {
         const textareaZIndex = targetStyle.zIndex !== null && targetStyle.zIndex !== "auto" ? +targetStyle.zIndex : 0;
         // updates style
         this.annotationBox.style.zIndex = `${textareaZIndex + 1}`;
-        this.annotationBox.style.left = `${left}px`;
-        this.annotationBox.style.top = `${top}px`;
-        this.annotationBox.style.height = `${height}px`;
-        this.annotationBox.style.width = `${width}px`;
+        this.annotationBox.style.left = `${offsetLeft}px`;
+        this.annotationBox.style.top = `${offsetTop}px`;
+        this.annotationBox.style.height = `${offsetHeight}px`;
+        this.annotationBox.style.width = `${offsetWidth}px`;
         // box
         const fontSize: number = toPX(targetStyle.getPropertyValue("font-size")) ?? 16.123;
         const boxMarginTop: number = toPX(targetStyle.getPropertyValue("margin-top")) ?? 0;
@@ -103,6 +125,16 @@ export class TextCheckerElement extends HTMLElement {
         const boxAbsoluteY: number = boundingClientRect.y;
         const boxWidth: number = boundingClientRect.width;
         const boxHeight: number = boundingClientRect.height;
+        // Inner position
+        // textarea is scrollable element
+        const visibleArea = {
+            top: target.scrollTop,
+            left: target.scrollLeft,
+            width: boxWidth,
+            height: boxHeight
+        };
+        this.annotationBox.scrollTop = target.scrollTop;
+        this.annotationBox.scrollLeft = target.scrollLeft;
         const rectItems = annotationItems.flatMap((annotation, index) => {
             const start = annotation.start;
             const end = annotation.end;
@@ -124,8 +156,10 @@ export class TextCheckerElement extends HTMLElement {
                     ? [
                           {
                               index,
-                              left: startCoordinate.left,
-                              top: startCoordinate.top,
+                              // left and top is visible position
+                              // annotationBox(textarea) also scroll with same position of actual textarea
+                              left: startCoordinate.left - visibleArea.left,
+                              top: startCoordinate.top - visibleArea.top,
                               height: fontSize, //startCoordinate.height,
                               width: endCoordinate.left - startCoordinate.left,
                               boxMarginTop,
@@ -143,8 +177,8 @@ export class TextCheckerElement extends HTMLElement {
                       [
                           {
                               index,
-                              left: startCoordinate.left,
-                              top: startCoordinate.top,
+                              left: startCoordinate.left - visibleArea.left,
+                              top: startCoordinate.top - visibleArea.top,
                               height: fontSize, //startCoordinate.height,
                               width:
                                   (startCoordinate?._div?.getBoundingClientRect()?.width ?? 0) - startCoordinate.left,
@@ -160,8 +194,8 @@ export class TextCheckerElement extends HTMLElement {
                           },
                           {
                               index,
-                              left: 0,
-                              top: endCoordinate.top,
+                              left: -visibleArea.left,
+                              top: endCoordinate.top - visibleArea.top,
                               height: fontSize,
                               width: (startCoordinate?._div?.getBoundingClientRect()?.left ?? 0) + endCoordinate.left,
                               boxMarginTop,

@@ -27,6 +27,10 @@ export type TextCheckerElementRectItem = {
     boxHeight: number;
 };
 export type TextCheckerState = {
+    visibleTop: number;
+    visibleLeft: number;
+    visibleWidth: number;
+    visibleHeight: number;
     rectItems: TextCheckerElementRectItem[];
     annotationItems: AnnotationItem[];
     mouseHoverReactIdMap: Map<TextCheckerElementRectItem["index"], boolean>;
@@ -34,6 +38,10 @@ export type TextCheckerState = {
 };
 export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>) => {
     let textCheckerState: TextCheckerState = {
+        visibleTop: 0,
+        visibleLeft: 0,
+        visibleWidth: 0,
+        visibleHeight: 0,
         rectItems: [],
         annotationItems: [],
         highlightRectIdSet: new Set(),
