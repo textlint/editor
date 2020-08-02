@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const GlobEntriesPlugin = require("webpack-watched-glob-entries-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
@@ -22,6 +23,14 @@ module.exports = {
                         to: path.join(config.output.path, "download")
                     }
                 ]
+            }),
+            new webpack.DefinePlugin({
+                "process.env.RANDOM_KEY": JSON.stringify(
+                    Math.random()
+                        .toString(36)
+                        .replace(/[^a-z]+/g, "")
+                        .substr(0, 32)
+                )
             })
         );
         // Important: return the modified config

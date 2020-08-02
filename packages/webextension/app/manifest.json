@@ -11,8 +11,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*"],
-      "js": ["scripts/contentScript.js"]
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "scripts/contentScript.js"
+      ]
     }
   ],
   "background": {
@@ -28,6 +32,9 @@
     "default_title": "__MSG_browserActionTitle__",
     "default_popup": "pages/popup.html"
   },
+  "web_accessible_resources": [
+    "scripts/pageScript.js"
+  ],
   "permissions": [
     "activeTab",
     "contextMenus",

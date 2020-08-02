@@ -1,39 +1,55 @@
-// Load webcomponents polyfill for Chrome Extension
-if (window.customElements === null || window.customElements === undefined) {
-    require("@webcomponents/custom-elements");
-}
+import { LintEngineAPI } from "textchecker-element";
 import { browser } from "webextension-polyfill-ts";
-import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { createEndpoint } from "comlink-extension";
 import * as Comlink from "comlink";
 import type { backgroundExposedObject } from "./background";
+import { nonRandomKey } from "./shared/page-contents-shared";
 
 const rawPort = browser.runtime.connect();
+// content-script <-> background page
 const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(rawPort));
-const targetElement = document.querySelectorAll("textarea");
-
-async function contentScriptMain() {
-    const lintEngine: LintEngineAPI = {
-        lintText: port.lintText,
-        fixText: port.fixText,
-        fixAll: port.fixAll,
-        fixRule: port.fixRule
-    };
-    targetElement.forEach((element) => {
-        return attachToTextArea({
-            textAreaElement: element,
-            lintingDebounceMs: 200,
-            lintEngine: lintEngine
-        });
-    });
-}
-
-console.log("[ContentScript]", "main loaded");
 rawPort.onMessage.addListener((event) => {
     if (event === "textlint-editor-boot") {
         console.log("[ContentScript]", "boot event received");
-        contentScriptMain().catch((error) => {
-            console.error("[texlint editor ContentScriptError]", error);
-        });
+        // Inject page-script
+        try {
+            const script = browser.extension.getURL("scripts/pageScript.js");
+            const pageScript = document.createElement("script");
+            pageScript.src = script;
+            document.body.append(pageScript);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+});
+// page-script <-> content-script
+window.addEventListener("message", (event) => {
+    if (
+        event.source == window &&
+        event.data &&
+        event.data.direction == "from-page-script" &&
+        event.data.nonRandomKey === nonRandomKey
+    ) {
+        const lintEngine: LintEngineAPI = {
+            lintText: port.lintText,
+            fixText: port.fixText,
+            fixAll: port.fixAll,
+            fixRule: port.fixRule
+        } as const;
+        const command = event.data.command as keyof typeof lintEngine;
+        const args = event.data.args;
+        if (Object.prototype.hasOwnProperty.call(lintEngine, command) && typeof lintEngine[command] === "function") {
+            const newVar: Promise<any> = lintEngine[command](args);
+            newVar.then((result) => {
+                window.postMessage(
+                    {
+                        command: command + "::response",
+                        direction: "from-content-script",
+                        result
+                    },
+                    "*"
+                );
+            });
+        }
     }
 });

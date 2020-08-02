@@ -67,6 +67,7 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
         const results = await lintEngine.lintText({
             text
         });
+        console.log("[textchecker-element] lint results", results);
         const updateText = async (newText: string, card: TextCheckerCard) => {
             const currentText = textAreaElement.value;
             if (currentText === text && currentText !== newText) {
@@ -137,6 +138,7 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
                 };
             });
         });
+        console.log("[textchecker-element] annotations", annotations);
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
     // add event handlers

@@ -83,12 +83,13 @@ browser.runtime.onConnect.addListener(async (port) => {
     const ext = ".md";
     const lintEngine: LintEngineAPI = {
         async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
-            console.log("[Background] text", text);
+            console.log("[Background] text:", text);
             const allLintResults = await Promise.all(
                 workers.map((worker) => {
                     return worker.createLintEngine({ ext }).lintText({ text });
                 })
             );
+            console.log("[Background]", allLintResults);
             return allLintResults.flat();
         },
         async fixText({ text, message }): Promise<{ output: string }> {
