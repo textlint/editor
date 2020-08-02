@@ -1,4 +1,4 @@
-import textCaretPos from "text-caret-pos";
+import { getCoordinates } from "./util/text-caret-pos";
 import { html, render } from "lit-html";
 import {
     AnnotationItem,
@@ -135,21 +135,40 @@ export class TextCheckerElement extends HTMLElement {
         };
         this.annotationBox.scrollTop = target.scrollTop;
         this.annotationBox.scrollLeft = target.scrollLeft;
-        const rectItems = annotationItems.flatMap((annotation, index) => {
+        // FIXME: more correct way
+        // AnnotationItems should be sorted by range.
+        // Because, drop non-visible rect items for performance.
+        // Example)
+        // ZYXWVUTSRQPONMLKJIHGFEDCBA
+        // ^^^^^^^--------------------
+        // visible    ^^^^^
+        //          non-visible = drop from `rectItems`
+        const annotationItemsByDescendingOrder = annotationItems.slice().reverse();
+        let stopSearchAboveIsNotVisible = false;
+        const rectItems = annotationItemsByDescendingOrder.flatMap((annotation, index) => {
+            // already the annotation is not visible, skip it
+            if (stopSearchAboveIsNotVisible) {
+                return [];
+            }
             const start = annotation.start;
             const end = annotation.end;
             // 0 start
-            const startCoordinate = textCaretPos.getCoordinates(this.targetElement, start, {
+            const startCoordinate = getCoordinates(this.targetElement, start, {
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: false
+                debug: true
             });
-            const endCoordinate = textCaretPos.getCoordinates(this.targetElement, end, {
+            // Stop to search if out of visible
+            if (startCoordinate.top + fontSize < visibleArea.top) {
+                stopSearchAboveIsNotVisible = true;
+                return [];
+            }
+            const endCoordinate = getCoordinates(this.targetElement, end, {
                 reuse: true,
                 returnHeight: true,
                 returnDiv: true,
-                debug: false
+                debug: true
             });
             const rectItems: TextCheckerElementRectItem[] =
                 startCoordinate.top === endCoordinate.top
@@ -211,6 +230,7 @@ export class TextCheckerElement extends HTMLElement {
                       ];
             return rectItems;
         });
+        console.log("rectItems.length", rectItems.length);
         this.store.update({
             annotationItems,
             rectItems

@@ -10,6 +10,7 @@
     "sourceMap": true,
     "declaration": true,
     "jsx": "preserve",
+    "allowJs": true,
     "lib": [
       "esnext",
       "dom"

@@ -1,11 +1,10 @@
-import { attachToTextArea } from "../src/index";
+import { attachToTextArea, LintEngineAPI } from "../src/index";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import type {
     TextlintWorkerCommandFix,
     TextlintWorkerCommandLint,
     TextlintWorkerCommandResponse
 } from "@textlint/compiler";
-import { LintEngineAPI } from "../src/attach-to-text-area";
 
 const statusElement = document.querySelector("#js-status");
 const updateStatus = (status: string) => {
