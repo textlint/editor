@@ -100,7 +100,6 @@ export class TextCheckerElement extends HTMLElement {
         const offsetTop = target.offsetTop;
         const offsetLeft = target.offsetLeft;
         const offsetHeight = target.offsetHeight;
-        console.log({ offsetTop, offsetLeft, offsetHeight });
         const offsetWidth =
             target.clientWidth +
             parseInt(targetStyle.borderLeftWidth || "0", 10) +
