@@ -236,7 +236,7 @@ export class TextCheckerElement extends HTMLElement {
     }
 
     renderAnnotationMarkers = (state: TextCheckerState) => {
-        const items = state.rectItems.map((rect) => Marker(rect, state.highlightRectIdSet.has(rect.index)));
+        const items = state.rectItems.map((rect) => Marker(rect, state.highlightRectIdSet.has(rect.id)));
         render(items, this.annotationBox);
     };
 
