@@ -73,7 +73,7 @@ const createTextlint = ({ ext }) => {
                     function (event) {
                         const data = event.data;
                         if (data.command === "lint:result") {
-                            resolve(data.result);
+                            resolve([data.result]);
                         }
                         updateStatus("linted");
                     },
@@ -108,7 +108,7 @@ const createTextlint = ({ ext }) => {
                 return worker.postMessage({
                     command: "fix",
                     text,
-                    ruleId: message.ruleId,
+                    ruleId: message === null || message === void 0 ? void 0 : message.ruleId,
                     ext: ext
                 });
             });
@@ -124,6 +124,26 @@ const createTextlint = ({ ext }) => {
         const targetElement = document.querySelectorAll("textarea");
         const textlint = createTextlint({ ext: ".md" });
         yield workerStatus.ready();
+        const lintEngine = {
+            lintText: textlint.lintText,
+            fixText: ({ text, message }) =>
+                __awaiter(void 0, void 0, void 0, function* () {
+                    if (!message.fix || !message.fix.range) {
+                        return { output: text };
+                    }
+                    // replace fix.range[0, 1] with fix.text
+                    return {
+                        output:
+                            text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
+                    };
+                }),
+            fixAll({ text }) {
+                return textlint.fixText({ text });
+            },
+            fixRule({ text, message }) {
+                return textlint.fixText({ text, message });
+            }
+        };
         targetElement.forEach((element) => {
             if (text) {
                 element.value = text;
@@ -131,8 +151,7 @@ const createTextlint = ({ ext }) => {
             attachToTextArea({
                 textAreaElement: element,
                 lintingDebounceMs: 200,
-                lintText: textlint.lintText,
-                fixText: textlint.fixText
+                lintEngine
             });
         });
     }))();
