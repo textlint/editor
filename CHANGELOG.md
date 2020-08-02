@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/textlint/editor/compare/v0.4.2...v0.5.0) (2020-08-02)
+
+
+### Features
+
+* **@textlint/compiler:** add babel-plugin-static-fs ([3e85945](https://github.com/textlint/editor/commit/3e8594589c4cc5ef8cfdf7519b1450e70e85745c))
+
+
+
+
+
 ## [0.4.2](https://github.com/textlint/editor/compare/v0.4.1...v0.4.2) (2020-08-02)
 
 
