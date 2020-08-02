@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "build": "lerna run build --ignore \"@textlint/webextension\"",
-    "test": "echo 'no test' && exit 0;",
+    "test": "npm run build",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "website": "cd packages/textchecker-element && yarn run web",
     "versionup": "lerna version --conventional-commits",
