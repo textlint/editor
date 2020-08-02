@@ -1,6 +1,6 @@
 {
   "name": "@textlint/compiler",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "textlint compiler tool",
   "keywords": [
     "textlint",
@@ -52,9 +52,9 @@
   },
   "dependencies": {
     "@babel/core": "^7.11.0",
-    "@textlint/config-loader": "^0.5.0",
+    "@textlint/config-loader": "^0.6.0",
     "@textlint/kernel": "^3.3.6",
-    "@textlint/runtime-helper": "^0.5.0",
+    "@textlint/runtime-helper": "^0.6.0",
     "@textlint/types": "^1.4.5",
     "babel-loader": "^8.1.0",
     "babel-plugin-static-fs": "^3.0.0",

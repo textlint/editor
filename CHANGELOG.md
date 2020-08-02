@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/textlint/editor/compare/v0.5.0...v0.6.0) (2020-08-02)
+
+
+### Bug Fixes
+
+* **compiler:** addd @babel/core deps ([37076d9](https://github.com/textlint/editor/commit/37076d970336358811ab41b187251a1a34b6bf10))
+
+
+### Features
+
+* **compiler:** process.env.TEXLINT_COMPILER_INLINING as flag ([410ccb0](https://github.com/textlint/editor/commit/410ccb00459a6dd9db59bc8a371444411c80cb8e))
+
+
+
+
+
 # [0.5.0](https://github.com/textlint/editor/compare/v0.4.2...v0.5.0) (2020-08-02)
 
 

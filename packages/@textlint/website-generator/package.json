@@ -1,6 +1,6 @@
 {
   "name": "@textlint/website-generator",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Website generator using @textlint/compiler",
   "keywords": [
     "textlint"
@@ -47,7 +47,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/compiler": "^0.5.0",
+    "@textlint/compiler": "^0.6.0",
     "meow": "^7.0.1",
     "read-pkg": "^5.2.0"
   },
