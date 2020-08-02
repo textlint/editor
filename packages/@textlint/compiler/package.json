@@ -32,7 +32,8 @@
   "files": [
     "bin/",
     "lib/",
-    "module"
+    "module/",
+    "patch/"
   ],
   "scripts": {
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",

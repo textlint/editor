@@ -29,7 +29,12 @@ export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackC
             // 1.x 2.x supports
             new webpack.DefinePlugin({
                 "process.env.KUROMOJIN_DIC_PATH": JSON.stringify("https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict")
-            })
+            }),
+            // kuromoji patch
+            new webpack.NormalModuleReplacementPlugin(
+                /kuromoji\/src\/loader\/BrowserDictionaryLoader\.js/,
+                path.join(__dirname, "../patch/kuromoji.js")
+            )
         ],
         node: {
             fs: "empty"
