@@ -51,10 +51,17 @@ const createTextCheckerPopupState = (state?: Partial<TextCheckerPopupState>) => 
             };
             changeEvent.emit();
         },
-        removeCartById(cardId: TextCheckerCard["id"]) {
+        removeCardById(cardId: TextCheckerCard["id"]) {
             if (currentState?.card?.id !== cardId) {
                 return;
             }
+            currentState = {
+                ...currentState,
+                card: undefined
+            };
+            changeEvent.emit();
+        },
+        removeAllCard() {
             currentState = {
                 ...currentState,
                 card: undefined
@@ -165,8 +172,10 @@ export class TextCheckerPopupElement extends HTMLElement {
         });
     }
 
-    public dismissCard(card: TextCheckerCard) {
-        this.store.removeCartById(card.id);
+    public dismissCard(card?: TextCheckerCard) {
+        if (card) {
+            this.store.removeCardById(card.id);
+        }
     }
 
     private renderAnnotationMarkers = (state: TextCheckerPopupState) => {

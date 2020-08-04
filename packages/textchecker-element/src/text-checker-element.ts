@@ -29,14 +29,33 @@ export class TextCheckerElement extends HTMLElement {
     private annotationBox!: HTMLDivElement;
     private targetElement!: HTMLTextAreaElement;
     private store: ReturnType<typeof createTextCheckerStore>;
-    private hoverPadding: number;
+    private hoverPadding: number = 8;
+    private target!: string;
 
     constructor(args: TextCheckerElementAttributes) {
         super();
+        this.store = createTextCheckerStore();
         this.targetElement = args.targetElement;
         this.hoverPadding = args.hoverPadding;
-        this.store = createTextCheckerStore();
     }
+
+    static get observedAttributes() {
+        return ["target", "hoverPadding"] as const;
+    }
+
+    attributeChangedCallback = (
+        name: typeof TextCheckerElement.observedAttributes[number],
+        _oldValue: any,
+        newValue: any
+    ) => {
+        if (this[name]) {
+            // @ts-ignore
+            this[name] = newValue;
+            if (name === "target") {
+                this.targetElement = document.querySelector(newValue);
+            }
+        }
+    };
 
     connectedCallback(): void {
         const target = this.targetElement;

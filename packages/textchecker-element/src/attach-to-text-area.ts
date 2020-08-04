@@ -63,6 +63,8 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
         if (compositionHandler.onComposition) {
             return;
         }
+        // dismiss card before update anntations
+        textCheckerPopup.dismissCard();
         const text = textAreaElement.value;
         const results = await lintEngine.lintText({
             text
