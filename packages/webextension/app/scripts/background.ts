@@ -63,16 +63,28 @@ browser.webRequest.onHeadersReceived.addListener(
 );
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 
-type DataBase = ReturnType<typeof openDatabase>;
+type DataBase = ThenArg<ReturnType<typeof openDatabase>>;
 export type backgroundExposedObject = {
-    addScript: ThenArg<DataBase>["addScript"];
+    addScript: DataBase["addScript"];
 } & LintEngineAPI;
+export type backgroundPopupObject = {
+    findScriptsWithPatten: DataBase["findScriptsWithPatten"];
+    deleteScript: DataBase["deleteScript"];
+};
 browser.runtime.onConnect.addListener(async (port) => {
     if (isMessagePort(port)) {
         return;
     }
     const db = await openDatabase();
     const originUrl = port.sender?.url;
+    console.log("[background] originUrl", originUrl);
+    if (originUrl && /chrome-extension:\/\/.*\/popup.html/.test(originUrl)) {
+        const exports: backgroundPopupObject = {
+            findScriptsWithPatten: db.findScriptsWithPatten,
+            deleteScript: db.deleteScript
+        };
+        return Comlink.expose(exports, createBackgroundEndpoint(port));
+    }
     const scripts = originUrl ? await db.findScriptsWithPatten(originUrl) : [];
     const workers = scripts.map((script) => {
         const blob = new Blob([script.code], { type: "application/javascript" });

@@ -1,4 +1,4 @@
-# @textlint/compiler
+# @textlint/script-compiler
 
 textlint compiler tool
 
@@ -6,12 +6,12 @@ textlint compiler tool
 
 Install with [npm](https://www.npmjs.com/):
 
-    npm install @textlint/compiler
+    npm install @textlint/script-compiler
 
 ## Usage
 
     Usage
-      $ textlint-compiler 
+      $ textlint-script-compiler 
  
     Options
       --cwd              current working directory
@@ -19,7 +19,7 @@ Install with [npm](https://www.npmjs.com/):
       --output-dir       [path:String] output file path that is written of reported result.
  
     Examples
-      $ textlint-compiler --output-dir ./dist
+      $ textlint-script-compiler --output-dir ./dist
 
 ## Demo
 

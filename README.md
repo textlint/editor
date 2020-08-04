@@ -30,7 +30,7 @@ Install with yarn and build before editing files.
     - Offline works
 - Create own textlint that is bundled with own configuration
     - Optimize your needs
-    - [@textlint/compiler](packages/@textlint/compiler) is code generator
+    - [@textlint/script-compiler](packages/@textlint/script-compiler) is code generator
 
 [Grammarly](https://grammarly.com/) and [Microsoft Editor](https://www.microsoft.com/microsoft-365/microsoft-editor) is useful and high-quality linting tools, but these require network access, and you must pass your text to their server. 
 
@@ -39,13 +39,13 @@ Because, textlint is written by JavaScript, textlint rules are also written by J
 
 However, textlint is pluggable linting tools and textlint can not provide recommended/default ruleset. 
 
-@textlint/editor project resolve this issue using [@textlint/compiler](packages/@textlint/compiler) that generate optimized code from your textlint configuration.
+@textlint/editor project resolve this issue using [@textlint/script-compiler](packages/@textlint/script-compiler) that generate optimized code from your textlint configuration.
 
 ![Architecture](docs/resources/textlint_editor.png)
 
 <!-- https://excalidraw.com/#json=5173529272123392,zEJpgAvspIPHh-IExwh69w -->
 
-For example, WebExtension download own optimized textlint that is generated code [@textlint/compiler](packages/@textlint/compiler), and use it for linting.
+For example, WebExtension download own optimized textlint that is generated code [@textlint/script-compiler](packages/@textlint/script-compiler), and use it for linting.
 
 So, we can focus on the compiler and frontend of editor.
 
@@ -75,7 +75,7 @@ Avoid side-effect on website.
 
 ### Compiler target
 
-[@textlint/compiler](packages/@textlint/compiler) generate bundled JavaScript code. 
+[@textlint/script-compiler](packages/@textlint/script-compiler) generate bundled JavaScript code. 
 
 Compiler compilertextlint + rule + textlintrc into a single library code.
 
@@ -89,7 +89,7 @@ Compiler compilertextlint + rule + textlintrc into a single library code.
     - kvstorage cache
     - libraryTarget: web
 
-Also, We can provide [@textlint/compiler](packages/@textlint/compiler) as a service using [codesandbox](https://codesandbox.io)
+Also, We can provide [@textlint/script-compiler](packages/@textlint/script-compiler) as a service using [codesandbox](https://codesandbox.io)
 
 ### API
 

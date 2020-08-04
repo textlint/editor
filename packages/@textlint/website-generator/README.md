@@ -1,6 +1,6 @@
 # @textlint/website-generator
 
-Website generator using @textlint/compiler
+Website generator using @textlint/script-compiler
 
 ## Install
 

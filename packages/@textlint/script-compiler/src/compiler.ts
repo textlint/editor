@@ -1,5 +1,5 @@
 import webpack from "webpack";
-import { generateCode } from "./CodeGenerator/worker-codegen";
+import { generateCode, loadTextlintrc } from "./CodeGenerator/worker-codegen";
 import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
 import * as fs from "fs";
 import path from "path";
@@ -10,9 +10,15 @@ interface WebpackConfig {
     inputFilePath: string;
     outputDir: string;
     mode: "production" | "development";
+    metadata: object;
 }
 
-export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackConfig): webpack.Configuration => {
+export const createWebpackConfig = ({
+    inputFilePath,
+    outputDir,
+    mode,
+    metadata
+}: WebpackConfig): webpack.Configuration => {
     const experimentalInlining = Boolean(process.env.TEXLINT_COMPILER_INLINING);
     // inline fs.readFile
     // babel-scripts did it
@@ -29,7 +35,7 @@ export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackC
                             target: "browser",
                             dynamic: true,
                             onFile: function onFile(file: string) {
-                                console.log("[@textlint/compiler] Discovered new fs.read:", file);
+                                console.log("[@textlint/script-compiler] Discovered new fs.read:", file);
                             }
                         }
                     ]
@@ -58,7 +64,10 @@ export const createWebpackConfig = ({ inputFilePath, outputDir, mode }: WebpackC
             new webpack.NormalModuleReplacementPlugin(
                 /kuromoji\/src\/loader\/BrowserDictionaryLoader\.js/,
                 path.join(__dirname, "../patch/kuromoji.js")
-            )
+            ),
+            new webpack.BannerPlugin({
+                banner: `@textlint/editor: ${JSON.stringify(metadata)}`
+            })
         ],
         module: {
             rules: experimentalInlining ? [fsInliningRule] : []
@@ -73,15 +82,24 @@ export type compileOptions = {
     compileTarget: "webworker";
     outputDir: string;
     mode: "production" | "development";
+    metadata: {
+        name: string;
+        namespace: string;
+    };
 } & CodeGeneraterOptions;
 export const compile = async (options: compileOptions) => {
     const cwd = options.cwd || process.cwd();
-    const code = await (() => {
+    const configResult = await loadTextlintrc({
+        cwd,
+        configFilePath: options.configFilePath
+    });
+    if (configResult.ok === false) {
+        console.error(configResult.error.message, configResult.error.errors);
+        throw new Error(configResult.error.message);
+    }
+    const code = await (async () => {
         if (options.compileTarget === "webworker") {
-            return generateCode({
-                cwd,
-                configFilePath: options.configFilePath
-            });
+            return generateCode(configResult.config);
         }
         throw new Error(`Unknown compileTarget: ${options.compileTarget}`);
     })();
@@ -96,7 +114,12 @@ export const compile = async (options: compileOptions) => {
         const config = createWebpackConfig({
             inputFilePath: inputFilePath,
             outputDir: outputFilePath,
-            mode: options.mode
+            mode: options.mode,
+            metadata: {
+                name: options.metadata.name,
+                namespace: options.metadata.namespace,
+                config: configResult.rawConfig
+            }
         });
         webpack([config], (error: Error & { details?: string }, stats) => {
             if (error) {

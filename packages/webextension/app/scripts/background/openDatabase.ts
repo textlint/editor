@@ -13,6 +13,8 @@ interface TextlintJsDB extends DBSchema {
     };
 }
 
+export type ScriptValue = StoreValue<TextlintJsDB, "scripts">;
+
 export async function openDatabase() {
     const db = await openDB<TextlintJsDB>("textlintjs-db", 1, {
         upgrade(db) {
@@ -23,8 +25,7 @@ export async function openDatabase() {
         }
     });
     return {
-        async addScript(script: StoreValue<TextlintJsDB, "scripts">) {
-            console.log("script", script);
+        async addScript(script: ScriptValue) {
             return db.add("scripts", script);
         },
         async findScriptsWithPatten(url: string) {
@@ -34,6 +35,9 @@ export async function openDatabase() {
                 console.log(minimatch1, url, script.pattern);
                 return minimatch1;
             });
+        },
+        async deleteScript(scriptName: ScriptValue["name"]) {
+            return db.delete("scripts", scriptName);
         }
     };
 }

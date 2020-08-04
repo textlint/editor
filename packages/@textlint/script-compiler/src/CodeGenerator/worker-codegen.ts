@@ -1,4 +1,4 @@
-import { loadConfig } from "@textlint/config-loader";
+import { loadConfig, TextlintConfigDescriptor } from "@textlint/config-loader";
 import { CodeGeneraterOptions } from "./CodeGeneraterOptions";
 import type { TextlintResult, TextlintFixResult } from "@textlint/types";
 import type { TextlintKernelRule, TextlintKernelFilterRule, TextlintKernelPlugin } from "@textlint/kernel";
@@ -43,8 +43,8 @@ export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseLint
     | TextlintWorkerCommandResponseFix;
 
-export const generateCode = async (options: CodeGeneraterOptions) => {
-    const configResult = await loadConfig({
+export const loadTextlintrc = (options: CodeGeneraterOptions) => {
+    return loadConfig({
         cwd: options.cwd,
         configFilePath: options.configFilePath,
         preLoadingPackage: (packageOptions) => {
@@ -59,11 +59,8 @@ export const generateCode = async (options: CodeGeneraterOptions) => {
             return packageOptions;
         }
     });
-    if (configResult.ok === false) {
-        console.error(configResult.error.message, configResult.error.errors);
-        throw new Error(configResult.error.message);
-    }
-    const { config } = configResult;
+};
+export const generateCode = async (config: TextlintConfigDescriptor) => {
     const stringify = (item: any[]): string => {
         // unwrap code
         return JSON.stringify(item, null, 4)
@@ -71,7 +68,7 @@ export const generateCode = async (options: CodeGeneraterOptions) => {
             .replace(/"(presetToKernelRules\(.+\))"/g, "$1");
     };
 
-    return `// Generated webworker code by textlint-compiler
+    return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { presetToKernelRules } from "@textlint/runtime-helper"

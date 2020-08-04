@@ -24,7 +24,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **@textlint/compiler:** add babel-plugin-static-fs ([3e85945](https://github.com/textlint/editor/commit/3e8594589c4cc5ef8cfdf7519b1450e70e85745c))
+* **@textlint/script-compiler:** add babel-plugin-static-fs ([3e85945](https://github.com/textlint/editor/commit/3e8594589c4cc5ef8cfdf7519b1450e70e85745c))
 
 
 

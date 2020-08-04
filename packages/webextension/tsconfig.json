@@ -9,7 +9,7 @@
     "target": "ES2018",
     "sourceMap": true,
     "declaration": false,
-    "jsx": "preserve",
+    "jsx": "react",
     "lib": [
       "esnext",
       "dom"

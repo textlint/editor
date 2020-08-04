@@ -33,6 +33,7 @@ export type TextlintLintConfigLoaderResult =
           ok: true;
           config: TextlintConfigDescriptor; // Core Option object
           configFilePath: string;
+          rawConfig: TextlintRcConfig;
       }
     | {
           // load config error
@@ -183,7 +184,8 @@ export const loadConfig = (options: TextlintConfigLoaderOptions): TextlintLintCo
     return {
         ok: true,
         config: result.config,
-        configFilePath: rawResult.configFilePath
+        configFilePath: rawResult.configFilePath,
+        rawConfig: rawResult.rawConfig
     };
 };
 /**

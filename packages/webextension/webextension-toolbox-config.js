@@ -15,6 +15,10 @@ module.exports = {
             test: /\.tsx?$/,
             loader: "ts-loader"
         });
+        config.module.rules.push({
+            test: /\.css$/i,
+            use: ["style-loader", "css-loader"]
+        });
         config.plugins.unshift(
             new CopyWebpackPlugin({
                 patterns: [

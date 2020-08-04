@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { compile, compileOptions } from "@textlint/compiler";
+import { compile, compileOptions } from "@textlint/script-compiler";
 
 export type generateWebSiteOptions = compileOptions & {
     title: string;
@@ -14,10 +14,12 @@ export const generateWebSite = async (options: generateWebSiteOptions) => {
         compileTarget: "webworker",
         outputDir: options.outputDir,
         configFilePath: options.configFilePath,
-        cwd: options.cwd
+        cwd: options.cwd,
+        metadata: options.metadata
     });
+    // rename textlint.js to <id>.textlint.js
+    fs.renameSync(path.join(options.outputDir, "textlint.js"), path.join(options.outputDir, "textlint.js"));
     // index.{js,html}
-    fs.copyFileSync(path.join(templateDir, "index.js"), path.join(options.outputDir, "index.js"));
     const indexHtml = fs.readFileSync(path.join(templateDir, "index.html"), "utf-8");
     const filledHTML = indexHtml.replace("{{title}}", options.title).replace("{{placeholder}}", options.placeholder);
     fs.writeFileSync(path.join(options.outputDir, "index.html"), filledHTML, "utf-8");

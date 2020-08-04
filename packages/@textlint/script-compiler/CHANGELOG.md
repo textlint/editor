@@ -24,7 +24,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **@textlint/compiler:** add babel-plugin-static-fs ([3e85945](https://github.com/textlint/editor/commit/3e8594589c4cc5ef8cfdf7519b1450e70e85745c))
+* **@textlint/script-compiler:** add babel-plugin-static-fs ([3e85945](https://github.com/textlint/editor/commit/3e8594589c4cc5ef8cfdf7519b1450e70e85745c))
 
 
 
@@ -32,7 +32,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.4.1](https://github.com/textlint/editor/compare/v0.4.0...v0.4.1) (2020-08-02)
 
-**Note:** Version bump only for package @textlint/compiler
+**Note:** Version bump only for package @textlint/script-compiler
 
 
 
@@ -56,7 +56,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [0.3.0](https://github.com/textlint/editor/compare/v0.2.2...v0.3.0) (2020-07-31)
 
-**Note:** Version bump only for package @textlint/compiler
+**Note:** Version bump only for package @textlint/script-compiler
 
 
 

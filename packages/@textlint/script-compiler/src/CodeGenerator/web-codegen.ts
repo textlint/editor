@@ -25,7 +25,7 @@ import { loadConfig } from "@textlint/config-loader";
         return JSON.stringify(item, null, 4).replace(/"(moduleInterop\(require\('.*?'\)\))"/g, "$1");
     };
 
-    const code = `// Generated code by textlint-compiler
+    const code = `// Generated code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 const kernel = new TextlintKernel();

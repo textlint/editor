@@ -1,14 +1,14 @@
 {
-  "name": "@textlint/compiler",
+  "name": "@textlint/script-compiler",
   "version": "0.6.0",
-  "description": "textlint compiler tool",
+  "description": "textlint script compiler tool",
   "keywords": [
     "textlint",
     "webpack",
     "bundler",
     "compiler"
   ],
-  "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/compiler/",
+  "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/script-compiler/",
   "bugs": {
     "url": "https://github.com/textlint/editor/issues"
   },
@@ -27,7 +27,7 @@
     "test": "test"
   },
   "bin": {
-    "textlint-compiler": "./bin/cmd.js"
+    "textlint-script-compiler": "./bin/cmd.js"
   },
   "files": [
     "bin/",
@@ -42,7 +42,7 @@
     "prepublish": "npm run --if-present build",
     "test": "mocha \"test/**/*.ts\"",
     "watch": "tsc -p . --watch",
-    "build:example": "./bin/cmd.js --outputDir example/"
+    "build:example": "./bin/cmd.js --outputDir example/ --metadataId test --metadataNamespace example.com"
   },
   "prettier": {
     "printWidth": 120,

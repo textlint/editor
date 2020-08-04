@@ -5,15 +5,19 @@ import path from "path";
 export const cli = meow(
     `
     Usage
-      $ textlint-compiler 
+      $ textlint-script-compiler 
  
     Options
-      --cwd              current working directory
-      --textlintrc       [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
-      --output-dir       [path:String] output file path that is written of reported result.
+      --cwd                       [path:String] current working directory
+      --textlintrc                [path:String] path to .textlintrc file.
+                                  Default: .textlintrc.{json,yaml,js}
+      --output-dir                [path:String] output file path that is written of reported result.
+      --mode                      [String] build mode: "production" or "development"
+      --metadata_name             [String] generated script name
+      --metadata_namespace        [String] generated script namespace
  
     Examples
-      $ textlint-compiler --output-dir ./dist
+      $ textlint-script-compiler --output-dir ./dist
 `,
     {
         flags: {
@@ -31,6 +35,14 @@ export const cli = meow(
             mode: {
                 type: "string",
                 default: "production"
+            },
+            metadataName: {
+                type: "string",
+                isRequired: true
+            },
+            metadataNamespace: {
+                type: "string",
+                isRequired: true
             },
             // DEBUG option
             cwd: {
@@ -56,7 +68,11 @@ export const run = (
         cwd: flags.cwd,
         compileTarget: flags.compileTarget as "webworker",
         outputDir: path.join(flags.cwd, flags.outputDir),
-        mode: flags.mode as "production" | "development"
+        mode: flags.mode as "production" | "development",
+        metadata: {
+            name: flags["metadataName"],
+            namespace: flags["metadataNamespace"]
+        }
     })
         .then(() => {
             return {

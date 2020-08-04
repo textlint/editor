@@ -33,7 +33,7 @@
     "module"
   ],
   "scripts": {
-    "compile:textlint": "textlint-compiler --outputDir public",
+    "compile:textlint": "textlint-script-compiler --outputDir public --metadata_name \"example\" --metadata_namespace \"https://github.com/textlint/editor\"",
     "predev": "npm run compile:textlint",
     "dev": "parcel serve public/index.html",
     "preweb": "npm run compile:textlint",
@@ -53,7 +53,7 @@
     "trailingComma": "none"
   },
   "devDependencies": {
-    "@textlint/compiler": "^0.6.0",
+    "@textlint/script-compiler": "^0.6.0",
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.26",
     "@types/rimraf": "^3.0.0",

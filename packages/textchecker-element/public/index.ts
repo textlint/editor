@@ -4,7 +4,7 @@ import type {
     TextlintWorkerCommandFix,
     TextlintWorkerCommandLint,
     TextlintWorkerCommandResponse
-} from "@textlint/compiler";
+} from "@textlint/script-compiler";
 
 const statusElement = document.querySelector("#js-status");
 const updateStatus = (status: string) => {

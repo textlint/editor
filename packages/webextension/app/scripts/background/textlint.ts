@@ -1,7 +1,11 @@
 import { browser } from "webextension-polyfill-ts";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import type { LintEngineAPI } from "textchecker-element";
-import { TextlintWorkerCommandFix, TextlintWorkerCommandLint, TextlintWorkerCommandResponse } from "@textlint/compiler";
+import {
+    TextlintWorkerCommandFix,
+    TextlintWorkerCommandLint,
+    TextlintWorkerCommandResponse
+} from "@textlint/script-compiler";
 
 browser.runtime.onInstalled.addListener((details) => {
     console.log("previousVersion", details.previousVersion);

@@ -9,15 +9,17 @@ export const cli = meow(
       $ textlint-website-generator 
  
     Options
-      --title            [String] Website page title
-      --placeholder      [String] Placeholder text in generated website
-      --cwd              current working directory
-      --textlintrc       [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
-      --output-dir       [path:String] output file path that is written of reported result.
+      --title                     [String] Website page title
+      --placeholder               [String] Placeholder text in generated website
+      --cwd                       current working directory
+      --textlintrc                [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
+      --output-dir                [path:String] output file path that is written of reported result.
+      --metadata_name             [String] generated script name
+      --metadata_namespace        [String] generated script namespace
  
     Examples
-      $ textlint-website-generator --output-dir ./dist
-      $ textlint-website-generator --output-dir ./dist --title "rule tester" --placeholder "default text"
+      $ textlint-website-generator --output-dir ./dist --metadata_name "script name" --metadata_namespace "https://example.com"
+      $ textlint-website-generator --output-dir ./dist --metadata_name "script name" --metadata_namespace "https://example.com" --title "rule tester" --placeholder "default text" 
 `,
     {
         flags: {
@@ -37,6 +39,14 @@ export const cli = meow(
             mode: {
                 type: "string",
                 default: "production"
+            },
+            metadataName: {
+                type: "string",
+                isRequired: true
+            },
+            metadataNamespace: {
+                type: "string",
+                isRequired: true
             },
             // DEBUG option
             cwd: {
@@ -67,7 +77,11 @@ export const run = async (
         cwd: flags.cwd,
         compileTarget: "webworker",
         outputDir: path.join(flags.cwd, flags.outputDir),
-        mode: (flags.mode as "production" | "development") ?? "production"
+        mode: (flags.mode as "production" | "development") ?? "production",
+        metadata: {
+            name: flags["metadataName"],
+            namespace: flags["metadataNamespace"]
+        }
     })
         .then(() => {
             return {
