@@ -42,7 +42,7 @@
     "prepublish": "npm run --if-present build",
     "test": "mocha \"test/**/*.ts\"",
     "watch": "tsc -p . --watch",
-    "build:example": "./bin/cmd.js --outputDir example/ --metadataId test --metadataNamespace example.com"
+    "build:example": "./bin/cmd.js --outputDir example/ --metadataName test --metadataNamespace example.com"
   },
   "prettier": {
     "printWidth": 120,

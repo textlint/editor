@@ -66,7 +66,7 @@ export const createWebpackConfig = ({
                 path.join(__dirname, "../patch/kuromoji.js")
             ),
             new webpack.BannerPlugin({
-                banner: `@textlint/editor: ${JSON.stringify(metadata)}`
+                banner: `textlinteditor: ${JSON.stringify(metadata)}`
             })
         ],
         module: {

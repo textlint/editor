@@ -14,12 +14,16 @@ Install with [npm](https://www.npmjs.com/):
       $ textlint-script-compiler 
  
     Options
-      --cwd              current working directory
-      --textlintrc       [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
-      --output-dir       [path:String] output file path that is written of reported result.
+      --cwd                       [path:String] current working directory
+      --textlintrc                [path:String] path to .textlintrc file.
+                                  Default: .textlintrc.{json,yaml,js}
+      --output-dir                [path:String] output file path that is written of reported result.
+      --mode                      [String] build mode: "production" or "development"
+      --metadataName              [String] generated script name
+      --metadataNamespace         [String] generated script namespace
  
     Examples
-      $ textlint-script-compiler --output-dir ./dist
+      $ textlint-script-compiler --output-dir ./dist --metadataName "test" --metadataNamespace "https://example.com"
 
 ## Demo
 

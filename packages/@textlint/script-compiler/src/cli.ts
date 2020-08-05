@@ -13,11 +13,11 @@ export const cli = meow(
                                   Default: .textlintrc.{json,yaml,js}
       --output-dir                [path:String] output file path that is written of reported result.
       --mode                      [String] build mode: "production" or "development"
-      --metadata_name             [String] generated script name
-      --metadata_namespace        [String] generated script namespace
+      --metadataName              [String] generated script name
+      --metadataNamespace         [String] generated script namespace
  
     Examples
-      $ textlint-script-compiler --output-dir ./dist
+      $ textlint-script-compiler --output-dir ./dist --metadataName "test" --metadataNamespace "https://example.com"
 `,
     {
         flags: {

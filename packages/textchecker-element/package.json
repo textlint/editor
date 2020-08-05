@@ -33,7 +33,7 @@
     "module"
   ],
   "scripts": {
-    "compile:textlint": "textlint-script-compiler --outputDir public --metadata_name \"example\" --metadata_namespace \"https://github.com/textlint/editor\"",
+    "compile:textlint": "textlint-script-compiler --outputDir public --metadataName \"example\" --metadataNamespace \"https://github.com/textlint/editor\"",
     "predev": "npm run compile:textlint",
     "dev": "parcel serve public/index.html",
     "preweb": "npm run compile:textlint",

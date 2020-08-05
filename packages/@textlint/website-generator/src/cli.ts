@@ -14,12 +14,12 @@ export const cli = meow(
       --cwd                       current working directory
       --textlintrc                [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
       --output-dir                [path:String] output file path that is written of reported result.
-      --metadata_name             [String] generated script name
-      --metadata_namespace        [String] generated script namespace
+      --metadataName             [String] generated script name
+      --metadataNamespace        [String] generated script namespace
  
     Examples
-      $ textlint-website-generator --output-dir ./dist --metadata_name "script name" --metadata_namespace "https://example.com"
-      $ textlint-website-generator --output-dir ./dist --metadata_name "script name" --metadata_namespace "https://example.com" --title "rule tester" --placeholder "default text" 
+      $ textlint-website-generator --output-dir ./dist --metadataName "script name" --metadataNamespace "https://example.com"
+      $ textlint-website-generator --output-dir ./dist --metadataName "script name" --metadataNamespace "https://example.com" --title "rule tester" --placeholder "default text" 
 `,
     {
         flags: {
