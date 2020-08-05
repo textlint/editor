@@ -1,0 +1,58 @@
+{
+  "name": "@textlint/script-parser",
+  "version": "0.6.0",
+  "description": "A parser for textlint script",
+  "keywords": [
+    "textlint"
+  ],
+  "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/script-parser/",
+  "bugs": {
+    "url": "https://github.com/textlint/editor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/textlint/editor.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "sideEffects": false,
+  "main": "lib/script-parser.js",
+  "module": "module/script-parser.js",
+  "types": "lib/script-parser.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "module"
+  ],
+  "scripts": {
+    "build": "tsc -p . && tsc --project ./tsconfig.module.json",
+    "clean": "rimraf lib/ module/",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "prepublish": "npm run --if-present build",
+    "test": "mocha \"test/**/*.ts\"",
+    "watch": "tsc -p . --watch"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "trailingComma": "none"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.0.1",
+    "@types/node": "^14.0.27",
+    "mocha": "^8.1.1",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "ts-node-test-register": "^8.0.1",
+    "typescript": "^3.9.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

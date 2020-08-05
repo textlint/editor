@@ -1,12 +1,13 @@
-import { openDB, DBSchema, StoreValue } from "idb";
+import { DBSchema, openDB, StoreValue } from "idb";
 import minimatch from "minimatch";
 
 interface TextlintJsDB extends DBSchema {
     scripts: {
         value: {
             name: string;
+            namespace: string;
             code: string;
-            pattern: string;
+            matchPattern: string;
         };
         key: string;
         indexes: { "by-name": string };
@@ -31,9 +32,7 @@ export async function openDatabase() {
         async findScriptsWithPatten(url: string) {
             const scripts = await db.getAll("scripts");
             return scripts.filter((script) => {
-                const minimatch1 = minimatch(url, script.pattern);
-                console.log(minimatch1, url, script.pattern);
-                return minimatch1;
+                return minimatch(url, script.matchPattern);
             });
         },
         async deleteScript(scriptName: ScriptValue["name"]) {
