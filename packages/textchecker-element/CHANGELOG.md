@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/textlint/editor/compare/v0.6.0...v0.7.0) (2020-08-05)
+
+
+### Bug Fixes
+
+* **text-checker-element:** remove console.log ([6625de3](https://github.com/textlint/editor/commit/6625de35cd8033916f9bc1a157bca6f3183a30e2))
+* **textchecker-element:** add style to rule name ([e885db5](https://github.com/textlint/editor/commit/e885db5eff51004d5824d9923e8e11c65bba5dd8))
+* **textchecker-element:** fix popup bug ([650b1d0](https://github.com/textlint/editor/commit/650b1d0051539023e90e46cc43aff5e7c0dd72a7))
+* **textchecker-element:** remove unused code ([040724d](https://github.com/textlint/editor/commit/040724df18833ac3b0e5cf1ef1c48ab1cb973db1))
+* **textchecker-element:** use id for search element ([7d4b9b8](https://github.com/textlint/editor/commit/7d4b9b88181684283599de573eb370c12f8bf66c))
+* **textchecker-element:** when scroll and resize, update annotations ([b49c608](https://github.com/textlint/editor/commit/b49c6084fa7afa47c526ed44da029ecef6a0d4d3))
+* **webextension:** fix fixAll and fixRule ([291ac1d](https://github.com/textlint/editor/commit/291ac1d5d59f58e573c9fc576d6258f2534ee092))
+* **webextension:** support Firefox ([ddfc020](https://github.com/textlint/editor/commit/ddfc0200db0b2e6697ae37e192f199dd839c6654))
+
+
+### Features
+
+* **script-editor:** add metadata to script ([569ef53](https://github.com/textlint/editor/commit/569ef53a682bc471a6af11daa6f31891637d1bd0))
+
+
+### Performance Improvements
+
+* **textchecker-element:** drop non-visible annotation ([8590b90](https://github.com/textlint/editor/commit/8590b9002a4093e7b65fd28c4990b094e4ed22f6))
+
+
+
+
+
 # [0.6.0](https://github.com/textlint/editor/compare/v0.5.0...v0.6.0) (2020-08-02)
 
 **Note:** Version bump only for package textchecker-element
