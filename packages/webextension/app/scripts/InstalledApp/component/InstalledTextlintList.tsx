@@ -41,7 +41,7 @@ export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
                 {(item) => (
                     <Item key={item.name}>
                         <FileCode aria-label={"FileCode"} size="S" />
-                        <Text>{item.name.slice(0, 20)}</Text>
+                        <Text>{item.name}</Text>
                         <Text slot="description" marginTop={"size-100"}>
                             <ActionGroup
                                 onAction={(key) => {
