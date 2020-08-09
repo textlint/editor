@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/textlint/editor/compare/v0.7.0...v0.7.1) (2020-08-09)
+
+
+### Bug Fixes
+
+* **website-generator:** copy index.js ([307ae9a](https://github.com/textlint/editor/commit/307ae9a6b000eee8805a255ea9f63e43742c865a))
+
+
+
+
+
 # [0.7.0](https://github.com/textlint/editor/compare/v0.6.0...v0.7.0) (2020-08-05)
 
 
