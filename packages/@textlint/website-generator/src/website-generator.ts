@@ -17,9 +17,10 @@ export const generateWebSite = async (options: generateWebSiteOptions) => {
         cwd: options.cwd,
         metadata: options.metadata
     });
-    // rename textlint.js to <id>.textlint.js
+    // rename textlint.js to <id>.textlint.js;
     fs.renameSync(path.join(options.outputDir, "textlint.js"), path.join(options.outputDir, "textlint.js"));
     // index.{js,html}
+    fs.copyFileSync(path.join(templateDir, "index.js"), path.join(options.outputDir, "index.js"));
     const indexHtml = fs.readFileSync(path.join(templateDir, "index.html"), "utf-8");
     const filledHTML = indexHtml.replace("{{title}}", options.title).replace("{{placeholder}}", options.placeholder);
     fs.writeFileSync(path.join(options.outputDir, "index.html"), filledHTML, "utf-8");
