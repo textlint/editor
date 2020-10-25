@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UnControlled as CodeMirror } from "react-codemirror2";
-import { ActionButton } from "@adobe/react-spectrum";
+import { ActionButton, Flex } from "@adobe/react-spectrum";
 import type { Editor } from "codemirror";
 
 require("codemirror/lib/codemirror.css");
@@ -26,21 +26,23 @@ export const TextlintrcEditor = (props: TextlintrcEditorProps) => {
     }, [codeMirror]);
     return (
         <div className={"TextlintrcEditor"}>
-            <label>.textlintrc.json</label>
-            <CodeMirror
-                value={props.textlintrc}
-                options={{
-                    mode: {
-                        name: "javascript",
-                        json: true
-                    },
-                    lineNumbers: true
-                }}
-                editorDidMount={(editor) => {
-                    setCodemirror(editor);
-                }}
-            />
-            <ActionButton onPress={onSave}>Save</ActionButton>
+            <Flex direction="column" gap="size-100">
+                <label>.textlintrc.json</label>
+                <CodeMirror
+                    value={props.textlintrc}
+                    options={{
+                        mode: {
+                            name: "javascript",
+                            json: true
+                        },
+                        lineNumbers: true
+                    }}
+                    editorDidMount={(editor) => {
+                        setCodemirror(editor);
+                    }}
+                />
+                <ActionButton onPress={onSave}>Save</ActionButton>
+            </Flex>
         </div>
     );
 };

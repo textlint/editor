@@ -74,10 +74,17 @@ export type backgroundPopupObject = {
     updateScript: DataBase["updateScript"];
     openEditor: (options: { name: string; namespace: string }) => void;
 };
+const workingWorkerSet = new Set<ReturnType<typeof createTextlintWorker>>();
+const closeAllWorker = () => {
+    workingWorkerSet.forEach((worker) => {
+        worker.dispose();
+    });
+};
 browser.runtime.onConnect.addListener(async (port) => {
     if (isMessagePort(port)) {
         return;
     }
+    closeAllWorker();
     const db = await openDatabase();
     const originUrl = port.sender?.url;
     console.log("[background] originUrl", originUrl);
@@ -102,7 +109,9 @@ browser.runtime.onConnect.addListener(async (port) => {
     const workers = scripts.map((script) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
         // TODO: comment support for textlintrc
-        return createTextlintWorker(URL.createObjectURL(blob), JSON.parse(script.textlintrc));
+        const textlintWorker = createTextlintWorker(URL.createObjectURL(blob), JSON.parse(script.textlintrc));
+        workingWorkerSet.add(textlintWorker);
+        return textlintWorker;
     });
     console.log("[Background] workers started", workers);
     // Support multiple workers
@@ -164,9 +173,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     };
     port.onDisconnect.addListener(() => {
         console.log("[Background] dispose worker");
-        workers.forEach((worker) => {
-            worker.dispose();
-        });
+        closeAllWorker();
     });
     console.log("[Background] content port", port);
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));

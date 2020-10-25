@@ -4,6 +4,7 @@ import { RouteComponentProps } from "@reach/router";
 import { usePort } from "../StateContext";
 import { ScriptMeta } from "../component/ScriptMeta";
 import "./EditPage.css";
+import { Flex } from "@adobe/react-spectrum";
 
 export type EditPageProps = {
     name?: string;
@@ -48,11 +49,13 @@ export const EditPage = (props: EditPageProps) => {
             });
             setScript(script.textlintrc);
         })();
-    });
+    }, []);
     return (
         <div className={"EditPage"}>
-            <ScriptMeta {...meta} />
-            <TextlintrcEditor textlintrc={script} onSave={onSave} />
+            <Flex direction="column" gap="size-100">
+                <ScriptMeta {...meta} />
+                <TextlintrcEditor textlintrc={script} onSave={onSave} />
+            </Flex>
         </div>
     );
 };
