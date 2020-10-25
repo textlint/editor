@@ -87,7 +87,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     const db = await openDatabase();
     const originUrl = port.sender?.url;
     console.log("[background] originUrl", originUrl);
-    if (originUrl && /^chrome-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
+    if (originUrl && /^(moz|chrome)-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
         const exports: backgroundPopupObject = {
             findScriptsWithPatten: db.findScriptsWithPatten,
             findScriptsWithName: db.findScriptsWithName,

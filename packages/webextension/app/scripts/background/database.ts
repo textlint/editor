@@ -26,21 +26,29 @@ export async function openDatabase() {
         version: 1
     });
     return {
-        async addScript(newScript: Script) {
+        async addScript(newScript: Script): Promise<void> {
             const scripts = (await db.get("scripts")) ?? [];
             const hasScript = scripts.some((script) => equalScript(newScript, script));
             if (hasScript) {
-                return this.updateScript(newScript);
+                await this.updateScript(newScript);
+                return;
             }
-            return db.set("scripts", scripts.concat(newScript));
+            await db.set("scripts", scripts.concat(newScript));
+            return;
         },
-        async findScriptsWithName({ name, namespace }: { name: string; namespace: string }) {
+        async findScriptsWithName({
+            name,
+            namespace
+        }: {
+            name: string;
+            namespace: string;
+        }): Promise<Script | undefined> {
             const scripts = (await db.get("scripts")) ?? [];
             return scripts.find((script) => {
                 return script.name === name && script.namespace === namespace;
             });
         },
-        async findScriptsWithPatten(url: string) {
+        async findScriptsWithPatten(url: string): Promise<Script[]> {
             const scripts = (await db.get("scripts")) ?? [];
             return scripts.filter((script) => {
                 return minimatch(url, script.matchPattern);

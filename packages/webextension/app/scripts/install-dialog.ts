@@ -28,7 +28,6 @@ async function installHandler({
             matchPattern: "**/*",
             textlintrc: JSON.stringify(metadata.config, null, 4)
         });
-        window.close();
     } catch (error) {
         console.error("[InstallDialog]", error);
     }
@@ -55,8 +54,11 @@ export function escapeHTML(str: string) {
     const scriptURL = decodeURIComponent(script);
     const content = await fetch(scriptURL).then((res) => res.text());
     const metadata = parseMetadata(content);
-    installButton.addEventListener("click", () => {
-        installHandler({ script: content, scriptURL: scriptURL, metadata: metadata });
+    installButton.addEventListener("click", async () => {
+        installButton.disabled = true;
+        installButton.textContent = "Installing";
+        await installHandler({ script: content, scriptURL: scriptURL, metadata: metadata });
+        installButton.textContent = "Installed";
     });
     // metadata
     const metadataDiv = document.createElement("div");
