@@ -4,8 +4,10 @@ import type { LintEngineAPI } from "textchecker-element";
 import {
     TextlintWorkerCommandFix,
     TextlintWorkerCommandLint,
+    TextlintWorkerCommandMergeConfig,
     TextlintWorkerCommandResponse
 } from "@textlint/script-compiler";
+import type { TextlintRcConfig } from "@textlint/config-loader";
 
 browser.runtime.onInstalled.addListener((details) => {
     console.log("previousVersion", details.previousVersion);
@@ -51,7 +53,10 @@ const createWorkerRef = (worker: Worker) => {
         }
     };
 };
-export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/textlint.js") => {
+export const createTextlintWorker = (
+    defaultWorkerUrl: string | URL = "download/textlint.js",
+    textlintrc?: TextlintRcConfig
+) => {
     const defaultWorker = new Worker(defaultWorkerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
@@ -105,6 +110,17 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/
             } as TextlintWorkerCommandFix);
         });
     };
+    const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<TextlintFixResult> => {
+        return new Promise((resolve, _reject) => {
+            setTimeout(() => {
+                resolve();
+            });
+            return workerRef.current.postMessage({
+                command: "merge-config",
+                textlintrc
+            } as TextlintWorkerCommandMergeConfig);
+        });
+    };
     const log = (...args: any[]) => {
         console.log("[Background]", ...args);
     };
@@ -144,7 +160,12 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL = "download/
             return lintEngine;
         },
         ready() {
-            return workerRef.ready();
+            return workerRef.ready().then(() => {
+                if (!textlintrc) {
+                    return;
+                }
+                return mergeConfig({ textlintrc });
+            });
         },
         dispose() {
             return workerRef.current.terminate();

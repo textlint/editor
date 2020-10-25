@@ -1,42 +1,64 @@
-import { DBSchema, openDB, StoreValue } from "idb";
+import { kvsEnvStorage } from "@kvs/env";
 import minimatch from "minimatch";
 
-interface TextlintJsDB extends DBSchema {
-    scripts: {
-        value: {
-            name: string;
-            namespace: string;
-            code: string;
-            matchPattern: string;
-        };
-        key: string;
-        indexes: { "by-name": string };
-    };
-}
+export type Script = {
+    namespace: string;
+    name: string;
+    code: string;
+    textlintrc: string;
+    matchPattern: string;
+};
 
-export type ScriptValue = StoreValue<TextlintJsDB, "scripts">;
+export type TextlintDBSchema = {
+    scripts: Script[];
+};
 
 export async function openDatabase() {
-    const db = await openDB<TextlintJsDB>("textlintjs-db", 1, {
-        upgrade(db) {
-            const productStore = db.createObjectStore("scripts", {
-                keyPath: "name"
-            });
-            productStore.createIndex("by-name", "name", { unique: true });
-        }
+    const db = await kvsEnvStorage<TextlintDBSchema>({
+        name: "textlintjs-db",
+        version: 1
     });
     return {
-        async addScript(script: ScriptValue) {
-            return db.add("scripts", script);
+        async addScript(script: Script) {
+            const scripts = (await db.get("scripts")) ?? [];
+            return db.set("scripts", scripts.concat(script));
+        },
+        async findScriptsWithName({ name, namespace }: { name: string; namespace: string }) {
+            const scripts = (await db.get("scripts")) ?? [];
+            return scripts.find((script) => {
+                return script.name === name && script.namespace === namespace;
+            });
         },
         async findScriptsWithPatten(url: string) {
-            const scripts = await db.getAll("scripts");
+            const scripts = (await db.get("scripts")) ?? [];
             return scripts.filter((script) => {
                 return minimatch(url, script.matchPattern);
             });
         },
-        async deleteScript(scriptName: ScriptValue["name"]) {
-            return db.delete("scripts", scriptName);
+        async updateScript(newScript: { namespace: string; name: string } & Partial<Script>) {
+            const scripts = (await db.get("scripts")) ?? [];
+            const updatedScript = scripts.map((script) => {
+                if (script.name === newScript.name && script.namespace === newScript.namespace) {
+                    return {
+                        ...script,
+                        ...newScript
+                    };
+                }
+                return script;
+            });
+            return db.set("scripts", updatedScript);
+        },
+        async deleteScript({ name, namespace }: { namespace: string; name: string }) {
+            const scripts = (await db.get("scripts")) ?? [];
+            if (scripts.length === 0) {
+                return;
+            }
+            return db.set(
+                "scripts",
+                scripts.filter((script) => {
+                    return script.name === name && script.namespace === namespace;
+                })
+            );
         }
     };
 }

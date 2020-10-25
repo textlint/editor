@@ -23,8 +23,10 @@ async function installHandler() {
             name: parseResult.name,
             namespace: parseResult.namespace,
             code: content,
-            matchPattern: "**/*"
+            matchPattern: "**/*",
+            textlintrc: JSON.stringify(parseResult.config, null, 4)
         });
+        window.close();
     } catch (error) {
         console.error("[InstallDialog]", error);
     }

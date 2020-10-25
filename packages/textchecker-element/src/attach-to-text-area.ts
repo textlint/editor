@@ -29,6 +29,8 @@ export type LintEngineAPI = {
     fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult>;
     // fix the text
     fixText({ text, message }: { text: string; message: TextlintMessage }): Promise<{ output: string }>;
+    // merge config and update
+    mergeConfig?({ textlintrc }: { textlintrc: string }): Promise<void>;
 };
 
 export type AttachTextAreaParams = {

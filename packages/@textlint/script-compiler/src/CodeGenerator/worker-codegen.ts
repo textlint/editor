@@ -1,7 +1,6 @@
 import { loadConfig, TextlintConfigDescriptor } from "@textlint/config-loader";
 import { CodeGeneraterOptions } from "./CodeGeneraterOptions";
 import type { TextlintResult, TextlintFixResult } from "@textlint/types";
-import type { TextlintKernelRule, TextlintKernelFilterRule, TextlintKernelPlugin } from "@textlint/kernel";
 
 export type TextlintWorkerCommandLint = {
     command: "lint";
@@ -16,11 +15,7 @@ export type TextlintWorkerCommandFix = {
 };
 export type TextlintWorkerCommandMergeConfig = {
     command: "merge-config";
-    config: {
-        rules: Omit<TextlintKernelRule, "rule">[];
-        filterRules: Omit<TextlintKernelFilterRule, "rule">[];
-        plugins: Omit<TextlintKernelPlugin, "plugin">[];
-    };
+    textlintrc: string;
 };
 export type TextlintWorkerCommand =
     | TextlintWorkerCommandLint

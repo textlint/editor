@@ -1,6 +1,21 @@
+export type TextlintRcConfig = {
+    plugins?:
+        | string[]
+        | {
+              [index: string]: boolean | {};
+          };
+    filters?: {
+        [index: string]: boolean | {};
+    };
+    rules?: {
+        [index: string]: boolean | {};
+    };
+};
+
 export type TextlintScriptMetadata = {
     name: string;
     namespace: string;
+    config: TextlintRcConfig;
 };
 export type TextlintScriptParseResult = {
     metadata: TextlintScriptMetadata;

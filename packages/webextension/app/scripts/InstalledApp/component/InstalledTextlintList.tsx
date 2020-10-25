@@ -2,7 +2,7 @@ import { useAsyncList } from "@react-stately/data";
 import React from "react";
 import { ActionGroup, Flex, Item, ListBox, Text } from "@adobe/react-spectrum";
 import { usePort } from "../StateContext";
-import { ScriptValue } from "../../background/openDatabase";
+import { Script } from "../../background/openDatabase";
 import FileCode from "@spectrum-icons/workflow/FileCode";
 
 export type InstalledTextlintListProps = {
@@ -10,7 +10,7 @@ export type InstalledTextlintListProps = {
 };
 export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
     const port = usePort();
-    const list = useAsyncList<ScriptValue>({
+    const list = useAsyncList<Script>({
         async load() {
             try {
                 const res = await port.findScriptsWithPatten(props.url);
@@ -25,8 +25,11 @@ export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
             }
         }
     });
-    const onDelete = async (name: string) => {
-        await port.deleteScript(name);
+    const onEdit = async ({ name, namespace }: { name: string; namespace: string }) => {
+        port.openEditor({ name, namespace });
+    };
+    const onDelete = async ({ name, namespace }: { name: string; namespace: string }) => {
+        await port.deleteScript({ name, namespace });
         list.reload();
     };
     return (
@@ -47,10 +50,16 @@ export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
                                 onAction={(key) => {
                                     switch (key) {
                                         case "delete": {
-                                            return onDelete(item.name);
+                                            return onDelete({
+                                                name: item.name,
+                                                namespace: item.namespace
+                                            });
                                         }
                                         case "edit": {
-                                            return;
+                                            return onEdit({
+                                                name: item.name,
+                                                namespace: item.namespace
+                                            });
                                         }
                                         default:
                                             return console.warn("Unknown key", key);

@@ -69,7 +69,10 @@ export type backgroundExposedObject = {
 } & LintEngineAPI;
 export type backgroundPopupObject = {
     findScriptsWithPatten: DataBase["findScriptsWithPatten"];
+    findScriptsWithName: DataBase["findScriptsWithName"];
     deleteScript: DataBase["deleteScript"];
+    updateScript: DataBase["updateScript"];
+    openEditor: (options: { name: string; namespace: string }) => void;
 };
 browser.runtime.onConnect.addListener(async (port) => {
     if (isMessagePort(port)) {
@@ -78,17 +81,28 @@ browser.runtime.onConnect.addListener(async (port) => {
     const db = await openDatabase();
     const originUrl = port.sender?.url;
     console.log("[background] originUrl", originUrl);
-    if (originUrl && /chrome-extension:\/\/.*\/popup.html/.test(originUrl)) {
+    if (originUrl && /^chrome-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
         const exports: backgroundPopupObject = {
             findScriptsWithPatten: db.findScriptsWithPatten,
-            deleteScript: db.deleteScript
+            findScriptsWithName: db.findScriptsWithName,
+            deleteScript: db.deleteScript,
+            updateScript: db.updateScript,
+            openEditor: (options: { name: string; namespace: string }) => {
+                const editPageUrl = browser.runtime.getURL("/pages/edit-script.html");
+                browser.tabs.create({
+                    url: `${editPageUrl}?name=${encodeURIComponent(options.name)}&namespace=${encodeURIComponent(
+                        options.namespace
+                    )}`
+                });
+            }
         };
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
     const scripts = originUrl ? await db.findScriptsWithPatten(originUrl) : [];
     const workers = scripts.map((script) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
-        return createTextlintWorker(URL.createObjectURL(blob));
+        // TODO: comment support for textlintrc
+        return createTextlintWorker(URL.createObjectURL(blob), JSON.parse(script.textlintrc));
     });
     console.log("[Background] workers started", workers);
     // Support multiple workers
