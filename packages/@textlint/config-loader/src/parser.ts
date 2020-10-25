@@ -1,8 +1,7 @@
-import { TextLintModuleResolver } from "./textlint-module-resolver";
 import { isPresetRuleKey } from "./config-util";
 import { TextlintRcConfig } from "./TextlintRcConfig";
 import { TextlintStaticOptionDescriptor } from "./TextlintConfigDescriptor";
-import { loadPreset } from "./preset-loader";
+import { normalizeTextlintPresetSubRuleKey } from "@textlint/utils";
 
 export const parsePlugins = ({
     pluginsObject
@@ -54,29 +53,22 @@ export const parseFilterRules = ({
     };
 };
 export const parseRules = ({
-    rulesObject,
-    moduleResolver
+    rulesObject
 }: {
     rulesObject: NonNullable<TextlintRcConfig["rules"]>;
-    moduleResolver: TextLintModuleResolver;
 }): {
     rules: TextlintStaticOptionDescriptor["rules"];
 } => {
     // rules
     const rules: TextlintStaticOptionDescriptor["rules"] = [];
     Object.entries(rulesObject).forEach(([ruleId, ruleOptions]) => {
-        if (isPresetRuleKey(ruleId)) {
-            // load preset
-            // expand as rules
-            const presetRules = loadPreset({
-                presetName: ruleId,
-                userDefinedRuleOptions: ruleOptions,
-                moduleResolver: moduleResolver
-            });
-            presetRules.forEach((rule) => {
+        if (isPresetRuleKey(ruleId) && typeof ruleOptions !== "boolean") {
+            // parse preset
+            Object.entries<boolean | {}>(ruleOptions).forEach(([presetRuleKey, presetRuleOption]) => {
+                const normalizedKey = normalizeTextlintPresetSubRuleKey({ preset: ruleId, rule: presetRuleKey });
                 rules.push({
-                    ruleId: rule.ruleId,
-                    options: rule.options
+                    ruleId: normalizedKey,
+                    options: presetRuleOption
                 });
             });
         } else {

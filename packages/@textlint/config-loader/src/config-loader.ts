@@ -102,14 +102,9 @@ export type TextlintLoadPackagesFromRawConfigResult =
 export const parseOptionsFromConfig = (
     options: TextlintLoadPackagesFromRawConfigOptions
 ): TextlintStaticOptionDescriptor => {
-    // Search textlint's module
-    const moduleResolver = new TextLintModuleResolver({
-        rulesBaseDirectory: options.node_moduleDir
-    });
     // rules
     const { rules } = parseRules({
-        rulesObject: options.rawConfig.rules ?? {},
-        moduleResolver
+        rulesObject: options.rawConfig.rules ?? {}
     });
     // filterRules
     const { filterRules } = parseFilterRules({

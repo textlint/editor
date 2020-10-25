@@ -17,10 +17,6 @@
     {
       "ruleId": "c/c-sub1",
       "options": false
-    },
-    {
-      "options": true,
-      "ruleId": "c/c-sub2"
     }
   ],
   "plugins": [],
