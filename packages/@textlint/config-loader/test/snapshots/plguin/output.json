@@ -1,0 +1,14 @@
+{
+    "rules": [
+        {
+            "ruleId": "a",
+            "options": true
+        }
+    ],
+    "plugins": [
+        {
+            "pluginId": "custom"
+        }
+    ],
+    "filterRules": []
+}

@@ -24,6 +24,7 @@
     "@react-stately/data": "^3.1.1",
     "@spectrum-icons/workflow": "^3.2.0",
     "@textlint/script-parser": "^0.7.0",
+    "@textlint/config-loader": "^0.7.0",
     "@textlint/types": "^1.4.5",
     "@webcomponents/custom-elements": "^1.4.3",
     "comlink": "^4.3.0",
