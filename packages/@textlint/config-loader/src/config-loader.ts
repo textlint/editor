@@ -97,6 +97,8 @@ export type TextlintLoadPackagesFromRawConfigResult =
 
 /**
  * Parse textlintrc and return parsed config
+ * Note: the pserse function does not load any module
+ * In other words, the result does not includes presets.rulesConfig
  * @param options
  */
 export const parseOptionsFromConfig = (
