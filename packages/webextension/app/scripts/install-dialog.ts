@@ -62,23 +62,12 @@ export function escapeHTML(str: string) {
     });
     // metadata
     const metadataDiv = document.createElement("div");
-    metadataDiv.innerHTML = `
-<h3>Script metadata</h3>
-<ul>
-    ${Object.entries(metadata)
-        .map(([key, value]) => {
-            const toValue = (key: string, value: any) => {
-                if (key === "homepage") {
-                    return `<a href="${escapeHTML(value)}">${escapeHTML(value)}</a>`;
-                }
-                return typeof value === "object"
-                    ? `<pre>${escapeHTML(JSON.stringify(value, null, 4))}</pre>`
-                    : escapeHTML(value);
-            };
-            return `<dt>${escapeHTML(key)}</dt><dd>${toValue(key, value)}</dd>`;
-        })
-        .join("\n")}
-</ul>`;
+    const title = document.createElement("h3");
+    title.textContent = "Script metadata";
+    const metadataPre = document.createElement("pre");
+    metadataPre.textContent = JSON.stringify(metadata, null, 4);
+    metadataDiv.append(title);
+    metadataDiv.append(metadataPre);
     document.querySelector("#metadata")?.append(metadataDiv);
     // enable button
     installButton.disabled = false;
