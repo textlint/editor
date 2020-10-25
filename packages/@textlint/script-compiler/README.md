@@ -30,6 +30,11 @@ Install with [npm](https://www.npmjs.com/):
     yarn run compile:textlint
     yarn dev
 
+## Design
+
+- Config Merge: Merge Original `.textlintrc.json` and user defined `.textlintrc.json`.
+    - Details: override original rules(id + options) by user defined config.
+
 ## Changelog
 
 See [Releases page](https://github.com/textlint/editor/releases).

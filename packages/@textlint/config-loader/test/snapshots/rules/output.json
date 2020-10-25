@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "ruleId": "no-use",
+      "options": false
+    },
+    {
+      "ruleId": "a",
+      "options": true
+    },
+    {
+      "ruleId": "b",
+      "options": {
+        "key": "value"
+      }
+    },
+    {
+      "ruleId": "c/c-sub1",
+      "options": false
+    },
+    {
+      "options": true,
+      "ruleId": "c/c-sub2"
+    }
+  ],
+  "plugins": [],
+  "filterRules": []
+}

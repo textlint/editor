@@ -67,7 +67,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "eventmit": "^1.0.2",
+    "eventmit": "^1.1.0",
     "lit-html": "^1.2.1",
     "p-debounce": "^2.1.0",
     "text-caret-pos": "^1.0.1",

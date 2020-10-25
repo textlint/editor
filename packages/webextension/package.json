@@ -20,12 +20,12 @@
     "webpack-watched-glob-entries-plugin": "^2.1.6"
   },
   "dependencies": {
-    "@adobe/react-spectrum": "^3.1.0",
-    "@react-stately/data": "^3.1.0",
-    "@spectrum-icons/workflow": "^3.1.0",
+    "@adobe/react-spectrum": "^3.4.0",
+    "@react-stately/data": "^3.1.1",
+    "@spectrum-icons/workflow": "^3.2.0",
     "@textlint/script-parser": "^0.7.0",
     "@textlint/types": "^1.4.5",
-    "@webcomponents/custom-elements": "^1.4.2",
+    "@webcomponents/custom-elements": "^1.4.3",
     "comlink": "^4.3.0",
     "comlink-extension": "^1.0.8",
     "enable-webcomponents-in-content-scripts": "^1.0.7",

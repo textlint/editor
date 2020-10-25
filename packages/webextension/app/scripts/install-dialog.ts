@@ -17,7 +17,7 @@ async function installHandler() {
     console.log("[InstallDialog]", content.slice(500));
     try {
         const parseResult = parseMetadata(content);
-        console.log("[InstallDialog] metada", parseResult);
+        console.log("[InstallDialog] metadata", parseResult);
         // Save to DB
         await port.addScript({
             name: parseResult.name,

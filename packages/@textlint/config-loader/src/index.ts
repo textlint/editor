@@ -1,6 +1,7 @@
 export {
     loadConfig,
     loadRawConfig,
+    parseOptionsFromConfig,
     loadPackagesFromRawConfig,
     TextlintConfigLoaderOptions,
     TextlintConfigLoaderRawResult,

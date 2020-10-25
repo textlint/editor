@@ -45,8 +45,15 @@ export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
                         <Text slot="description" marginTop={"size-100"}>
                             <ActionGroup
                                 onAction={(key) => {
-                                    if (key === "delete") {
-                                        onDelete(item.name);
+                                    switch (key) {
+                                        case "delete": {
+                                            return onDelete(item.name);
+                                        }
+                                        case "edit": {
+                                            return;
+                                        }
+                                        default:
+                                            return console.warn("Unknown key", key);
                                     }
                                 }}
                             >

@@ -101,10 +101,19 @@ export function loadRulesConfigFromPresets(
     return presetRulesConfig;
 }
 
-export function loadPreset(
-    presetName: string,
-    moduleResolver: TextLintModuleResolver
-): TextlintConfigDescriptor["rules"] {
+export function loadPreset({
+    presetName,
+    userDefinedRuleOptions,
+    moduleResolver
+}: {
+    presetName: string;
+    userDefinedRuleOptions:
+        | boolean
+        | {
+              [index: string]: boolean | {};
+          };
+    moduleResolver: TextLintModuleResolver;
+}): TextlintConfigDescriptor["rules"] {
     const presetPackageName = moduleResolver.resolvePresetPackageName(presetName);
     const preset = moduleInterop(require(presetPackageName.filePath));
     if (!preset.hasOwnProperty("rules")) {
@@ -114,12 +123,14 @@ export function loadPreset(
         throw new Error(`${presetName} has not rulesConfig`);
     }
     // we should use preset.rules → some preset use different name actual rule
-    return Object.keys(preset).map((ruleId) => {
+    return Object.keys(preset.rules).map((ruleId) => {
+        const userDefinedOptions = typeof userDefinedRuleOptions !== "boolean" ? userDefinedRuleOptions?.[ruleId] : {};
         const normalizedKey = normalizeTextlintPresetSubRuleKey({ preset: presetName, rule: ruleId });
         return {
             ruleId: normalizedKey,
             rule: preset.rules[ruleId],
-            options: preset.rulesConfig[ruleId],
+            // prefer textlintrc content than default value of preset
+            options: userDefinedOptions ?? preset.rulesConfig[ruleId],
             filePath: "",
             moduleName: ""
         };

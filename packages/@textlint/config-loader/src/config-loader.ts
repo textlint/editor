@@ -2,7 +2,8 @@ import { rcFile } from "rc-config-loader";
 import { TextLintModuleResolver } from "./textlint-module-resolver";
 import { loadFilterRules, loadPlugins, loadRules } from "./loader";
 import { TextlintRcConfig } from "./TextlintRcConfig";
-import type { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
+import type { TextlintConfigDescriptor, TextlintStaticOptionDescriptor } from "./TextlintConfigDescriptor";
+import { parseFilterRules, parsePlugins, parseRules } from "./parser";
 
 export type TextlintConfigLoaderOptions = {
     cwd?: string;
@@ -93,6 +94,37 @@ export type TextlintLoadPackagesFromRawConfigResult =
               errors: Error[];
           };
       };
+
+/**
+ * Parse textlintrc and return parsed config
+ * @param options
+ */
+export const parseOptionsFromConfig = (
+    options: TextlintLoadPackagesFromRawConfigOptions
+): TextlintStaticOptionDescriptor => {
+    // Search textlint's module
+    const moduleResolver = new TextLintModuleResolver({
+        rulesBaseDirectory: options.node_moduleDir
+    });
+    // rules
+    const { rules } = parseRules({
+        rulesObject: options.rawConfig.rules ?? {},
+        moduleResolver
+    });
+    // filterRules
+    const { filterRules } = parseFilterRules({
+        rulesObject: options.rawConfig.filters ?? {}
+    });
+    // plugins
+    const { plugins } = parsePlugins({
+        pluginsObject: options.rawConfig.plugins ?? {}
+    });
+    return {
+        rules,
+        plugins,
+        filterRules
+    };
+};
 
 /**
  * Load packages in RawConfig and return loaded config object
@@ -189,7 +221,7 @@ export const loadConfig = (options: TextlintConfigLoaderOptions): TextlintLintCo
     };
 };
 /**
- *  Load config file and return config object that is not loaded rule instance
+ *  Load config file and return parsed config object that is not loaded rule instance
  *  It is just JSON present for config file. Raw data
  * @param options
  */
