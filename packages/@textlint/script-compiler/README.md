@@ -30,11 +30,40 @@ Install with [npm](https://www.npmjs.com/):
     yarn run compile:textlint
     yarn dev
 
-## Design
+## Command
 
-- Config Merge: Merge Original `.textlintrc.json` and user defined `.textlintrc.json`.
-    - Details: override original rules(id + options) by user defined config.
-
+```js
+const worker = new Worker('textlint.js');
+worker.addEventListener('message', function (event) {
+    if (event.data.command === "init") {
+        // override user config
+        worker.postMessage({
+            command: "merge-config",
+            textlintrc: {
+                "rules": {
+                    "preset-ja-technical-writing": {
+                        "sentence-length": {
+                            "max": 5
+                        }
+                    }
+                }
+            },
+        });
+        setTimeout(() => {
+            // lint
+            worker.postMessage({
+                command: "lint",
+                text: "お刺身が食べれない",
+                ext: ".md"
+            })
+        })
+    } else if (event.data.command === "lint:result") {
+        // receive lint result
+        console.log(event.data.result);
+        console.timeEnd("lint")
+    }
+});
+```
 ## Changelog
 
 See [Releases page](https://github.com/textlint/editor/releases).
