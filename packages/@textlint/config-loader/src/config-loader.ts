@@ -2,8 +2,7 @@ import { rcFile } from "rc-config-loader";
 import { TextLintModuleResolver } from "./textlint-module-resolver";
 import { loadFilterRules, loadPlugins, loadRules } from "./loader";
 import { TextlintRcConfig } from "./TextlintRcConfig";
-import type { TextlintConfigDescriptor, TextlintStaticOptionDescriptor } from "./TextlintConfigDescriptor";
-import { parseFilterRules, parsePlugins, parseRules } from "./parser";
+import type { TextlintConfigDescriptor } from "./TextlintConfigDescriptor";
 
 export type TextlintConfigLoaderOptions = {
     cwd?: string;
@@ -94,34 +93,6 @@ export type TextlintLoadPackagesFromRawConfigResult =
               errors: Error[];
           };
       };
-
-/**
- * Parse textlintrc and return parsed config
- * Note: the pserse function does not load any module
- * In other words, the result does not includes presets.rulesConfig
- * @param options
- */
-export const parseOptionsFromConfig = (
-    options: TextlintLoadPackagesFromRawConfigOptions
-): TextlintStaticOptionDescriptor => {
-    // rules
-    const { rules } = parseRules({
-        rulesObject: options.rawConfig.rules ?? {}
-    });
-    // filterRules
-    const { filterRules } = parseFilterRules({
-        rulesObject: options.rawConfig.filters ?? {}
-    });
-    // plugins
-    const { plugins } = parsePlugins({
-        pluginsObject: options.rawConfig.plugins ?? {}
-    });
-    return {
-        rules,
-        plugins,
-        filterRules
-    };
-};
 
 /**
  * Load packages in RawConfig and return loaded config object

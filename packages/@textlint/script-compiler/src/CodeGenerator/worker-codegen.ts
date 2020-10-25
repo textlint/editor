@@ -72,6 +72,7 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { presetToKernelRules } from "@textlint/runtime-helper"
+import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
 const kernel = new TextlintKernel();
 const presetRules = ${stringify(
         config.presets.map((preset) => {
@@ -111,22 +112,23 @@ const config = {
     filterRules: filterRules,
     plugins: plugins
 };
-const assignConfig = (overrideConfig) => {
-    if (overrideConfig.rules) {
+const assignConfig = (textlintrc) => {
+    const userDefinedConfig = parseOptionsFromConfig(textlintrc);
+    if (userDefinedConfig.rules) {
         config.rules = config.rules.map(rule => {
-            const override = overrideConfig.rules.find(o => o.ruleId === rule.ruleId);
+            const override = userDefinedConfig.rules.find(o => o.ruleId === rule.ruleId);
             return { ...rule, ...override };
         });
     }
-    if (overrideConfig.filterRules) {
+    if (userDefinedConfig.filterRules) {
         config.filterRules = config.filterRules.map(rule => {
-            const override = overrideConfig.filterRules.find(o => o.ruleId === rule.ruleId);
+            const override = userDefinedConfig.filterRules.find(o => o.ruleId === rule.ruleId);
             return { ...rule, ...override };
         });
     }
-    if (overrideConfig.plugins) {
+    if (userDefinedConfig.plugins) {
         config.plugins = config.plugins.map(rule => {
-            const override = overrideConfig.plugins.find(o => o.pluginId === rule.pluginId);
+            const override = userDefinedConfig.plugins.find(o => o.pluginId === rule.pluginId);
             return { ...rule, ...override };
         });
     }
@@ -138,7 +140,7 @@ self.addEventListener('message', (event) => {
         : config.rules.filter(rule => rule.ruleId === data.ruleId);
     switch (data.command) {
         case "merge-config":
-            return assignConfig(data.config);
+            return assignConfig(data.textlintrc);
         case "lint":
             return kernel.lintText(data.text, {
                 rules: rules,

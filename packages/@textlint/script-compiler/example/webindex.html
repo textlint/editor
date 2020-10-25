@@ -11,9 +11,23 @@
         if (event.data.command === "init") {
             console.time("lint")
             worker.postMessage({
-                command: "lint",
-                text: "お刺身が食べれない",
-                ext: ".md"
+                command: "merge-config",
+                textlintrc: {
+                    "rules": {
+                        "preset-ja-technical-writing": {
+                            "sentence-length": {
+                                "max": 5
+                            }
+                        }
+                    }
+                },
+            });
+            setTimeout(() => {
+                worker.postMessage({
+                    command: "lint",
+                    text: "お刺身が食べれない",
+                    ext: ".md"
+                })
             })
         } else if (event.data.command === "lint:result") {
             console.log(event.data.result);

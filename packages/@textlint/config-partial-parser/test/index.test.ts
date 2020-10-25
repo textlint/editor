@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as assert from "assert";
-import { loadRawConfig, parseOptionsFromConfig } from "../src";
+import { parseOptionsFromConfig } from "../src";
 
 const fixturesDir = path.join(__dirname, "snapshots");
 describe("parseOptionsFromConfig", () => {
@@ -10,12 +10,8 @@ describe("parseOptionsFromConfig", () => {
         it(`Test ${normalizedTestName}`, async function () {
             const fixtureDir = path.join(fixturesDir, caseName);
             const actualFilePath = path.join(fixtureDir, "input.json");
-            // const actualContent = JSON.parse(fs.readFileSync(actualFilePath, "utf-8"));
-            const configResult = loadRawConfig({
-                configFilePath: actualFilePath
-            });
-            assert.ok(configResult.ok);
-            const actual = parseOptionsFromConfig(configResult.rawConfig);
+            const actualContent = JSON.parse(fs.readFileSync(actualFilePath, "utf-8"));
+            const actual = parseOptionsFromConfig(actualContent);
             const expectedFilePath = path.join(fixtureDir, "output.json");
             // Usage: update snapshots
             // UPDATE_SNAPSHOT=1 npm test
