@@ -5,6 +5,7 @@ export type Script = {
     namespace: string;
     name: string;
     code: string;
+    ext: string;
     textlintrc: string;
     matchPattern: string;
 };

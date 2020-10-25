@@ -23,6 +23,7 @@ async function installHandler() {
             name: parseResult.name,
             namespace: parseResult.namespace,
             code: content,
+            ext: ".md",
             matchPattern: "**/*",
             textlintrc: JSON.stringify(parseResult.config, null, 4)
         });

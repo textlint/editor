@@ -14,7 +14,8 @@ export const EditPage = (props: EditPageProps) => {
     const [meta, setMeta] = useState({
         name: "",
         namespace: "",
-        pattern: ""
+        pattern: "",
+        ext: ""
     });
     const port = usePort();
     const onSave = (textlintrc: string) => {
@@ -42,7 +43,8 @@ export const EditPage = (props: EditPageProps) => {
             setMeta({
                 name: script.name,
                 namespace: script.namespace,
-                pattern: script.matchPattern
+                pattern: script.matchPattern,
+                ext: script.ext
             });
             setScript(script.textlintrc);
         })();
