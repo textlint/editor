@@ -5,12 +5,28 @@ import * as fs from "fs";
 import path from "path";
 // @ts-ignore
 import rimraf from "rimraf";
+import type { TextlintScriptMetadata } from "@textlint/script-parser";
+
+export function validateTextlintScriptMetadata(metadata: {}): asserts metadata is Omit<
+    TextlintScriptMetadata,
+    "config"
+> {
+    Object.entries(metadata).forEach(([key, value]) => {
+        if (value === undefined) {
+            throw new Error(
+                `metadata.${key} is undefined. please set ${key} metadata in package.json or --metadata${
+                    key[0].toUpperCase() + key.slice(1)
+                } CLI flag`
+            );
+        }
+    });
+}
 
 interface WebpackConfig {
     inputFilePath: string;
     outputDir: string;
     mode: "production" | "development";
-    metadata: object;
+    metadata: TextlintScriptMetadata;
 }
 
 export const createWebpackConfig = ({
@@ -58,7 +74,8 @@ export const createWebpackConfig = ({
             // https://github.com/azu/kuromojin injection
             // 1.x 2.x supports
             new webpack.DefinePlugin({
-                "process.env.KUROMOJIN_DIC_PATH": JSON.stringify("https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict")
+                "process.env.KUROMOJIN_DIC_PATH": JSON.stringify("https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict"),
+                "process.env.TEXTLINT_SCRIPT_METADATA": JSON.stringify(metadata)
             }),
             // kuromoji patch
             new webpack.NormalModuleReplacementPlugin(
@@ -82,10 +99,7 @@ export type compileOptions = {
     compileTarget: "webworker";
     outputDir: string;
     mode: "production" | "development";
-    metadata: {
-        name: string;
-        namespace: string;
-    };
+    metadata: Omit<TextlintScriptMetadata, "config">;
 } & CodeGeneraterOptions;
 export const compile = async (options: compileOptions) => {
     const cwd = options.cwd || process.cwd();
@@ -116,8 +130,7 @@ export const compile = async (options: compileOptions) => {
             outputDir: outputFilePath,
             mode: options.mode,
             metadata: {
-                name: options.metadata.name,
-                namespace: options.metadata.namespace,
+                ...options.metadata,
                 config: configResult.rawConfig
             }
         });

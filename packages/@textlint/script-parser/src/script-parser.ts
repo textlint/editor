@@ -15,6 +15,8 @@ export type TextlintRcConfig = {
 export type TextlintScriptMetadata = {
     name: string;
     namespace: string;
+    homepage: string;
+    version: string;
     config: TextlintRcConfig;
 };
 export type TextlintScriptParseResult = {

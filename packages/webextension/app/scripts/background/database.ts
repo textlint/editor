@@ -4,6 +4,9 @@ import minimatch from "minimatch";
 export type Script = {
     namespace: string;
     name: string;
+    scriptUrl: string;
+    homepage: string;
+    version: string;
     code: string;
     ext: string;
     textlintrc: string;
@@ -13,6 +16,9 @@ export type Script = {
 export type TextlintDBSchema = {
     scripts: Script[];
 };
+const equalScript = (a: Script, b: Script): boolean => {
+    return a.name === b.name && a.namespace === b.namespace;
+};
 
 export async function openDatabase() {
     const db = await kvsEnvStorage<TextlintDBSchema>({
@@ -20,9 +26,13 @@ export async function openDatabase() {
         version: 1
     });
     return {
-        async addScript(script: Script) {
+        async addScript(newScript: Script) {
             const scripts = (await db.get("scripts")) ?? [];
-            return db.set("scripts", scripts.concat(script));
+            const hasScript = scripts.some((script) => equalScript(newScript, script));
+            if (hasScript) {
+                return this.updateScript(newScript);
+            }
+            return db.set("scripts", scripts.concat(newScript));
         },
         async findScriptsWithName({ name, namespace }: { name: string; namespace: string }) {
             const scripts = (await db.get("scripts")) ?? [];

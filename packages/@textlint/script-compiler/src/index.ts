@@ -1,4 +1,4 @@
-export { createWebpackConfig, compile, compileOptions } from "./compiler";
+export { createWebpackConfig, compile, compileOptions, validateTextlintScriptMetadata } from "./compiler";
 export type {
     TextlintWorkerCommand,
     TextlintWorkerCommandResponse,

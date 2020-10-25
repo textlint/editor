@@ -1,4 +1,5 @@
 import { attachToTextArea, LintEngineAPI } from "../src/index";
+import type { TextlintScriptMetadata } from "@textlint/script-parser";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import type {
     TextlintWorkerCommandFix,
@@ -14,8 +15,7 @@ const updateStatus = (status: string) => {
 };
 const worker = new Worker("textlint.js");
 const waiterForInit = (worker: Worker) => {
-    let initialized = false;
-    let _resolve: null | ((init: boolean) => void) = null;
+    let _resolve: null | ((init: TextlintScriptMetadata) => void) = null;
     const deferred = new Promise((resolve) => {
         _resolve = resolve;
     });
@@ -24,8 +24,7 @@ const waiterForInit = (worker: Worker) => {
         function (event) {
             const data: TextlintWorkerCommandResponse = event.data;
             if (data.command === "init") {
-                initialized = true;
-                _resolve && _resolve(initialized);
+                _resolve && _resolve(data.metadata);
             }
         },
         {
@@ -101,11 +100,20 @@ const createTextlint = ({ ext }: { ext: string }) => {
     };
 };
 
+export function escapeHTML(str: string) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 (async () => {
     const text = new URL(location.href).searchParams.get("text");
     const targetElement = document.querySelectorAll("textarea");
     const textlint = createTextlint({ ext: ".md" });
-    await workerStatus.ready();
+    const metadata = await workerStatus.ready();
     const lintEngine: LintEngineAPI = {
         lintText: textlint.lintText,
         fixText: async ({ text, message }): Promise<{ output: string }> => {
@@ -133,5 +141,29 @@ const createTextlint = ({ ext }: { ext: string }) => {
             lintingDebounceMs: 200,
             lintEngine
         });
+    });
+    // metadata
+    const metadataDiv = document.createElement("div");
+    metadataDiv.innerHTML = `
+<h3>Script metadata</h3>
+<ul>
+    ${Object.entries(metadata)
+        .map(([key, value]) => {
+            const toValue = (key, value) => {
+                if (key === "homepage") {
+                    return `<a href="${escapeHTML(value)}">${escapeHTML(value)}</a>`;
+                }
+                return typeof value === "object"
+                    ? `<pre>${escapeHTML(JSON.stringify(value, null, 4))}</pre>`
+                    : escapeHTML(value);
+            };
+            return `<dt>${escapeHTML(key)}</dt><dd>${toValue(key, value)}</dd>`;
+        })
+        .join("\n")}
+</ul>`;
+    document.querySelector("#metadata")?.append(metadataDiv);
+    // install - textlint-editor extension will hook it
+    document.querySelector("#install")?.addEventListener("click", () => {
+        window.open("textlint.js", "_blank");
     });
 })();

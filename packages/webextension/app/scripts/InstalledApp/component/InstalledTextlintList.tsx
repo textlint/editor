@@ -2,7 +2,7 @@ import { useAsyncList } from "@react-stately/data";
 import React from "react";
 import { ActionGroup, Flex, Item, ListBox, Text } from "@adobe/react-spectrum";
 import { usePort } from "../StateContext";
-import { Script } from "../../background/openDatabase";
+import { Script } from "../../background/database";
 import FileCode from "@spectrum-icons/workflow/FileCode";
 
 export type InstalledTextlintListProps = {

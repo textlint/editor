@@ -85,13 +85,15 @@ export class TextCheckerPopupElement extends HTMLElement {
         const overlay = document.createElement("div");
         overlay.className = "popup";
         const style = document.createElement("style");
-        const highLightColor = "#F35373";
-        const normalColor = "#9095AA";
+        const highlightColor = "#F35373";
+        const highlightTextColor = "#9095AA";
         style.textContent = `
 :root {
-    --highlight-color: #F35373;
+    --highlight-color: ${highlightColor};
+    --highlight-textColor: ${highlightTextColor};
 }
 .popup {
+  color: #000;
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0,0,0,.2);
   padding: 0; 
@@ -107,7 +109,7 @@ export class TextCheckerPopupElement extends HTMLElement {
 
 .popup-listItem--icon, .popup-listItem--iconImage {
     padding-right: 12px; 
-    fill: ${normalColor};
+    fill: ${highlightTextColor};
     width: 24px;
     height: 24px;
     min-height: 24px;
@@ -140,7 +142,7 @@ export class TextCheckerPopupElement extends HTMLElement {
 }
 .popup-listItem:hover {
     color: #fff;
-    background-color: ${highLightColor};
+    background-color: ${highlightColor};
 }
 .popup-listItem:hover .popup-listItem--icon {
     fill: #ffffff !important;

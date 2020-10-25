@@ -2,7 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
-import { openDatabase } from "./background/openDatabase";
+import { openDatabase } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 
@@ -39,13 +39,12 @@ function responseHasUserScriptType(responseHeaders: any) {
 async function openInstallDialog(url: string) {
     const installUrl = browser.runtime.getURL("/pages/install-dialog.html") + "?script=" + encodeURIComponent(url);
     const options = {
-        height: 640,
+        height: 800,
         type: "popup",
         url: installUrl,
-        width: 480
+        width: 800
     } as const;
-    const window = await browser.windows.create(options);
-    console.log("window", window);
+    await browser.windows.create(options);
 }
 
 browser.webRequest.onHeadersReceived.addListener(
@@ -58,7 +57,7 @@ browser.webRequest.onHeadersReceived.addListener(
         // https://stackoverflow.com/a/18684302
         return { redirectUrl: "javascript:" };
     },
-    { urls: ["*://*/*/textlint.js"], types: ["main_frame"] },
+    { urls: ["*://*/*textlint.js"], types: ["main_frame"] },
     ["blocking", "responseHeaders"]
 );
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;

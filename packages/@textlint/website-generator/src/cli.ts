@@ -2,6 +2,7 @@ import meow from "meow";
 import path from "path";
 import { generateWebSite } from "./website-generator";
 import readPkg from "read-pkg";
+import { validateTextlintScriptMetadata } from "@textlint/script-compiler";
 
 export const cli = meow(
     `
@@ -14,8 +15,16 @@ export const cli = meow(
       --cwd                       current working directory
       --textlintrc                [path:String] path to .textlintrc file. Default: load .textlintrc.{json,yaml,js}
       --output-dir                [path:String] output file path that is written of reported result.
-      --metadataName             [String] generated script name
-      --metadataNamespace        [String] generated script namespace
+
+    Metadata Options
+
+      Metadata is inferred from package.json by default.
+      If you want to set metadata by manually, please use theme flags.
+    
+      --metadataName              [String] generated script name
+      --metadataNamespace         [String] generated script namespace
+      --metadataHomepage          [String] generated script homepage url
+      --metadataVersion           [String] generated script version
  
     Examples
       $ textlint-website-generator --output-dir ./dist --metadataName "script name" --metadataNamespace "https://example.com"
@@ -41,12 +50,16 @@ export const cli = meow(
                 default: "production"
             },
             metadataName: {
-                type: "string",
-                isRequired: true
+                type: "string"
             },
             metadataNamespace: {
-                type: "string",
-                isRequired: true
+                type: "string"
+            },
+            metadataHomepage: {
+                type: "string"
+            },
+            metadataVersion: {
+                type: "string"
             },
             // DEBUG option
             cwd: {
@@ -70,6 +83,14 @@ export const run = async (
     const pkg = await readPkg({
         cwd: flags.cwd
     });
+    const metadata = {
+        name: pkg.name ?? flags["metadataName"],
+        namespace: pkg.homepage ?? flags["metadataNamespace"],
+        homepage: pkg.homepage ?? flags["metadataHomepage"],
+        version: pkg.version ?? flags["metadataVersion"]
+    };
+    // assert
+    validateTextlintScriptMetadata(metadata);
     return generateWebSite({
         title: flags.title ?? (pkg.name as string),
         placeholder: flags.placeholder ?? "",
@@ -78,10 +99,7 @@ export const run = async (
         compileTarget: "webworker",
         outputDir: path.join(flags.cwd, flags.outputDir),
         mode: (flags.mode as "production" | "development") ?? "production",
-        metadata: {
-            name: flags["metadataName"],
-            namespace: flags["metadataNamespace"]
-        }
+        metadata
     })
         .then(() => {
             return {

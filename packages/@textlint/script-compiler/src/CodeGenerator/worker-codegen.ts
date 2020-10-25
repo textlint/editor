@@ -1,6 +1,7 @@
 import { loadConfig, TextlintConfigDescriptor } from "@textlint/config-loader";
 import { CodeGeneraterOptions } from "./CodeGeneraterOptions";
 import type { TextlintResult, TextlintFixResult } from "@textlint/types";
+import { TextlintScriptMetadata } from "@textlint/script-parser";
 
 export type TextlintWorkerCommandLint = {
     command: "lint";
@@ -24,6 +25,7 @@ export type TextlintWorkerCommand =
 
 export type TextlintWorkerCommandResponseInit = {
     command: "init";
+    metadata: TextlintScriptMetadata;
 };
 export type TextlintWorkerCommandResponseLint = {
     command: "lint:result";
@@ -168,7 +170,8 @@ self.addEventListener('message', (event) => {
 });
 // ====
 self.postMessage({
-    command: "init"
+    command: "init",
+    metadata: process.env.TEXTLINT_SCRIPT_METADATA
 });
 `;
 };
