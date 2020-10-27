@@ -39,7 +39,6 @@
   "permissions": [
     "activeTab",
     "contextMenus",
-    "downloads",
     "webRequest",
     "webRequestBlocking",
     "tabs",

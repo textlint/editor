@@ -16,7 +16,7 @@ const updateStatus = (status: string) => {
 const worker = new Worker("textlint.js");
 const waiterForInit = (worker: Worker) => {
     let _resolve: null | ((init: TextlintScriptMetadata) => void) = null;
-    const deferred = new Promise((resolve) => {
+    const deferred = new Promise<TextlintScriptMetadata>((resolve) => {
         _resolve = resolve;
     });
     worker.addEventListener(
@@ -149,7 +149,7 @@ export function escapeHTML(str: string) {
 <ul>
     ${Object.entries(metadata)
         .map(([key, value]) => {
-            const toValue = (key, value) => {
+            const toValue = (key: string, value: any) => {
                 if (key === "homepage") {
                     return `<a href="${escapeHTML(value)}">${escapeHTML(value)}</a>`;
                 }

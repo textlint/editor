@@ -11,7 +11,7 @@ const createIndexJS = () => {
 const createHTMLTemplate = () => {
     const html = fs.readFileSync(path.join(__dirname, "../public/index.html"), "utf-8");
     return html
-        .replace("<title>textlint editor playground</title>", "<title>{{title}}</title>")
+        .replace("<title>.*</title>", "<title>{{title}}</title>")
         .replace(`<script src="./index.ts"></script>`, `<script type="module" src="./index.js"></script>`)
         .replace(
             /<textarea class="textarea">[\s\S]+<\/textarea>/m,
@@ -20,7 +20,7 @@ const createHTMLTemplate = () => {
 };
 (async function () {
     // compile public code
-    execFileSync("tsc", ["--project", "./tsconfig.website-generator.json"], {
+    const output = execFileSync("tsc", ["--project", "./tsconfig.website-generator.json"], {
         cwd: path.join(__dirname, "..")
     });
 
@@ -31,4 +31,8 @@ const createHTMLTemplate = () => {
 
     fs.writeFileSync(path.join(outputDir, "index.html"), index.html, "utf-8");
     fs.writeFileSync(path.join(outputDir, "index.js"), index.js, "utf-8");
-})();
+})().catch((error) => {
+    console.error(error.message);
+    console.error(String(error.output));
+    process.exit(1);
+});
