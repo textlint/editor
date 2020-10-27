@@ -20,14 +20,14 @@ module.exports = {
             use: ["style-loader", "css-loader"]
         });
         config.plugins.unshift(
-            new CopyWebpackPlugin({
-                patterns: [
-                    {
-                        from: "download/",
-                        to: path.join(config.output.path, "download")
-                    }
-                ]
-            }),
+            // new CopyWebpackPlugin({
+            //     patterns: [
+            //         {
+            //             from: "download/",
+            //             to: path.join(config.output.path, "download")
+            //         }
+            //     ]
+            // }),
             new webpack.DefinePlugin({
                 "process.env.RANDOM_KEY": JSON.stringify(
                     Math.random()

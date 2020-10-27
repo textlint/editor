@@ -1,7 +1,7 @@
 import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { nonRandomKey } from "./shared/page-contents-shared";
-const targetElement = document.querySelectorAll("textarea");
 
+const targetElement = document.querySelectorAll("textarea");
 const commandHandler = <R>(command: string, args: any): Promise<R> => {
     return new Promise<R>((resolve) => {
         console.log("[PageScript]", command, args);
@@ -27,20 +27,33 @@ const commandHandler = <R>(command: string, args: any): Promise<R> => {
         );
     });
 };
+const lintEngine: LintEngineAPI = {
+    lintText: (args: any) => commandHandler("lintText", args),
+    fixText: (args: any) => commandHandler("fixText", args),
+    fixAll: (args: any) => commandHandler("fixAll", args),
+    fixRule: (args: any) => commandHandler("fixRule", args)
+};
 
 async function contentScriptMain() {
-    const lintEngine: LintEngineAPI = {
-        lintText: (args: any) => commandHandler("lintText", args),
-        fixText: (args: any) => commandHandler("fixText", args),
-        fixAll: (args: any) => commandHandler("fixAll", args),
-        fixRule: (args: any) => commandHandler("fixRule", args)
-    };
-    targetElement.forEach((element) => {
-        return attachToTextArea({
-            textAreaElement: element,
+    const callback = (textAreaElement: HTMLTextAreaElement) => {
+        attachToTextArea({
+            textAreaElement: textAreaElement,
             lintingDebounceMs: 200,
             lintEngine: lintEngine
         });
+    };
+    targetElement.forEach(callback);
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (!(node instanceof HTMLElement)) return;
+                node.querySelectorAll("textarea").forEach(callback);
+            });
+        });
+    });
+    observer.observe(document.documentElement || document.body, {
+        childList: true,
+        subtree: true
     });
 }
 

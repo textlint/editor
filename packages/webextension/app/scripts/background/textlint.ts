@@ -53,10 +53,7 @@ const createWorkerRef = (worker: Worker) => {
         }
     };
 };
-export const createTextlintWorker = (
-    defaultWorkerUrl: string | URL = "download/textlint.js",
-    textlintrc?: TextlintRcConfig
-) => {
+export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?: TextlintRcConfig) => {
     const defaultWorker = new Worker(defaultWorkerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {

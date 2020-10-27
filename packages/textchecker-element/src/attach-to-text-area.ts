@@ -47,18 +47,29 @@ export type AttachTextAreaParams = {
     lintEngine: LintEngineAPI;
 };
 
+let textCheckerPopup: TextCheckerPopupElement;
+const createTextCheckerPopupElement = () => {
+    if (textCheckerPopup) {
+        return textCheckerPopup;
+    }
+    textCheckerPopup = new TextCheckerPopupElement();
+    document.body.append(textCheckerPopup);
+    return textCheckerPopup;
+};
 /**
  * Attach text-checker component to `<textarea>` element
  */
-export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngine }: AttachTextAreaParams) => {
+export const attachToTextArea = ({
+    textAreaElement,
+    lintingDebounceMs,
+    lintEngine
+}: AttachTextAreaParams): (() => void) => {
     const textChecker = new TextCheckerElement({
         targetElement: textAreaElement,
         hoverPadding: 10
     });
-    const textCheckerPopup = new TextCheckerPopupElement();
     textAreaElement.before(textChecker);
-    document.body.append(textCheckerPopup);
-
+    const textCheckerPopup = createTextCheckerPopupElement();
     const compositionHandler = createCompositionHandler();
     const update = pDebounce(async () => {
         // stop lint on IME composition
@@ -159,15 +170,16 @@ export const attachToTextArea = ({ textAreaElement, lintingDebounceMs, lintEngin
     });
     resizeObserver.observe(textAreaElement);
     // when scroll window, update annotation
-    window.addEventListener("scroll", () => {
-        console.log("window scroll");
+    const onScroll = () => {
         textChecker.resetAnnotations();
         update();
-    });
+    };
+    window.addEventListener("scroll", onScroll);
     // when scroll the element, update annotation
-    textAreaElement.addEventListener("scroll", () => {
-        console.log("textarea scroll");
-        textChecker.resetAnnotations();
-        update();
-    });
+    textAreaElement.addEventListener("scroll", onScroll);
+    return () => {
+        window.removeEventListener("scroll", onScroll);
+        textAreaElement.removeEventListener("scroll", onScroll);
+        resizeObserver.disconnect();
+    };
 };
