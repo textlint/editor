@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/textlint/editor/compare/v0.7.1...v0.8.0) (2020-10-27)
+
+
+### Bug Fixes
+
+* parse ([f8fa2e2](https://github.com/textlint/editor/commit/f8fa2e231249151cc4e9091c5ef8916884cb953b))
+* remove missing ([abcf4dd](https://github.com/textlint/editor/commit/abcf4dd0a31428be8f6533ff267f208c5dfb77f7))
+
+
+### Features
+
+* add parseOptionsFromConfig ([8ece751](https://github.com/textlint/editor/commit/8ece7517f37317108caae8284cae4e7f844729d1))
+* add test ([02eed37](https://github.com/textlint/editor/commit/02eed37a7df4830eebd0782bf4d04031648567b6))
+* support "merge-config" command ([e7f734e](https://github.com/textlint/editor/commit/e7f734eb2e1e44d85592159f37d3a83ab50f7966))
+
+
+
+
+
 # [0.7.0](https://github.com/textlint/editor/compare/v0.6.0...v0.7.0) (2020-08-05)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@textlint/runtime-helper",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A runtime helper",
   "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/runtime-helper/",
   "bugs": {
@@ -40,7 +40,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^0.7.0",
+    "@textlint/config-loader": "^0.8.0",
     "@textlint/kernel": "^3.3.6",
     "@textlint/module-interop": "^1.1.4",
     "@textlint/types": "^1.4.5",

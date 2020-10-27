@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/textlint/editor/compare/v0.7.1...v0.8.0) (2020-10-27)
+
+
+### Bug Fixes
+
+* update template ([d3705c5](https://github.com/textlint/editor/commit/d3705c5bdbb670a102bc07d3547005fc1205b966))
+* update template ([14dd55f](https://github.com/textlint/editor/commit/14dd55fcde9433dbc80d02b880f47ea18e28f1de))
+
+
+### Features
+
+* add parseOptionsFromConfig ([8ece751](https://github.com/textlint/editor/commit/8ece7517f37317108caae8284cae4e7f844729d1))
+* config update support ([7ffa985](https://github.com/textlint/editor/commit/7ffa985deb20eb3f0f4bb6551f10fd7b20dedc41))
+* design install ([df2f71e](https://github.com/textlint/editor/commit/df2f71e2637b7ac3defba66ce803eba4b5491f5d))
+
+
+
+
+
 # [0.7.0](https://github.com/textlint/editor/compare/v0.6.0...v0.7.0) (2020-08-05)
 
 

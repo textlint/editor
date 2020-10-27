@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/textlint/editor/compare/v0.7.1...v0.8.0) (2020-10-27)
+
+
+### Bug Fixes
+
+* fix infinite loop ([6c9a572](https://github.com/textlint/editor/commit/6c9a5726d2efb16a2671b70fd0d13849b5fd4a91))
+* update template ([14dd55f](https://github.com/textlint/editor/commit/14dd55fcde9433dbc80d02b880f47ea18e28f1de))
+* use textContent ([c2ab4d1](https://github.com/textlint/editor/commit/c2ab4d11b075625d02a2d06d5c45bb8b6b76745b))
+
+
+### Features
+
+* add parseOptionsFromConfig ([8ece751](https://github.com/textlint/editor/commit/8ece7517f37317108caae8284cae4e7f844729d1))
+* add test ([02eed37](https://github.com/textlint/editor/commit/02eed37a7df4830eebd0782bf4d04031648567b6))
+* config update support ([7ffa985](https://github.com/textlint/editor/commit/7ffa985deb20eb3f0f4bb6551f10fd7b20dedc41))
+* design install ([df2f71e](https://github.com/textlint/editor/commit/df2f71e2637b7ac3defba66ce803eba4b5491f5d))
+* support firefox ([1196b59](https://github.com/textlint/editor/commit/1196b59f03214c4dca8fd43b7c5b9d456c4668fe))
+* **webextension:** add .ext ([6f8a166](https://github.com/textlint/editor/commit/6f8a1669521aa77c7ae0bb0d56e610883c5bf6fe))
+
+
+
+
+
 ## [0.7.1](https://github.com/textlint/editor/compare/v0.7.0...v0.7.1) (2020-08-09)
 
 **Note:** Version bump only for package @textlint/webextension
