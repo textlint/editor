@@ -20,7 +20,7 @@ const createHTMLTemplate = () => {
 };
 (async function () {
     // compile public code
-    const output = execFileSync("tsc", ["--project", "./tsconfig.website-generator.json"], {
+    execFileSync("tsc", ["--project", "./tsconfig.website-generator.json"], {
         cwd: path.join(__dirname, "..")
     });
 
