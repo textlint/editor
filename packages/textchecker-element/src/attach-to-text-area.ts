@@ -76,7 +76,7 @@ export const attachToTextArea = ({
         if (compositionHandler.onComposition) {
             return;
         }
-        // dismiss card before update anntations
+        // dismiss card before update annotations
         textCheckerPopup.dismissCard();
         const text = textAreaElement.value;
         const results = await lintEngine.lintText({
@@ -157,9 +157,13 @@ export const attachToTextArea = ({
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
     // add event handlers
+    const hideAnnotations = () => {
+        textCheckerPopup.dismissCards();
+    };
     textAreaElement.addEventListener("compositionstart", compositionHandler);
     textAreaElement.addEventListener("compositionend", compositionHandler);
     textAreaElement.addEventListener("input", update);
+    textAreaElement.addEventListener("focusout", hideAnnotations);
     update();
     // when resize element, update annotation
     // @ts-expect-error
@@ -180,6 +184,10 @@ export const attachToTextArea = ({
     return () => {
         window.removeEventListener("scroll", onScroll);
         textAreaElement.removeEventListener("scroll", onScroll);
+        textAreaElement.removeEventListener("compositionstart", compositionHandler);
+        textAreaElement.removeEventListener("compositionend", compositionHandler);
+        textAreaElement.removeEventListener("input", update);
+        textAreaElement.removeEventListener("blur", hideAnnotations);
         resizeObserver.disconnect();
     };
 };

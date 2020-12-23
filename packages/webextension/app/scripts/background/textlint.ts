@@ -53,6 +53,7 @@ const createWorkerRef = (worker: Worker) => {
         }
     };
 };
+export type TextlintWorker = ReturnType<typeof createTextlintWorker>;
 export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?: TextlintRcConfig) => {
     const defaultWorker = new Worker(defaultWorkerUrl);
     const workerRef = createWorkerRef(defaultWorker);

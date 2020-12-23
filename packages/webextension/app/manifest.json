@@ -43,5 +43,11 @@
     "webRequestBlocking",
     "tabs",
     "<all_urls>"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "textlint-editor@example.com",
+      "strict_min_version": "42.0"
+    }
+  }
 }

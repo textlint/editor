@@ -180,6 +180,10 @@ export class TextCheckerPopupElement extends HTMLElement {
         }
     }
 
+    public dismissCards() {
+        this.store.removeAllCard();
+    }
+
     private renderAnnotationMarkers = (state: TextCheckerPopupState) => {
         const rect = state.targetRect;
         if (!rect) {
@@ -192,7 +196,7 @@ export class TextCheckerPopupElement extends HTMLElement {
         const itemPadding = 16;
         // TODO: more correct handle
         const firstLine = state.card.message.split(/\n/)[0];
-        const fixIcon = html`<svg
+        const fixIcon = html` <svg
             class="popup-listItem--icon"
             width="24"
             height="24"
@@ -237,25 +241,27 @@ export class TextCheckerPopupElement extends HTMLElement {
             {
                 label: html`Ignore`,
                 onClick: state.handlers?.onIgnore,
-                icon: html`<svg
-                    class="popup-listItem--icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M5.00299 20C5.00299 21.103 5.89999 22 7.00299 22H17.003C18.106 22 19.003 21.103 19.003 20V8H21.003V6H17.003V4C17.003 2.897 16.106 2 15.003 2H9.00299C7.89999 2 7.00299 2.897 7.00299 4V6H3.00299V8H5.00299V20ZM9.00299 4H15.003V6H9.00299V4ZM8.00299 8H17.003L17.004 20H7.00299V8H8.00299Z"
-                        fill="#9095AA"
-                    />
-                    <path d="M9.00299 10H11.003V18H9.00299V10ZM13.003 10H15.003V18H13.003V10Z" />
-                </svg> `
+                icon: html`
+                    <svg
+                        class="popup-listItem--icon"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M5.00299 20C5.00299 21.103 5.89999 22 7.00299 22H17.003C18.106 22 19.003 21.103 19.003 20V8H21.003V6H17.003V4C17.003 2.897 16.106 2 15.003 2H9.00299C7.89999 2 7.00299 2.897 7.00299 4V6H3.00299V8H5.00299V20ZM9.00299 4H15.003V6H9.00299V4ZM8.00299 8H17.003L17.004 20H7.00299V8H8.00299Z"
+                            fill="#9095AA"
+                        />
+                        <path d="M9.00299 10H11.003V18H9.00299V10ZM13.003 10H15.003V18H13.003V10Z" />
+                    </svg>
+                `
             },
             {
                 label: html`See documentation`,
                 onClick: state.handlers?.onSeeDocument,
-                icon: html`<svg
+                icon: html` <svg
                     class="popup-listItem--iconImage"
                     width="24"
                     height="24"
@@ -284,14 +290,14 @@ export class TextCheckerPopupElement extends HTMLElement {
                 </svg>`
             }
         ];
-        const cardContent = html`<ul class="popoup-list" style="--padding: ${itemPadding}px">
+        const cardContent = html` <ul class="popoup-list" style="--padding: ${itemPadding}px">
             ${items.map((item) => {
                 const clickHandler = {
                     handleEvent: item.onClick
                 };
                 if (item.message) {
                     if (item.onClick) {
-                        return html`<li
+                        return html` <li
                             @click=${clickHandler}
                             class="popup-listItem"
                             style="--padding: ${itemPadding}px;"
@@ -300,7 +306,7 @@ export class TextCheckerPopupElement extends HTMLElement {
                             <p class="popup-listItem-content">${item.icon}${item.label}</p>
                         </li>`;
                     } else {
-                        return html`<li
+                        return html` <li
                             @click=${clickHandler}
                             class="popup-listItem"
                             style="--padding: ${itemPadding}px; padding-bottom: 0;"
@@ -310,7 +316,7 @@ export class TextCheckerPopupElement extends HTMLElement {
                         </li>`;
                     }
                 }
-                return html`<li @click=${clickHandler} class="popup-listItem" style="--padding: ${itemPadding}px;">
+                return html` <li @click=${clickHandler} class="popup-listItem" style="--padding: ${itemPadding}px;">
                     <p class="popup-listItem-content">${item.icon}${item.label}</p>
                 </li>`;
             })}

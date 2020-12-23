@@ -1,7 +1,6 @@
 import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { nonRandomKey } from "./shared/page-contents-shared";
 
-const targetElement = document.querySelectorAll("textarea");
 const commandHandler = <R>(command: string, args: any): Promise<R> => {
     return new Promise<R>((resolve) => {
         console.log("[PageScript]", command, args);
@@ -48,6 +47,7 @@ async function contentScriptMain() {
         });
         set.add(textAreaElement);
     };
+    const targetElement = document.querySelectorAll("textarea");
     targetElement.forEach(callback);
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {

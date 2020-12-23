@@ -1,7 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
-import { createTextlintWorker } from "./background/textlint";
+import { createTextlintWorker, TextlintWorker } from "./background/textlint";
 import { openDatabase } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
@@ -73,21 +73,34 @@ export type backgroundPopupObject = {
     updateScript: DataBase["updateScript"];
     openEditor: (options: { name: string; namespace: string }) => void;
 };
-const workingWorkerSet = new Set<ReturnType<typeof createTextlintWorker>>();
-const closeAllWorker = () => {
-    workingWorkerSet.forEach((worker) => {
-        worker.dispose();
-    });
+const workerMap = new Map<TextlintWorker, Set<string>>();
+const addWorker = (url: string, worker: TextlintWorker) => {
+    const set = workerMap.get(worker) ?? new Set<string>();
+    set.add(url);
+    workerMap.set(worker, set);
+};
+const removeWorker = (url: string) => {
+    for (const [worker, urlSet] of workerMap.entries()) {
+        if (urlSet.has(url)) {
+            urlSet.delete(url);
+        }
+        if (urlSet.size === 0) {
+            worker.dispose();
+            workerMap.delete(worker);
+        }
+    }
 };
 browser.runtime.onConnect.addListener(async (port) => {
     if (isMessagePort(port)) {
         return;
     }
-    closeAllWorker();
     const db = await openDatabase();
     const originUrl = port.sender?.url;
     console.log("[background] originUrl", originUrl);
-    if (originUrl && /^(moz|chrome)-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
+    if (!originUrl) {
+        return;
+    }
+    if (/^(moz|chrome)-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
         const exports: backgroundPopupObject = {
             findScriptsWithPatten: db.findScriptsWithPatten,
             findScriptsWithName: db.findScriptsWithName,
@@ -104,12 +117,12 @@ browser.runtime.onConnect.addListener(async (port) => {
         };
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
-    const scripts = originUrl ? await db.findScriptsWithPatten(originUrl) : [];
+    const scripts = await db.findScriptsWithPatten(originUrl);
     const workers = scripts.map((script) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
         // TODO: comment support for textlintrc
         const textlintWorker = createTextlintWorker(URL.createObjectURL(blob), JSON.parse(script.textlintrc));
-        workingWorkerSet.add(textlintWorker);
+        addWorker(originUrl, textlintWorker);
         return textlintWorker;
     });
     console.log("[Background] workers started", workers);
@@ -172,7 +185,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     };
     port.onDisconnect.addListener(() => {
         console.log("[Background] dispose worker");
-        closeAllWorker();
+        removeWorker(originUrl);
     });
     console.log("[Background] content port", port);
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));

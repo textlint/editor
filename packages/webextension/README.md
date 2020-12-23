@@ -40,3 +40,9 @@ The build tool also defines a variable named `process.env.NODE_ENV` in your scri
 Summary
 
 - WebPage → Content Script → Background Page → WebWorker(textlint) → Background Page → Content Script → WebPage
+
+## Deploy
+
+- Build
+- Firefox
+  - `cd dist/firefox && web-ext sign --api-key ....`
