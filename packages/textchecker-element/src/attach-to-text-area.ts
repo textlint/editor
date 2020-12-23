@@ -165,7 +165,7 @@ export const attachToTextArea = ({
     // @ts-expect-error
     const resizeObserver = new ResizeObserver(() => {
         textChecker.resetAnnotations();
-        console.log("textarea resize");
+        console.log("[textchecker-element] textarea resize");
         update();
     });
     resizeObserver.observe(textAreaElement);

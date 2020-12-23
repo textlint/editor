@@ -35,12 +35,18 @@ const lintEngine: LintEngineAPI = {
 };
 
 async function contentScriptMain() {
+    const set = new WeakSet<HTMLTextAreaElement>();
     const callback = (textAreaElement: HTMLTextAreaElement) => {
+        if (set.has(textAreaElement)) {
+            return;
+        }
+        console.log("[contentScript] attach textarea", textAreaElement);
         attachToTextArea({
             textAreaElement: textAreaElement,
             lintingDebounceMs: 200,
             lintEngine: lintEngine
         });
+        set.add(textAreaElement);
     };
     targetElement.forEach(callback);
     const observer = new MutationObserver((mutations) => {
