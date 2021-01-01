@@ -13,10 +13,9 @@ Install with yarn and build before editing files.
 
 - [ ] Write usage instructions
 
-
 ## Working on
 
-- [ ] textarea
+- [x] textarea
 - [ ] contenteditable
 - [ ] Google Docs
 - [ ] Medium
