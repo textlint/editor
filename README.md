@@ -13,6 +13,10 @@ Install with yarn and build before editing files.
 
 - [ ] Write usage instructions
 
+### Browser Extensions
+
+See [packages/webextension](packages/webextension/README.md)
+
 ## Working on
 
 - [x] textarea
