@@ -4,7 +4,9 @@ textlint editor
 
 ## Install
 
-    yarn install
+    # on root dir
+    yarn install 
+    yarn run build
 
 ### Install textlint scripts
 
