@@ -4,7 +4,13 @@ textlint editor
 
 ## Install
 
-	$ npm install
+    yarn install
+
+### Install textlint scripts
+
+textlint editor install your textlint scripts like Greasemonkey.
+
+An example of textlint script is https://azu.github.io/textlintrc/
 
 ## Development
 
