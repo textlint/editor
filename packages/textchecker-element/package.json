@@ -73,7 +73,8 @@
     "lit-html": "^1.2.1",
     "p-debounce": "^2.1.0",
     "text-caret-pos": "^1.0.1",
-    "to-px": "^1.1.0"
+    "to-px": "^1.1.0",
+    "delay": "^4.4.0"
   },
   "browserslist": [
     "last 1 chrome version",

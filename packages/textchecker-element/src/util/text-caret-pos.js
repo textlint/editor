@@ -225,7 +225,6 @@ function styleCaretCoordinatesDiv(element, position, div, options) {
                 cc = _getComputedStyle(div);
             }
             //console.log('height: '+computed['height']+', lineHeight: '+cc['lineHeight']);
-
             if (computed.boxSizing === "border-box") {
                 var height = parseInt(computed.height);
                 var outerHeight =

@@ -3,6 +3,8 @@ import { TextCheckerCard, TextCheckerPopupElement } from "./text-checker-popup-e
 import { TextlintFixResult, TextlintResult, TextlintMessage } from "@textlint/types";
 import { TextCheckerElementRectItem } from "./text-checker-store";
 import pDebounce from "p-debounce";
+import delay from "delay";
+import { debug } from "./util/logger";
 
 const createCompositionHandler = () => {
     let onComposition = false;
@@ -82,7 +84,7 @@ export const attachToTextArea = ({
         const results = await lintEngine.lintText({
             text
         });
-        console.log("[textchecker-element] lint results", results);
+        debug("lint results", results);
         const updateText = async (newText: string, card: TextCheckerCard) => {
             const currentText = textAreaElement.value;
             if (currentText === text && currentText !== newText) {
@@ -99,11 +101,18 @@ export const attachToTextArea = ({
                     messageRuleId: message.ruleId,
                     fixable: Boolean(message.fix)
                 };
+                const abortSignalMap = new WeakMap<TextCheckerElementRectItem, AbortController>();
                 return {
                     id: `${message.ruleId}::${message.line}:${message.column}`,
                     start: message.index,
                     end: message.index + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
+                        const controller = abortSignalMap.get(rectItem);
+                        debug("enter", controller);
+                        if (controller) {
+                            controller.abort();
+                        }
+                        abortSignalMap.set(rectItem, new AbortController());
                         textCheckerPopup.updateCard({
                             card: card,
                             rect: {
@@ -139,21 +148,30 @@ export const attachToTextArea = ({
                                     await updateText(fixResults.output, card);
                                 },
                                 onIgnore() {
-                                    console.log("onIgnore");
+                                    debug("onIgnore");
                                 },
                                 onSeeDocument() {
-                                    console.log("onSeeDocument");
+                                    debug("onSeeDocument");
                                 }
                             }
                         });
                     },
-                    onMouseLeave() {
-                        textCheckerPopup.dismissCard(card);
+                    async onMouseLeave({ rectItem }: { rectItem: TextCheckerElementRectItem }) {
+                        try {
+                            const controller = abortSignalMap.get(rectItem);
+                            debug("leave", controller);
+                            await delay(500, {
+                                signal: controller?.signal
+                            });
+                            textCheckerPopup.dismissCard(card);
+                        } catch (error) {
+                            debug("Abort Canceled", error);
+                        }
                     }
                 };
             });
         });
-        console.log("[textchecker-element] annotations", annotations);
+        debug("annotations", annotations);
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
     // add event handlers
@@ -168,8 +186,9 @@ export const attachToTextArea = ({
     // when resize element, update annotation
     // @ts-expect-error
     const resizeObserver = new ResizeObserver(() => {
+        debug("textarea resize");
+        textCheckerPopup.dismissCards();
         textChecker.resetAnnotations();
-        console.log("[textchecker-element] textarea resize");
         update();
     });
     resizeObserver.observe(textAreaElement);

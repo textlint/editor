@@ -6,5 +6,4 @@ export {
     TextCheckerCard,
     TextCheckerCardRect
 } from "./text-checker-popup-element";
-
 export { attachToTextArea, AttachTextAreaParams, LintEngineAPI } from "./attach-to-text-area";
