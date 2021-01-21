@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@textlint/script-compiler": "^0.8.0",
+    "textchecker-element": "^0.8.0",
     "meow": "^7.0.1",
     "read-pkg": "^5.2.0"
   },
