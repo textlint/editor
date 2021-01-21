@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/textlint/editor/compare/v0.8.0...v0.8.1) (2021-01-21)
+
+
+### Bug Fixes
+
+* fix textlint worker management ([83ccaa6](https://github.com/textlint/editor/commit/83ccaa618fc9d6db3a71be5769c8eda7165eb7fc))
+* support Mutation Observer ([dfdc815](https://github.com/textlint/editor/commit/dfdc8157e5469a830bceefe821b67b08d6eb12f2))
+
+
+
+
+
 # [0.8.0](https://github.com/textlint/editor/compare/v0.7.1...v0.8.0) (2020-10-27)
 
 
