@@ -105,11 +105,13 @@ export const attachToTextArea = ({
                     fixable: Boolean(message.fix)
                 };
                 const abortSignalMap = new WeakMap<TextCheckerElementRectItem, AbortController>();
+                let isMouseEnter = false;
                 return {
                     id: `${message.ruleId}::${message.line}:${message.column}`,
                     start: message.index,
                     end: message.index + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
+                        isMouseEnter = true;
                         const controller = abortSignalMap.get(rectItem);
                         debug("enter", controller);
                         if (controller) {
@@ -176,12 +178,13 @@ export const attachToTextArea = ({
                     },
                     async onMouseLeave({ rectItem }: { rectItem: TextCheckerElementRectItem }) {
                         try {
+                            isMouseEnter = false;
                             const controller = abortSignalMap.get(rectItem);
                             debug("leave", controller);
                             await delay(500, {
                                 signal: controller?.signal
                             });
-                            if (textCheckerPopup.isHovering) {
+                            if (textCheckerPopup.isHovering || isMouseEnter) {
                                 return;
                             }
                             textCheckerPopup.dismissCard(card);

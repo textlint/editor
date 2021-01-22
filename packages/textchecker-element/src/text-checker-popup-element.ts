@@ -333,11 +333,7 @@ export class TextCheckerPopupElement extends HTMLElement {
                             <p class="popup-listItem-content">${item.icon}${item.label}</p>
                         </li>`;
                     } else {
-                        return html` <li
-                            @click=${clickHandler}
-                            class="popup-listItem"
-                            style="--padding: ${itemPadding}px; padding-bottom: 0;"
-                        >
+                        return html` <li class="popup-listItem" style="--padding: ${itemPadding}px; padding-bottom: 0;">
                             <p class="popup-listItem-message">${item.message}</p>
                             <p class="popup-listItem-content">${item.icon}${item.label}</p>
                         </li>`;
