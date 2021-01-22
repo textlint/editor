@@ -1,6 +1,7 @@
 import { attachToTextArea, LintEngineAPI } from "../src/index";
 import type { TextlintScriptMetadata } from "@textlint/script-parser";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
+import { applyFixesToText } from "@textlint/source-code-fixer";
 import type {
     TextlintWorkerCommandFix,
     TextlintWorkerCommandLint,
@@ -114,22 +115,41 @@ export function escapeHTML(str: string) {
     const targetElement = document.querySelectorAll("textarea");
     const textlint = createTextlint({ ext: ".md" });
     const metadata = await workerStatus.ready();
+    type IgnoreTextSet = Set<string>;
+    const ignoreMarkMap = new Map<string, IgnoreTextSet>();
+    const getMatchText = (text: string, message: TextlintMessage) => {
+        // workaround: textlint message has not range
+        const range = message.fix ? message.fix.range : [message.index, message.index + 1];
+        return text.slice(range[0], range[1]);
+    };
+    const isIgnored = ({ text, message }: { text: string; message: TextlintMessage }) => {
+        const ignoredSet = ignoreMarkMap.get(message.ruleId);
+        if (!ignoredSet) {
+            return false;
+        }
+        return ignoredSet.has(getMatchText(text, message));
+    };
     const lintEngine: LintEngineAPI = {
-        lintText: textlint.lintText,
-        fixText: async ({ text, message }): Promise<{ output: string }> => {
-            if (!message.fix || !message.fix.range) {
-                return { output: text };
-            }
-            // replace fix.range[0, 1] with fix.text
+        async lintText({ text }) {
+            const results = await textlint.lintText({ text });
+            return results.map((result) => {
+                return {
+                    filePath: result.filePath,
+                    messages: result.messages.filter((message) => !isIgnored({ text, message }))
+                };
+            });
+        },
+        async fixText({ text, messages }): Promise<{ output: string }> {
+            const fixableMessages = messages.filter((message) => !isIgnored({ text, message }));
             return {
-                output: text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
+                output: applyFixesToText(text, fixableMessages)
             };
         },
-        fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
-            return textlint.fixText({ text });
-        },
-        fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
-            return textlint.fixText({ text, message });
+        async ignoreText({ text, message }: { text: string; message: TextlintMessage }): Promise<boolean> {
+            const ignoreSet = ignoreMarkMap.get(message.ruleId) ?? new Set<string>();
+            ignoreSet.add(getMatchText(text, message));
+            ignoreMarkMap.set(message.ruleId, ignoreSet);
+            return true;
         }
     };
     targetElement.forEach((element) => {

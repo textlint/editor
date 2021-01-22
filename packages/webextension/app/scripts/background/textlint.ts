@@ -108,7 +108,7 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?
             } as TextlintWorkerCommandFix);
         });
     };
-    const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<TextlintFixResult> => {
+    const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<void> => {
         return new Promise((resolve, _reject) => {
             setTimeout(() => {
                 resolve();
@@ -130,29 +130,14 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?
                         log("lintText", result);
                         return result;
                     }),
-                fixText: async ({ text, message }): Promise<{ output: string }> => {
-                    if (!message.fix || !message.fix.range) {
-                        return { output: text };
-                    }
-                    // replace fix.range[0, 1] with fix.text
-                    const result = {
-                        output:
-                            text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
-                    };
-                    log("fixText", result);
-                    return result;
-                },
-                fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
+                fixText({ text }): Promise<{ output: string }> {
                     return fixText({ text, ext }).then((result) => {
                         log("fixAll", result);
                         return result;
                     });
                 },
-                fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
-                    return fixText({ text, message, ext }).then((result) => {
-                        log("fixRule", result);
-                        return result;
-                    });
+                ignoreText(): Promise<boolean> {
+                    throw new Error("No implement");
                 }
             };
             return lintEngine;

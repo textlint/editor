@@ -124,7 +124,7 @@ export const compile = async (options: compileOptions) => {
     const inputFilePath = path.join(tempDir, "input.js");
     await fs.promises.writeFile(inputFilePath, code, "utf-8");
     const outputFilePath = options.outputDir;
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const config = createWebpackConfig({
             inputFilePath: inputFilePath,
             outputDir: outputFilePath,

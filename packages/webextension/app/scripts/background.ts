@@ -4,7 +4,7 @@ import * as Comlink from "comlink";
 import { createTextlintWorker, TextlintWorker } from "./background/textlint";
 import { openDatabase } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
-import { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
+import { TextlintResult } from "@textlint/types";
 
 browser.runtime.onInstalled.addListener((details) => {
     console.log("previousVersion", details.previousVersion);
@@ -139,42 +139,23 @@ browser.runtime.onConnect.addListener(async (port) => {
             console.log("[Background]", allLintResults);
             return allLintResults.flat();
         },
-        async fixText({ text, message }): Promise<{ output: string }> {
-            if (!message.fix || !message.fix.range) {
-                return { output: text };
+        async fixText({ text }): Promise<{ output: string }> {
+            let output = text;
+            for (const worker of workers) {
+                await worker
+                    .createLintEngine({ ext })
+                    .fixText({ text: output, messages: [] })
+                    .then((result) => {
+                        output = result.output;
+                        return result;
+                    });
             }
-            // replace fix.range[0, 1] with fix.text
             return {
-                output: text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
+                output
             };
         },
-        async fixAll({ text }: { text: string }): Promise<TextlintFixResult> {
-            let output = text;
-            return workers.reduce((promise, worker) => {
-                return promise.then(() => {
-                    return worker
-                        .createLintEngine({ ext })
-                        .fixAll({ text: output })
-                        .then((result) => {
-                            output = result.output;
-                            return result;
-                        });
-                });
-            }, (Promise.resolve() as any) as Promise<TextlintFixResult>);
-        },
-        fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult> {
-            let output = text;
-            return workers.reduce((promise, worker) => {
-                return promise.then(() => {
-                    return worker
-                        .createLintEngine({ ext })
-                        .fixRule({ text: output, message })
-                        .then((result) => {
-                            output = result.output;
-                            return result;
-                        });
-                });
-            }, (Promise.resolve() as any) as Promise<TextlintFixResult>);
+        async ignoreText(): Promise<boolean> {
+            throw new Error("No implement ignoreText on background");
         }
     };
     const backgroundExposedObject: backgroundExposedObject = {

@@ -1,5 +1,7 @@
 import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { nonRandomKey } from "./shared/page-contents-shared";
+import type { TextlintMessage } from "@textlint/types";
+import { applyFixesToText } from "@textlint/source-code-fixer";
 
 const commandHandler = <R>(command: string, args: any): Promise<R> => {
     return new Promise<R>((resolve) => {
@@ -26,11 +28,43 @@ const commandHandler = <R>(command: string, args: any): Promise<R> => {
         );
     });
 };
+type IgnoreTextSet = Set<string>;
+const ignoreMarkMap = new Map<string, IgnoreTextSet>();
+const getMatchText = (text: string, message: TextlintMessage) => {
+    // workaround: textlint message has not range
+    const range = message.fix ? message.fix.range : [message.index, message.index + 1];
+    return text.slice(range[0], range[1]);
+};
+const isIgnored = ({ text, message }: { text: string; message: TextlintMessage }) => {
+    const ignoredSet = ignoreMarkMap.get(message.ruleId);
+    if (!ignoredSet) {
+        return false;
+    }
+    return ignoredSet.has(getMatchText(text, message));
+};
 const lintEngine: LintEngineAPI = {
-    lintText: (args: any) => commandHandler("lintText", args),
-    fixText: (args: any) => commandHandler("fixText", args),
-    fixAll: (args: any) => commandHandler("fixAll", args),
-    fixRule: (args: any) => commandHandler("fixRule", args)
+    async lintText({ text }) {
+        const results = await commandHandler<ReturnType<LintEngineAPI["lintText"]>>("lintText", { text });
+        console.log("results", results);
+        return results.map((result) => {
+            return {
+                filePath: result.filePath,
+                messages: result.messages.filter((message) => !isIgnored({ text, message }))
+            };
+        });
+    },
+    async fixText({ text, messages }): Promise<{ output: string }> {
+        const fixableMessages = messages.filter((message) => !isIgnored({ text, message }));
+        return {
+            output: applyFixesToText(text, fixableMessages)
+        };
+    },
+    async ignoreText({ text, message }: { text: string; message: TextlintMessage }): Promise<boolean> {
+        const ignoreSet = ignoreMarkMap.get(message.ruleId) ?? new Set<string>();
+        ignoreSet.add(getMatchText(text, message));
+        ignoreMarkMap.set(message.ruleId, ignoreSet);
+        return true;
+    }
 };
 
 async function contentScriptMain() {

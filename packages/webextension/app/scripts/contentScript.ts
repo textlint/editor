@@ -33,9 +33,8 @@ window.addEventListener("message", (event) => {
         const lintEngine: LintEngineAPI = {
             lintText: port.lintText,
             fixText: port.fixText,
-            fixAll: port.fixAll,
-            fixRule: port.fixRule
-        } as const;
+            ignoreText: port.ignoreText
+        };
         const command = event.data.command as keyof typeof lintEngine;
         const args = event.data.args;
         const lintEngineElement = lintEngine[command];

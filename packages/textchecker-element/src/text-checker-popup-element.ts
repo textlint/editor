@@ -71,14 +71,33 @@ const createTextCheckerPopupState = (state?: Partial<TextCheckerPopupState>) => 
     };
 };
 
+export type TextCheckerPopupElementArgs = {
+    onEnter?: () => void;
+    onLeave?: () => void;
+};
+
 export class TextCheckerPopupElement extends HTMLElement {
     private overlay!: HTMLDivElement;
     private store: ReturnType<typeof createTextCheckerPopupState>;
+    public isHovering = false;
+    private onEnter?: () => void;
+    private onLeave?: () => void;
 
-    constructor() {
+    constructor(args: TextCheckerPopupElementArgs) {
         super();
+        this.onEnter = args.onEnter;
+        this.onLeave = args.onLeave;
         this.store = createTextCheckerPopupState();
     }
+
+    private onMouseEnter = () => {
+        this.isHovering = true;
+        this.onEnter?.();
+    };
+    private onMouseLeave = () => {
+        this.isHovering = false;
+        this.onLeave?.();
+    };
 
     connectedCallback(): void {
         const shadow = this.attachShadow({ mode: "open" });
@@ -105,6 +124,7 @@ export class TextCheckerPopupElement extends HTMLElement {
 }
 .popup-listItem {
     padding: var(--padding);
+    cursor: pointer;
 }
 
 .popup-listItem--icon, .popup-listItem--iconImage {
@@ -151,11 +171,18 @@ export class TextCheckerPopupElement extends HTMLElement {
 `;
 
         this.overlay = overlay;
+        this.overlay.addEventListener("mouseenter", this.onMouseEnter);
+        this.overlay.addEventListener("mouseleave", this.onMouseLeave);
         shadow.append(style);
         shadow.append(overlay);
         this.store.onChange(() => {
             this.renderAnnotationMarkers(this.store.get());
         });
+    }
+
+    public disconnectedCallback() {
+        this.overlay.removeEventListener("mouseenter", this.onMouseEnter);
+        this.overlay.removeEventListener("mouseleave", this.onMouseLeave);
     }
 
     public updateCard({
@@ -174,10 +201,8 @@ export class TextCheckerPopupElement extends HTMLElement {
         });
     }
 
-    public dismissCard(card?: TextCheckerCard) {
-        if (card) {
-            this.store.removeCardById(card.id);
-        }
+    public dismissCard(card: TextCheckerCard) {
+        this.store.removeCardById(card.id);
     }
 
     public dismissCards() {
@@ -240,7 +265,9 @@ export class TextCheckerPopupElement extends HTMLElement {
                 : []),
             {
                 label: html`Ignore`,
-                onClick: state.handlers?.onIgnore,
+                onClick: () => {
+                    state.handlers?.onIgnore?.();
+                },
                 icon: html`
                     <svg
                         class="popup-listItem--icon"
@@ -259,7 +286,7 @@ export class TextCheckerPopupElement extends HTMLElement {
                 `
             },
             {
-                label: html`See documentation`,
+                label: html`Rule <span class="popup-listItem--ruleName">${state.card.messageRuleId}</span>`,
                 onClick: state.handlers?.onSeeDocument,
                 icon: html` <svg
                     class="popup-listItem--iconImage"

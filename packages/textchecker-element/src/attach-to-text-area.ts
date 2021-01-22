@@ -1,6 +1,6 @@
 import { TextCheckerElement } from "./text-checker-element";
-import { TextCheckerCard, TextCheckerPopupElement } from "./text-checker-popup-element";
-import { TextlintFixResult, TextlintResult, TextlintMessage } from "@textlint/types";
+import { TextCheckerCard, TextCheckerPopupElement, TextCheckerPopupElementArgs } from "./text-checker-popup-element";
+import { TextlintMessage, TextlintResult } from "@textlint/types";
 import { TextCheckerElementRectItem } from "./text-checker-store";
 import pDebounce from "p-debounce";
 import delay from "delay";
@@ -24,13 +24,12 @@ const createCompositionHandler = () => {
  * Lint Server API
  */
 export type LintEngineAPI = {
+    // Lint Text
     lintText({ text }: { text: string }): Promise<TextlintResult[]>;
-    // fix all text with all rule
-    fixAll({ text }: { text: string }): Promise<TextlintFixResult>;
-    // fix all with with a rule
-    fixRule({ text, message }: { text: string; message: TextlintMessage }): Promise<TextlintFixResult>;
-    // fix the text
-    fixText({ text, message }: { text: string; message: TextlintMessage }): Promise<{ output: string }>;
+    // Fix Text with linted results
+    fixText({ text, messages }: { text: string; messages: TextlintMessage[] }): Promise<{ output: string }>;
+    // ignore the text
+    ignoreText({ text, message }: { text: string; message: TextlintMessage }): Promise<boolean>;
     // merge config and update
     mergeConfig?({ textlintrc }: { textlintrc: string }): Promise<void>;
 };
@@ -50,11 +49,11 @@ export type AttachTextAreaParams = {
 };
 
 let textCheckerPopup: TextCheckerPopupElement;
-const createTextCheckerPopupElement = () => {
+const createTextCheckerPopupElement = (args: TextCheckerPopupElementArgs) => {
     if (textCheckerPopup) {
         return textCheckerPopup;
     }
-    textCheckerPopup = new TextCheckerPopupElement();
+    textCheckerPopup = new TextCheckerPopupElement(args);
     document.body.append(textCheckerPopup);
     return textCheckerPopup;
 };
@@ -71,7 +70,11 @@ export const attachToTextArea = ({
         hoverPadding: 10
     });
     textAreaElement.before(textChecker);
-    const textCheckerPopup = createTextCheckerPopupElement();
+    const textCheckerPopup = createTextCheckerPopupElement({
+        onLeave() {
+            textCheckerPopup.dismissCards();
+        }
+    });
     const compositionHandler = createCompositionHandler();
     const update = pDebounce(async () => {
         // stop lint on IME composition
@@ -79,7 +82,7 @@ export const attachToTextArea = ({
             return;
         }
         // dismiss card before update annotations
-        textCheckerPopup.dismissCard();
+        textCheckerPopup.dismissCards();
         const text = textAreaElement.value;
         const results = await lintEngine.lintText({
             text
@@ -130,28 +133,43 @@ export const attachToTextArea = ({
                                 async onFixText() {
                                     const fixResults = await lintEngine.fixText({
                                         text,
-                                        message
+                                        messages: [message]
                                     });
                                     await updateText(fixResults.output, card);
                                 },
                                 async onFixAll() {
-                                    const fixResults = await lintEngine.fixAll({
-                                        text
+                                    const fixResults = await lintEngine.fixText({
+                                        text,
+                                        messages: result.messages
                                     });
                                     await updateText(fixResults.output, card);
                                 },
                                 async onFixRule() {
-                                    const fixResults = await lintEngine.fixRule({
+                                    const messages = result.messages.filter(
+                                        (aMessage) => aMessage.ruleId === message.ruleId
+                                    );
+                                    const fixResults = await lintEngine.fixText({
                                         text,
-                                        message
+                                        messages
                                     });
                                     await updateText(fixResults.output, card);
                                 },
-                                onIgnore() {
-                                    debug("onIgnore");
+                                async onIgnore() {
+                                    await lintEngine.ignoreText({
+                                        text,
+                                        message
+                                    });
+                                    await update();
                                 },
                                 onSeeDocument() {
-                                    debug("onSeeDocument");
+                                    const id = message.ruleId.includes("/")
+                                        ? message.ruleId.split("/")[1]
+                                        : message.ruleId;
+                                    window.open(
+                                        `https://github.com/search?q=textlint ${encodeURIComponent(id)}`,
+                                        "_blank",
+                                        "noopener"
+                                    );
                                 }
                             }
                         });
@@ -163,6 +181,9 @@ export const attachToTextArea = ({
                             await delay(500, {
                                 signal: controller?.signal
                             });
+                            if (textCheckerPopup.isHovering) {
+                                return;
+                            }
                             textCheckerPopup.dismissCard(card);
                         } catch (error) {
                             debug("Abort Canceled", error);
