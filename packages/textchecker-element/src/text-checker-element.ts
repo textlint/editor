@@ -270,7 +270,7 @@ export class TextCheckerElement extends HTMLElement {
                 };
                 return (
                     rect.left - hoverPadding <= point.x &&
-                    point.x <= rect.left + hoverPadding + rect.width &&
+                    point.x <= rect.left + rect.width + hoverPadding &&
                     rect.top - hoverPadding <= point.y &&
                     point.y <= rect.top + rect.height + hoverPadding
                 );

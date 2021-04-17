@@ -75,12 +75,15 @@ export const attachToTextArea = ({
     }
     const textChecker = new TextCheckerElement({
         targetElement: textAreaElement,
-        hoverPadding: 10
+        hoverPadding: 20
     });
     textAreaElement.before(textChecker);
+    const hoverMap = new Map<TextCheckerElementRectItem, boolean>();
     const textCheckerPopup = createTextCheckerPopupElement({
         onLeave() {
-            textCheckerPopup.dismissCards();
+            if (!textCheckerPopup.isHovering && hoverMap.size === 0) {
+                textCheckerPopup.dismissCards();
+            }
         }
     });
     const compositionHandler = createCompositionHandler();
@@ -113,13 +116,12 @@ export const attachToTextArea = ({
                     fixable: Boolean(message.fix)
                 };
                 const abortSignalMap = new WeakMap<TextCheckerElementRectItem, AbortController>();
-                let isMouseEnter = false;
                 return {
                     id: `${message.ruleId}::${message.line}:${message.column}`,
                     start: message.index,
                     end: message.index + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
-                        isMouseEnter = true;
+                        hoverMap.set(rectItem, true);
                         const controller = abortSignalMap.get(rectItem);
                         debug("enter", controller);
                         if (controller) {
@@ -186,13 +188,13 @@ export const attachToTextArea = ({
                     },
                     async onMouseLeave({ rectItem }: { rectItem: TextCheckerElementRectItem }) {
                         try {
-                            isMouseEnter = false;
+                            hoverMap.delete(rectItem);
                             const controller = abortSignalMap.get(rectItem);
                             debug("leave", controller);
                             await delay(500, {
                                 signal: controller?.signal
                             });
-                            if (textCheckerPopup.isHovering || isMouseEnter) {
+                            if (textCheckerPopup.isHovering || hoverMap.get(rectItem)) {
                                 return;
                             }
                             textCheckerPopup.dismissCard(card);
@@ -216,7 +218,6 @@ export const attachToTextArea = ({
     textAreaElement.addEventListener("focusout", hideAnnotations);
     update();
     // when resize element, update annotation
-    // @ts-expect-error
     const resizeObserver = new ResizeObserver(() => {
         debug("textarea resize");
         textCheckerPopup.dismissCards();
