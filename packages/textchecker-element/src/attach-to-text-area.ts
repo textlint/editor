@@ -65,6 +65,10 @@ export const attachToTextArea = ({
     lintingDebounceMs,
     lintEngine
 }: AttachTextAreaParams): (() => void) => {
+    if (!textAreaElement) {
+        debug("Can not attach. No textarea", textAreaElement);
+        return () => {};
+    }
     if (textAreaElement.readOnly) {
         debug("Can not attach textarea that is readonly", textAreaElement);
         return () => {};

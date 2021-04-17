@@ -66,6 +66,9 @@ const lintEngine: LintEngineAPI = {
         return true;
     }
 };
+const isHTMLTextAreaElement = (element: Element): element is HTMLTextAreaElement => {
+    return element.tagName.toLowerCase() === "textarea";
+};
 
 async function contentScriptMain() {
     const set = new WeakSet<HTMLTextAreaElement>();
@@ -82,7 +85,11 @@ async function contentScriptMain() {
         set.add(textAreaElement);
     };
     const targetElement = document.querySelectorAll("textarea:not([readonly])");
-    targetElement.forEach(callback);
+    targetElement.forEach((element) => {
+        if (isHTMLTextAreaElement(element)) {
+            callback(element);
+        }
+    });
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
