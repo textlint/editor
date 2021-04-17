@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/textlint/editor/compare/v0.8.2...v0.9.0) (2021-04-17)
+
+
+### Features
+
+* support "ignore" feature ([ef14d33](https://github.com/textlint/editor/commit/ef14d337c48150d99dd853cac243a988d3244727))
+
+
+
+
+
 # [0.8.0](https://github.com/textlint/editor/compare/v0.7.1...v0.8.0) (2020-10-27)
 
 

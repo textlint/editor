@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/textlint/editor/compare/v0.8.2...v0.9.0) (2021-04-17)
+
+
+### Bug Fixes
+
+* **webextension:** cache worker x script ([8ea8ea5](https://github.com/textlint/editor/commit/8ea8ea515e53985bd1826dcdc19be52f3ba10d24))
+* **webextension:** support ext ([a3e86dc](https://github.com/textlint/editor/commit/a3e86dc99b71ccdda98ef7430409ebdb1ee01313))
+* **webextension:** support ext ([f4c2284](https://github.com/textlint/editor/commit/f4c2284dd7d69226ed58a2e54bae886fdd3f32ad))
+* dot not attach readonly textarea ([236c050](https://github.com/textlint/editor/commit/236c050337596fd1490d98c5f7a2db32d2e880f3)), closes [#26](https://github.com/textlint/editor/issues/26)
+* fix Cannot read property 'targetElement' of undefined ([247b236](https://github.com/textlint/editor/commit/247b2360a927c5a9fd1cd88c2ce48ecb99c4e87a)), closes [#25](https://github.com/textlint/editor/issues/25)
+* page → browser action ([fc754da](https://github.com/textlint/editor/commit/fc754da14aad24d3f6160aed81a2aa7b266bedcc))
+* pin "@adobe/react-spectrum" reg ([337c340](https://github.com/textlint/editor/commit/337c340f0344ad3fcfab72ec24785aa3d8128726))
+
+
+### Features
+
+* support "ignore" feature ([ef14d33](https://github.com/textlint/editor/commit/ef14d337c48150d99dd853cac243a988d3244727))
+
+
+
+
+
 ## [0.8.1](https://github.com/textlint/editor/compare/v0.8.0...v0.8.1) (2021-01-21)
 
 

@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/textlint/editor/compare/v0.8.2...v0.9.0) (2021-04-17)
+
+
+### Bug Fixes
+
+* **textchecker-element:** fix to click fix ([1fb2b47](https://github.com/textlint/editor/commit/1fb2b4776d4274919013968f140f2a200f573427))
+* **webextension:** cache worker x script ([8ea8ea5](https://github.com/textlint/editor/commit/8ea8ea515e53985bd1826dcdc19be52f3ba10d24))
+* **webextension:** support ext ([a3e86dc](https://github.com/textlint/editor/commit/a3e86dc99b71ccdda98ef7430409ebdb1ee01313))
+* **webextension:** support ext ([f4c2284](https://github.com/textlint/editor/commit/f4c2284dd7d69226ed58a2e54bae886fdd3f32ad))
+* dot not attach readonly textarea ([236c050](https://github.com/textlint/editor/commit/236c050337596fd1490d98c5f7a2db32d2e880f3)), closes [#26](https://github.com/textlint/editor/issues/26)
+* fix Cannot read property 'targetElement' of undefined ([247b236](https://github.com/textlint/editor/commit/247b2360a927c5a9fd1cd88c2ce48ecb99c4e87a)), closes [#25](https://github.com/textlint/editor/issues/25)
+* fix hide popup when no hovering item ([d4cbea6](https://github.com/textlint/editor/commit/d4cbea6f44b28ef325a0f7f9d96ef738fa280717))
+* mouse handling ([4238396](https://github.com/textlint/editor/commit/4238396ee347d4a42a987a5055e6c5a37be6cad2))
+* page → browser action ([fc754da](https://github.com/textlint/editor/commit/fc754da14aad24d3f6160aed81a2aa7b266bedcc))
+* pin "@adobe/react-spectrum" reg ([337c340](https://github.com/textlint/editor/commit/337c340f0344ad3fcfab72ec24785aa3d8128726))
+* use @kvs/env ([a72c5b5](https://github.com/textlint/editor/commit/a72c5b54b056f52c25e8d2c295f655759b7dd098))
+
+
+### Features
+
+* support "ignore" feature ([ef14d33](https://github.com/textlint/editor/commit/ef14d337c48150d99dd853cac243a988d3244727))
+* **textchecker-element:** hide after 500ms delay ([18927bc](https://github.com/textlint/editor/commit/18927bc3b2e6385013a46611b62f42289cbbf74e))
+
+
+
+
+
 ## [0.8.2](https://github.com/textlint/editor/compare/v0.8.1...v0.8.2) (2021-01-21)
 
 **Note:** Version bump only for package @textlint/editor
