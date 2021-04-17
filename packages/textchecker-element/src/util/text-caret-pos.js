@@ -99,10 +99,10 @@ var spanProperties = [
 ];
 
 var isBrowser = typeof window !== "undefined";
-var isFirefox = isBrowser && global.mozInnerScreenX != null;
+var isFirefox = isBrowser && globalThis.mozInnerScreenX != null;
 
-var _getComputedStyle = global.getComputedStyle
-    ? global.getComputedStyle
+var _getComputedStyle = globalThis.getComputedStyle
+    ? globalThis.getComputedStyle
     : function (element) {
           // currentStyle for IE < 9
           return element.currentStyle;

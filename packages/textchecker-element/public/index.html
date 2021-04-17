@@ -241,6 +241,10 @@
 <aside class="side">
     <div id="js-status" class="status"></div>
 </aside>
-<script src="./index.ts"></script>
+<script type="module">
+    import { run } from "/public/index.ts";
+
+    run("./textlint.js");
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import { attachToTextArea, LintEngineAPI } from "../src/index";
+import { attachToTextArea, LintEngineAPI } from "../src";
 import type { TextlintScriptMetadata } from "@textlint/script-parser";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import { applyFixesToText } from "@textlint/source-code-fixer";
@@ -14,7 +14,6 @@ const updateStatus = (status: string) => {
         statusElement.textContent = status;
     }
 };
-const worker = new Worker("textlint.js");
 const waiterForInit = (worker: Worker) => {
     let _resolve: null | ((init: TextlintScriptMetadata) => void) = null;
     const deferred = new Promise<TextlintScriptMetadata>((resolve) => {
@@ -38,10 +37,7 @@ const waiterForInit = (worker: Worker) => {
         }
     };
 };
-
-const workerStatus = waiterForInit(worker);
-
-const createTextlint = ({ ext }: { ext: string }) => {
+const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
     const lintText: LintEngineAPI["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult[]> => {
         updateStatus("linting...");
         return new Promise((resolve, _reject) => {
@@ -101,7 +97,7 @@ const createTextlint = ({ ext }: { ext: string }) => {
     };
 };
 
-export function escapeHTML(str: string) {
+function escapeHTML(str: string) {
     return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -110,10 +106,16 @@ export function escapeHTML(str: string) {
         .replace(/'/g, "&#039;");
 }
 
-(async () => {
+/**
+ * Entry point
+ * @param workerUrl
+ */
+export async function run(workerUrl: string) {
+    const worker = new Worker(workerUrl);
+    const workerStatus = waiterForInit(worker);
     const text = new URL(location.href).searchParams.get("text");
     const targetElement = document.querySelectorAll("textarea");
-    const textlint = createTextlint({ ext: ".md" });
+    const textlint = createTextlint({ worker, ext: ".md" });
     const metadata = await workerStatus.ready();
     type IgnoreTextSet = Set<string>;
     const ignoreMarkMap = new Map<string, IgnoreTextSet>();
@@ -186,4 +188,4 @@ export function escapeHTML(str: string) {
     document.querySelector("#install")?.addEventListener("click", () => {
         window.open("textlint.js", "_blank");
     });
-})();
+}

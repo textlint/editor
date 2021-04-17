@@ -1,7 +1,7 @@
 import { TextCheckerElement } from "./text-checker-element";
 import { TextCheckerCard, TextCheckerPopupElement, TextCheckerPopupElementArgs } from "./text-checker-popup-element";
-import { TextlintMessage, TextlintResult } from "@textlint/types";
-import { TextCheckerElementRectItem } from "./text-checker-store";
+import type { TextlintMessage, TextlintResult } from "@textlint/types";
+import type { TextCheckerElementRectItem } from "./text-checker-store";
 import pDebounce from "p-debounce";
 import delay from "delay";
 import { debug } from "./util/logger";
