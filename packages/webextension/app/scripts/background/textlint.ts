@@ -1,4 +1,3 @@
-import { browser } from "webextension-polyfill-ts";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import type { LintEngineAPI } from "textchecker-element";
 import {
@@ -8,14 +7,7 @@ import {
     TextlintWorkerCommandResponse
 } from "@textlint/script-compiler";
 import type { TextlintRcConfig } from "@textlint/config-loader";
-
-browser.runtime.onInstalled.addListener((details) => {
-    console.log("previousVersion", details.previousVersion);
-});
-
-browser.tabs.onUpdated.addListener(async (tabId) => {
-    browser.pageAction.show(tabId);
-});
+import { Script } from "./database";
 const waiterForInit = (worker: Worker) => {
     let initialized = false;
     let _resolve: null | ((init: boolean) => void) = null;
@@ -54,8 +46,11 @@ const createWorkerRef = (worker: Worker) => {
     };
 };
 export type TextlintWorker = ReturnType<typeof createTextlintWorker>;
-export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?: TextlintRcConfig) => {
-    const defaultWorker = new Worker(defaultWorkerUrl);
+export const createTextlintWorker = (script: Script) => {
+    const blob = new Blob([script.code], { type: "application/javascript" });
+    const workerUrl = URL.createObjectURL(blob);
+    const textlintrc = JSON.parse(script.textlintrc) as TextlintRcConfig;
+    const defaultWorker = new Worker(workerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
         return new Promise((resolve, _reject) => {
@@ -78,6 +73,9 @@ export const createTextlintWorker = (defaultWorkerUrl: string | URL, textlintrc?
             } as TextlintWorkerCommandLint);
         });
     };
+    // Note: currently does not use background implementation.
+    // Just use @textlint/source-code-fixer
+    // See pageScript.ts
     const fixText = async ({
         text,
         ext,

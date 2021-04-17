@@ -53,6 +53,8 @@ const lintEngine: LintEngineAPI = {
             };
         });
     },
+    // Note: currently does not use background implementation.
+    // Just use @textlint/source-code-fixer
     async fixText({ text, messages }): Promise<{ output: string }> {
         const fixableMessages = messages.filter((message) => !isIgnored({ text, message }));
         return {

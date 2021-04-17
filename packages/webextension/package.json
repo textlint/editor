@@ -41,6 +41,6 @@
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.1",
     "textchecker-element": "^0.8.1",
-    "webextension-polyfill-ts": "^0.22.0"
+    "webextension-polyfill-ts": "^0.25.0"
   }
 }

@@ -16,8 +16,11 @@ export type Script = {
 export type TextlintDBSchema = {
     scripts: Script[];
 };
+export const keyOfScript = (script: { name: string; namespace: string }): string => {
+    return `${script.namespace}@${script.name}`;
+};
 const equalScript = (a: { name: string; namespace: string }, b: { name: string; namespace: string }): boolean => {
-    return a.name === b.name && a.namespace === b.namespace;
+    return keyOfScript(a) === keyOfScript(b);
 };
 
 export async function openDatabase() {
