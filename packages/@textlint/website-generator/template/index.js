@@ -8,7 +8,6 @@ var __awaiter =
                       resolve(value);
                   });
         }
-
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) {
                 try {
@@ -17,7 +16,6 @@ var __awaiter =
                     reject(e);
                 }
             }
-
             function rejected(value) {
                 try {
                     step(generator["throw"](value));
@@ -25,16 +23,14 @@ var __awaiter =
                     reject(e);
                 }
             }
-
             function step(result) {
                 result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
             }
-
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     };
 import { attachToTextArea } from "https://cdn.skypack.dev/textchecker-element";
-
+import { applyFixesToText } from "@textlint/source-code-fixer";
 const statusElement = document.querySelector("#js-status");
 const updateStatus = (status) => {
     if (statusElement) {
@@ -121,7 +117,6 @@ const createTextlint = ({ ext }) => {
         fixText
     };
 };
-
 export function escapeHTML(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -130,32 +125,55 @@ export function escapeHTML(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
-
 (() =>
     __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
         const text = new URL(location.href).searchParams.get("text");
-        const targetElement = document.querySelectorAll("textarea:not([readonly])");
+        const targetElement = document.querySelectorAll("textarea");
         const textlint = createTextlint({ ext: ".md" });
         const metadata = yield workerStatus.ready();
+        const ignoreMarkMap = new Map();
+        const getMatchText = (text, message) => {
+            // workaround: textlint message has not range
+            const range = message.fix ? message.fix.range : [message.index, message.index + 1];
+            return text.slice(range[0], range[1]);
+        };
+        const isIgnored = ({ text, message }) => {
+            const ignoredSet = ignoreMarkMap.get(message.ruleId);
+            if (!ignoredSet) {
+                return false;
+            }
+            return ignoredSet.has(getMatchText(text, message));
+        };
         const lintEngine = {
-            lintText: textlint.lintText,
-            fixText: ({ text, message }) =>
-                __awaiter(void 0, void 0, void 0, function* () {
-                    if (!message.fix || !message.fix.range) {
-                        return { output: text };
-                    }
-                    // replace fix.range[0, 1] with fix.text
-                    return {
-                        output:
-                            text.slice(0, message.fix.range[0]) + message.fix.text + text.slice(message.fix.range[1])
-                    };
-                }),
-            fixAll({ text }) {
-                return textlint.fixText({ text });
+            lintText({ text }) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const results = yield textlint.lintText({ text });
+                    return results.map((result) => {
+                        return {
+                            filePath: result.filePath,
+                            messages: result.messages.filter((message) => !isIgnored({ text, message }))
+                        };
+                    });
+                });
             },
-            fixRule({ text, message }) {
-                return textlint.fixText({ text, message });
+            fixText({ text, messages }) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    const fixableMessages = messages.filter((message) => !isIgnored({ text, message }));
+                    return {
+                        output: applyFixesToText(text, fixableMessages)
+                    };
+                });
+            },
+            ignoreText({ text, message }) {
+                var _a;
+                return __awaiter(this, void 0, void 0, function* () {
+                    const ignoreSet =
+                        (_a = ignoreMarkMap.get(message.ruleId)) !== null && _a !== void 0 ? _a : new Set();
+                    ignoreSet.add(getMatchText(text, message));
+                    ignoreMarkMap.set(message.ruleId, ignoreSet);
+                    return true;
+                });
             }
         };
         targetElement.forEach((element) => {

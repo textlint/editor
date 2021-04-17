@@ -43,7 +43,7 @@
     "website-generator": "ts-node tools/website-generator.ts",
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "prepublish": "npm run --if-present build",
+    "prepublishOnly": "npm run --if-present build && npm run website-generator",
     "test": "mocha \"test/**/*.ts\"",
     "watch": "tsc -p . --watch"
   },
