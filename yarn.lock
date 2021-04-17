@@ -8672,11 +8672,6 @@ kuromojin@^2.0.0:
   dependencies:
     kuromoji "0.1.1"
 
-kv-storage-polyfill@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/kv-storage-polyfill/-/kv-storage-polyfill-2.0.0.tgz#ae068ff3c5864dc336d126bee42a7c8d9308d5e8"
-  integrity sha512-K4tV8kYT2YNP00GN77pJ099cpwaYCOBGYY2NsfLjUtimE49YI9OYX+MGzOGHNOttUNCKC2Y3YZpV7P+HY2tgCQ==
-
 lerna@^3.22.1:
   version "3.22.1"
   resolved "https://registry.yarnpkg.com/lerna/-/lerna-3.22.1.tgz#82027ac3da9c627fd8bf02ccfeff806a98e65b62"

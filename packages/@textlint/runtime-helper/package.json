@@ -45,7 +45,7 @@
     "@textlint/module-interop": "^1.2.1",
     "@textlint/types": "^1.5.1",
     "@textlint/utils": "^1.2.1",
-    "kv-storage-polyfill": "^2.0.0"
+    "@kvs/env": "^1.1.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",

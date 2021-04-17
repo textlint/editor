@@ -20,7 +20,6 @@ const { openStorage } = require("@textlint/runtime-helper");
 var zlib = require("zlibjs/bin/gunzip.min.js");
 var DictionaryLoader = require("kuromoji/src/loader/DictionaryLoader");
 //=== Modify kuromoji.js's browser loader
-const dictionaryStorage = openStorage("kuromoji");
 const urlMap = new Map();
 class Deferred {
     constructor() {
@@ -49,6 +48,7 @@ BrowserDictionaryLoader.prototype = Object.create(DictionaryLoader.prototype);
 BrowserDictionaryLoader.prototype.loadArrayBuffer = async function (url, callback) {
     // https://github.com/takuyaa/kuromoji.js/issues/37
     const fixedURL = url.replace("https:/", "https://");
+    const dictionaryStorage = await openStorage("kuromoji");
     const cachedDictBuffer = await dictionaryStorage.get(fixedURL);
     if (cachedDictBuffer) {
         // console.log("return cache", cachedDictBuffer);
