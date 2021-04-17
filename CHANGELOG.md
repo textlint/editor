@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/textlint/editor/compare/v0.9.1...v0.9.2) (2021-04-17)
+
+
+### Bug Fixes
+
+* remove copy of js ([385b62e](https://github.com/textlint/editor/commit/385b62ebdba2805792eefa279d54262acf9d8a21))
+
+
+
+
+
 ## [0.9.1](https://github.com/textlint/editor/compare/v0.9.0...v0.9.1) (2021-04-17)
 
 **Note:** Version bump only for package @textlint/editor
