@@ -45,7 +45,8 @@
   },
   "dependencies": {
     "@textlint/kernel": "^3.4.1",
-    "@textlint/types": "^1.5.1"
+    "@textlint/types": "^1.5.1",
+    "@textlint/config-loader": "^0.8.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",
