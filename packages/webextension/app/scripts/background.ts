@@ -118,21 +118,23 @@ browser.runtime.onConnect.addListener(async (port) => {
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
     const scripts = await db.findScriptsWithPatten(originUrl);
-    const workers = scripts.map((script) => {
+    const scriptWorkers = scripts.map((script) => {
         const blob = new Blob([script.code], { type: "application/javascript" });
         // TODO: comment support for textlintrc
         const textlintWorker = createTextlintWorker(URL.createObjectURL(blob), JSON.parse(script.textlintrc));
         addWorker(originUrl, textlintWorker);
-        return textlintWorker;
+        return {
+            worker: textlintWorker,
+            ext: script.ext
+        };
     });
-    console.log("[Background] workers started", workers);
+    console.log("[Background] workers started", scriptWorkers);
     // Support multiple workers
-    const ext = ".md";
     const lintEngine: LintEngineAPI = {
         async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
             console.log("[Background] text:", text);
             const allLintResults = await Promise.all(
-                workers.map((worker) => {
+                scriptWorkers.map(({ worker, ext }) => {
                     return worker.createLintEngine({ ext }).lintText({ text });
                 })
             );
@@ -141,7 +143,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         },
         async fixText({ text }): Promise<{ output: string }> {
             let output = text;
-            for (const worker of workers) {
+            for (const { worker, ext } of scriptWorkers) {
                 await worker
                     .createLintEngine({ ext })
                     .fixText({ text: output, messages: [] })
@@ -170,6 +172,6 @@ browser.runtime.onConnect.addListener(async (port) => {
     });
     console.log("[Background] content port", port);
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
-    await Promise.all(workers.map((worker) => worker.ready()));
+    await Promise.all(scriptWorkers.map((worker) => worker.ready()));
     port.postMessage("textlint-editor-boot");
 });
