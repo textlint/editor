@@ -25,7 +25,7 @@
       "scripts/background.js"
     ]
   },
-  "page_action": {
+  "browser_action": {
     "default_icon": {
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
@@ -43,11 +43,5 @@
     "webRequestBlocking",
     "tabs",
     "<all_urls>"
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "textlint-editor@example.com",
-      "strict_min_version": "42.0"
-    }
-  }
-}
+  ]
+
