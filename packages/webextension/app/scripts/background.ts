@@ -172,6 +172,6 @@ browser.runtime.onConnect.addListener(async (port) => {
     });
     console.log("[Background] content port", port);
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
-    await Promise.all(scriptWorkers.map((worker) => worker.ready()));
+    await Promise.all(scriptWorkers.map(({ worker }) => worker.ready()));
     port.postMessage("textlint-editor-boot");
 });
