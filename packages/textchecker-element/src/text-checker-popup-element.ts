@@ -206,7 +206,6 @@ export class TextCheckerPopupElement extends HTMLElement {
     }
 
     public dismissCards() {
-        console.trace("test");
         this.store.removeAllCard();
     }
 

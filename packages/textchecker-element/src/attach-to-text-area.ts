@@ -79,6 +79,11 @@ export const attachToTextArea = ({
     });
     textAreaElement.before(textChecker);
     const hoverMap = new Map<TextCheckerElementRectItem, boolean>();
+    const dismissCards = () => {
+        if (!textCheckerPopup.isHovering && hoverMap.size === 0) {
+            textCheckerPopup.dismissCards();
+        }
+    };
     const textCheckerPopup = createTextCheckerPopupElement({
         onLeave() {
             if (!textCheckerPopup.isHovering && hoverMap.size === 0) {
@@ -208,14 +213,10 @@ export const attachToTextArea = ({
         debug("annotations", annotations);
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
-    // add event handlers
-    const hideAnnotations = () => {
-        textCheckerPopup.dismissCards();
-    };
     textAreaElement.addEventListener("compositionstart", compositionHandler);
     textAreaElement.addEventListener("compositionend", compositionHandler);
     textAreaElement.addEventListener("input", update);
-    textAreaElement.addEventListener("focusout", hideAnnotations);
+    textAreaElement.addEventListener("focusout", dismissCards);
     update();
     // when resize element, update annotation
     const resizeObserver = new ResizeObserver(() => {
@@ -239,7 +240,7 @@ export const attachToTextArea = ({
         textAreaElement.removeEventListener("compositionstart", compositionHandler);
         textAreaElement.removeEventListener("compositionend", compositionHandler);
         textAreaElement.removeEventListener("input", update);
-        textAreaElement.removeEventListener("blur", hideAnnotations);
+        textAreaElement.removeEventListener("blur", dismissCards);
         resizeObserver.disconnect();
     };
 };
