@@ -81,7 +81,7 @@ async function contentScriptMain() {
         });
         set.add(textAreaElement);
     };
-    const targetElement = document.querySelectorAll("textarea");
+    const targetElement = document.querySelectorAll("textarea:not([readonly])");
     targetElement.forEach(callback);
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {

@@ -65,6 +65,10 @@ export const attachToTextArea = ({
     lintingDebounceMs,
     lintEngine
 }: AttachTextAreaParams): (() => void) => {
+    if (textAreaElement.readOnly) {
+        debug("Can not attach textarea that is readonly", textAreaElement);
+        return () => {};
+    }
     const textChecker = new TextCheckerElement({
         targetElement: textAreaElement,
         hoverPadding: 10

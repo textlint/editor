@@ -8,6 +8,7 @@ var __awaiter =
                       resolve(value);
                   });
         }
+
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) {
                 try {
@@ -16,6 +17,7 @@ var __awaiter =
                     reject(e);
                 }
             }
+
             function rejected(value) {
                 try {
                     step(generator["throw"](value));
@@ -23,13 +25,16 @@ var __awaiter =
                     reject(e);
                 }
             }
+
             function step(result) {
                 result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
             }
+
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     };
 import { attachToTextArea } from "https://cdn.skypack.dev/textchecker-element";
+
 const statusElement = document.querySelector("#js-status");
 const updateStatus = (status) => {
     if (statusElement) {
@@ -116,6 +121,7 @@ const createTextlint = ({ ext }) => {
         fixText
     };
 };
+
 export function escapeHTML(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -124,11 +130,12 @@ export function escapeHTML(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
 (() =>
     __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
         const text = new URL(location.href).searchParams.get("text");
-        const targetElement = document.querySelectorAll("textarea");
+        const targetElement = document.querySelectorAll("textarea:not([readonly])");
         const textlint = createTextlint({ ext: ".md" });
         const metadata = yield workerStatus.ready();
         const lintEngine = {
