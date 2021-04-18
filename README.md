@@ -18,7 +18,6 @@ textlint editor project.
 If you navigate to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
 
 
-
 ## Supports textarea
 
 - [x] textarea
@@ -68,6 +67,13 @@ Install with yarn and build before editing files.
     yarn install
     yarn run build
     cd packages/you want to edit
+
+### Develop web extension
+
+    yarn install
+    yarn run build
+    cd packages/webextension
+    yarn dev chrome # yarn dev firefox
 
 ## Architecture
 
