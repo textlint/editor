@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/textlint/editor/compare/v0.9.3...v0.10.0) (2021-04-18)
+
+
+### Bug Fixes
+
+* **script-parser:** fix script banner format ([166694c](https://github.com/textlint/editor/commit/166694cc50853e67631ab07833a525b219f9985c))
+
+
+### Features
+
+* add data-textlint-editor-embedded ([252b594](https://github.com/textlint/editor/commit/252b594aed0ec735c2a64e4bc24990fc889961c9))
+
+
+
+
+
 ## [0.9.3](https://github.com/textlint/editor/compare/v0.9.2...v0.9.3) (2021-04-18)
 
 
