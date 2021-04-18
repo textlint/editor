@@ -2,26 +2,25 @@
 
 textlint editor project.
 
-## Install
-
-Install with yarn and build before editing files.
-
-    yarn install
-    yarn run build
-
 ## Usage
 
-- [ ] Write usage instructions
+1. Install Web Extensions
+  - [ ] Chrome
+  - [ ] Firefox
+2. Visit `textlint-worker.js` URL
+3. Install the textlint worker script
+4. After that, you can linting any supported textarea with your textlint worker script
 
 ### Browser Extensions
 
 See [packages/webextension](packages/webextension/README.md)
 
-## Working on
+## Supports textarea
 
 - [x] textarea
 - [ ] contenteditable
 - [ ] Google Docs
+- [ ] Twitter
 - [ ] Medium
 - [ ] Wordpress
 - [ ] CodeMirror
@@ -51,6 +50,14 @@ However, textlint is pluggable linting tools and textlint can not provide recomm
 For example, WebExtension download own optimized textlint that is generated code [@textlint/script-compiler](packages/@textlint/script-compiler), and use it for linting.
 
 So, we can focus on the compiler and frontend of editor.
+
+## Develop
+
+Install with yarn and build before editing files.
+
+    yarn install
+    yarn run build
+    cd packages/you want to edit
 
 ## Architecture
 
