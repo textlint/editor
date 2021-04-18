@@ -186,6 +186,6 @@ export async function run(workerUrl: string) {
     document.querySelector("#metadata")?.append(metadataDiv);
     // install - textlint-editor extension will hook it
     document.querySelector("#install")?.addEventListener("click", () => {
-        window.open("textlint.js", "_blank");
+        window.open("textlint-worker.js", "_blank");
     });
 }
