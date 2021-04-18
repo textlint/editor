@@ -222,6 +222,12 @@
             display: flex;
             align-items: center;
         }
+
+        .status {
+            color: var(--c3);
+            background: var(--c1);
+            padding: 0.5em 1em;
+        }
     </style>
 </head>
 <body>
@@ -231,13 +237,13 @@
         <textarea id="input" class="textarea" spellcheck="false">お刺身が食べれない！お寿司は食べられる。
 東京特許許可局は難しい漢字だ。
 今すぐ行動することができる。
-
-This spellinng is a typo.
+This spellinng is maybe a typo.
 </textarea>
 
     </main>
     <button id="install">Install</button>
-    <label for="install">* require <a href="https://github.com/textlint/editor/tree/master/packages/webextension">textlint-editor browser extension</a></label>
+    <label for="install">* require <a href="https://github.com/textlint/editor/tree/master/packages/webextension">textlint-editor
+        browser extension</a></label>
     <div id="metadata" class="metadata"></div>
 </div>
 <aside class="side">
