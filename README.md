@@ -5,8 +5,10 @@ textlint editor project.
 ## Usage
 
 1. Install Web Extensions
-  - [ ] Chrome
-  - [ ] Firefox
+
+- [ ] Chrome
+- [ ] Firefox
+
 2. Visit `textlint-worker.js` URL
 3. Install the textlint worker script
 4. After that, you can linting any supported textarea with your textlint worker script
@@ -26,6 +28,9 @@ See [packages/webextension](packages/webextension/README.md)
 - [ ] CodeMirror
 - [ ] ACE
 
+If you want to support new textarea, please create an issues or pull request
+to [textchecker-element](./packages/textchecker-element).
+
 ## Purpose
 
 - Privacy first
@@ -34,20 +39,23 @@ See [packages/webextension](packages/webextension/README.md)
     - Optimize your needs
     - [@textlint/script-compiler](packages/@textlint/script-compiler) is code generator
 
-[Grammarly](https://grammarly.com/) and [Microsoft Editor](https://www.microsoft.com/microsoft-365/microsoft-editor) is useful and high-quality linting tools, but these require network access, and you must pass your text to their server. 
+[Grammarly](https://grammarly.com/) and [Microsoft Editor](https://www.microsoft.com/microsoft-365/microsoft-editor) is
+useful and high-quality linting tools, but these require network access, and you must pass your text to their server.
 
-[textlint](https://github.com/textlint/textlint) can be works at offline.
-Because, textlint is written by JavaScript, textlint rules are also written by JavaScript.
+[textlint](https://github.com/textlint/textlint) can be works at offline. Because, textlint is written by JavaScript,
+textlint rules are also written by JavaScript.
 
-However, textlint is pluggable linting tools and textlint can not provide recommended/default ruleset. 
+However, textlint is pluggable linting tools and textlint can not provide recommended/default ruleset.
 
-@textlint/editor project resolve this issue using [@textlint/script-compiler](packages/@textlint/script-compiler) that generate optimized code from your textlint configuration.
+@textlint/editor project resolve this issue using [@textlint/script-compiler](packages/@textlint/script-compiler) that
+generate optimized code from your textlint configuration.
 
 ![Architecture](docs/resources/textlint_editor.png)
 
 <!-- https://excalidraw.com/#json=5173529272123392,zEJpgAvspIPHh-IExwh69w -->
 
-For example, WebExtension download own optimized textlint that is generated code [@textlint/script-compiler](packages/@textlint/script-compiler), and use it for linting.
+For example, WebExtension download own optimized textlint that is generated
+code [@textlint/script-compiler](packages/@textlint/script-compiler), and use it for linting.
 
 So, we can focus on the compiler and frontend of editor.
 
@@ -85,13 +93,13 @@ Avoid side-effect on website.
 
 ### Compiler target
 
-[@textlint/script-compiler](packages/@textlint/script-compiler) generate bundled JavaScript code. 
+[@textlint/script-compiler](packages/@textlint/script-compiler) generate bundled JavaScript code.
 
 Compiler compilertextlint + rule + textlintrc into a single library code.
 
 - Chrome Extension code
     - chrome.storage.local for cache
-    - libraryTarget: 
+    - libraryTarget:
 - Web Worker code
     - kvstorage cache
     - libraryTarget: self
@@ -99,7 +107,8 @@ Compiler compilertextlint + rule + textlintrc into a single library code.
     - kvstorage cache
     - libraryTarget: web
 
-Also, We can provide [@textlint/script-compiler](packages/@textlint/script-compiler) as a service using [codesandbox](https://codesandbox.io)
+Also, We can provide [@textlint/script-compiler](packages/@textlint/script-compiler) as a service
+using [codesandbox](https://codesandbox.io)
 
 ### API
 
@@ -113,7 +122,6 @@ The library has some API
     - missing parts of textlint
 - `ignore({ word:string }): Promise<void>`
     - [textlint-filter-rule-allowlist](https://github.com/textlint/textlint-filter-rule-allowlist) configuration?
-
 
 ## Changelog
 
