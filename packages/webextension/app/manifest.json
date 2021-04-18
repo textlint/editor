@@ -37,7 +37,6 @@
     "scripts/pageScript.js"
   ],
   "permissions": [
-    "activeTab",
     "webRequest",
     "webRequestBlocking",
     "tabs",
