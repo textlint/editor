@@ -10,8 +10,12 @@ textlint editor project.
 - [ ] Firefox
 
 2. Visit `textlint-worker.js` URL
+   - Example: <https://azu.github.io/textlintrc/>
 3. Install the textlint worker script
 4. After that, you can linting any supported textarea with your textlint worker script
+
+:memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`.
+If you navigate to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
 
 ### Browser Extensions
 
