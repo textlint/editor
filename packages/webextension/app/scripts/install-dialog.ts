@@ -69,7 +69,16 @@ export function escapeHTML(str: string) {
     metadataPre.textContent = JSON.stringify(metadata, null, 4);
     metadataDiv.append(title);
     metadataDiv.append(metadataPre);
+    // content
+    const scriptContentDiv = document.createElement("div");
+    const scriptContent = document.createElement("pre");
+    const scriptContentTitle = document.createElement("h3");
+    scriptContentTitle.textContent = "Script content";
+    scriptContent.textContent = content;
+    scriptContentDiv.append(scriptContentTitle);
+    scriptContentDiv.append(scriptContent);
     document.querySelector("#metadata")?.append(metadataDiv);
+    document.querySelector("#script-content")?.append(scriptContentDiv);
     // enable button
     installButton.disabled = false;
 })();

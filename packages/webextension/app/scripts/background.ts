@@ -40,13 +40,9 @@ function responseHasUserScriptType(responseHeaders: any) {
 
 async function openInstallDialog(url: string) {
     const installUrl = browser.runtime.getURL("/pages/install-dialog.html") + "?script=" + encodeURIComponent(url);
-    const options = {
-        height: 800,
-        type: "popup",
-        url: installUrl,
-        width: 800
-    } as const;
-    await browser.windows.create(options);
+    await browser.tabs.create({
+        url: installUrl
+    });
 }
 
 browser.webRequest.onHeadersReceived.addListener(

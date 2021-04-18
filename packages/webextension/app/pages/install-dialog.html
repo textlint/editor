@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>textlint-editor - Install Dialog</title>
+    <title>Installation @textlint/editor script</title>
     <style>
 
         /* Basic.css  */
@@ -211,15 +211,24 @@
             margin: auto;
             position: relative;
         }
+
+        .install-button {
+            font-size: 20px;
+            width: 10em;
+        }
     </style>
 </head>
 <body>
 <div class="content">
-    <h1>Install script - textlint-editor</h1>
+    <h1>Installation @textlint/editor script</h1>
+    <p>
+        You can install the script via "Install" button.
+    </p>
     <div>
-        <button id="js-install-button">Install</button>
+        <button id="js-install-button" class="install-button">Install</button>
     </div>
     <div id="metadata" class="metadata"></div>
+    <div id="script-content" class="script-content"></div>
 </div>
 <script src="../scripts/install-dialog.js"></script>
 </body>
