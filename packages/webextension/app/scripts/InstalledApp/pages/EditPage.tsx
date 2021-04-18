@@ -5,6 +5,7 @@ import { usePort } from "../StateContext";
 import { ScriptMeta } from "../component/ScriptMeta";
 import "./EditPage.css";
 import { Flex } from "@adobe/react-spectrum";
+import { logger } from "../../utils/logger";
 
 export type EditPageProps = {
     name?: string;
@@ -21,7 +22,7 @@ export const EditPage = (props: EditPageProps) => {
     const port = usePort();
     const onSave = (textlintrc: string) => {
         if (!props.name || !props.namespace) {
-            console.error("props is wrong", props);
+            logger.error("props is wrong", props);
             return;
         }
         port.updateScript({
@@ -33,14 +34,13 @@ export const EditPage = (props: EditPageProps) => {
     useEffect(() => {
         (async function loadScript() {
             if (!props.name || !props.namespace) {
-                console.error("props is wrong", props);
+                logger.error("props is wrong", props);
                 return;
             }
             const script = await port.findScriptsWithName({ name: props.name, namespace: props.namespace });
             if (!script) {
-                return console.error("script is not found", props);
+                return logger.error("script is not found", props);
             }
-            console.log();
             setMeta({
                 name: script.name,
                 namespace: script.namespace,

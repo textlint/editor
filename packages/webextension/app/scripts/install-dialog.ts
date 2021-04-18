@@ -3,6 +3,7 @@ import * as Comlink from "comlink";
 import type { backgroundExposedObject } from "./background";
 import { browser } from "webextension-polyfill-ts";
 import { parseMetadata, TextlintScriptMetadata } from "@textlint/script-parser";
+import { logger } from "./utils/logger";
 
 const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(browser.runtime.connect()));
 
@@ -29,7 +30,7 @@ async function installHandler({
             textlintrc: JSON.stringify(metadata.config, null, 4)
         });
     } catch (error) {
-        console.error("[InstallDialog]", error);
+        logger.error("[InstallDialog]", error);
     }
 }
 

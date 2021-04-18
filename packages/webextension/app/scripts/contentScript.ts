@@ -4,13 +4,14 @@ import { createEndpoint } from "comlink-extension";
 import * as Comlink from "comlink";
 import type { backgroundExposedObject } from "./background";
 import { nonRandomKey } from "./shared/page-contents-shared";
+import { logger } from "./utils/logger";
 
 const rawPort = browser.runtime.connect();
 // content-script <-> background page
 const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(rawPort));
 rawPort.onMessage.addListener((event) => {
     if (event === "textlint-editor-boot") {
-        console.log("[ContentScript]", "boot event received");
+        logger.log("[ContentScript]", "boot event received");
         // Inject page-script
         try {
             const script = browser.extension.getURL("scripts/pageScript.js");
@@ -18,7 +19,7 @@ rawPort.onMessage.addListener((event) => {
             pageScript.src = script;
             document.body.append(pageScript);
         } catch (error) {
-            console.error(error);
+            logger.error(error);
         }
     }
 });

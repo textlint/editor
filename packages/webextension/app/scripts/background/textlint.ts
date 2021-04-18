@@ -8,6 +8,8 @@ import {
 } from "@textlint/script-compiler";
 import type { TextlintRcConfig } from "@textlint/config-loader";
 import { Script } from "./database";
+import { logger } from "../utils/logger";
+
 const waiterForInit = (worker: Worker) => {
     let initialized = false;
     let _resolve: null | ((init: boolean) => void) = null;
@@ -118,7 +120,7 @@ export const createTextlintWorker = (script: Script) => {
         });
     };
     const log = (...args: any[]) => {
-        console.log("[Background]", ...args);
+        logger.log(...args);
     };
     return {
         createLintEngine({ ext }: { ext: string }) {

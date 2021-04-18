@@ -1,5 +1,6 @@
 import { TextlintWorker } from "./textlint";
 import { keyOfScript, Script } from "./database";
+import { logger } from "../utils/logger";
 
 // worker: Set<url>
 const _workerRunningUrlMap = new Map<TextlintWorker, Set<string>>();
@@ -30,7 +31,7 @@ export const scriptWorkerSet = {
         return _scriptRunningWorkerMap.delete(keyOfScript(script));
     },
     dump() {
-        console.log("Running Scripts: ", _scriptRunningWorkerMap.keys());
-        console.log("Running Workers x URLs: ", _workerRunningUrlMap.entries());
+        logger.log("Running Scripts: ", _scriptRunningWorkerMap.keys());
+        logger.log("Running Workers x URLs: ", _workerRunningUrlMap.entries());
     }
 };

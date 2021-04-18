@@ -6,9 +6,10 @@ import { openDatabase } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 import { scriptWorkerSet } from "./background/scriptWorkerSet";
+import { logger } from "./utils/logger";
 
 // browser.runtime.onInstalled.addListener((details) => {
-//     // console.log("previousVersion", details.previousVersion);
+//     // logger.log("previousVersion", details.previousVersion);
 // });
 //
 // browser.tabs.onUpdated.addListener(async (tabId) => {
@@ -50,7 +51,7 @@ async function openInstallDialog(url: string) {
 
 browser.webRequest.onHeadersReceived.addListener(
     (details) => {
-        if (details.method != "GET") return {};
+        if (details.method !== "GET") return {};
         if (!responseHasUserScriptType(details.responseHeaders)) return {};
         openInstallDialog(details.url);
         // https://stackoverflow.com/a/18684302
@@ -79,7 +80,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     }
     const db = await openDatabase();
     const originUrl = port.sender?.url;
-    console.log("[background] originUrl", originUrl);
+    logger.log("originUrl", originUrl);
     if (!originUrl) {
         return;
     }
@@ -101,7 +102,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
     const scripts = await db.findScriptsWithPatten(originUrl);
-    console.log("scripts", scripts);
+    logger.log("scripts", scripts);
     const scriptWorkers = scripts.map((script) => {
         const runningWorker = scriptWorkerSet.get(script);
         if (runningWorker) {
@@ -118,17 +119,17 @@ browser.runtime.onConnect.addListener(async (port) => {
             ext: script.ext
         };
     });
-    console.log("[Background] workers started", scriptWorkers);
+    logger.log("workers started", scriptWorkers);
     // Support multiple workers
     const lintEngine: LintEngineAPI = {
         async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
-            console.log("[Background] text:", text);
+            logger.log("text:", text);
             const allLintResults = await Promise.all(
                 scriptWorkers.map(({ worker, ext }) => {
                     return worker.createLintEngine({ ext }).lintText({ text });
                 })
             );
-            console.log("[Background] lintText", allLintResults);
+            logger.log("lintText", allLintResults);
             return allLintResults.flat();
         },
         async fixText({ text }): Promise<{ output: string }> {
@@ -157,13 +158,13 @@ browser.runtime.onConnect.addListener(async (port) => {
         }
     };
     port.onDisconnect.addListener(async () => {
-        console.log("[Background] dispose worker");
+        logger.log("dispose worker");
         const scripts = await db.findScriptsWithPatten(originUrl);
         scripts.forEach((script) => {
             scriptWorkerSet.delete({ script: script, url: originUrl });
         });
     });
-    console.log("[Background] content port", port);
+    logger.log("content port", port);
     scriptWorkerSet.dump();
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
     await Promise.all(scriptWorkers.map(({ worker }) => worker.ready()));

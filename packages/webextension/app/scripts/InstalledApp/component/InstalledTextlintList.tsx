@@ -4,6 +4,7 @@ import { ActionGroup, Flex, Item, ListBox, Text } from "@adobe/react-spectrum";
 import { usePort } from "../StateContext";
 import { Script } from "../../background/database";
 import FileCode from "@spectrum-icons/workflow/FileCode";
+import { logger } from "../../utils/logger";
 
 export type InstalledTextlintListProps = {
     url: string;
@@ -18,7 +19,7 @@ export const InstalledTextlintList = (props: InstalledTextlintListProps) => {
                     items: res
                 };
             } catch (error) {
-                console.error(error);
+                logger.error(error);
                 return {
                     items: []
                 };

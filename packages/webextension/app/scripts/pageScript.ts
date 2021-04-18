@@ -2,10 +2,11 @@ import { attachToTextArea, LintEngineAPI } from "textchecker-element";
 import { nonRandomKey } from "./shared/page-contents-shared";
 import type { TextlintMessage } from "@textlint/types";
 import { applyFixesToText } from "@textlint/source-code-fixer";
+import { logger } from "./utils/logger";
 
 const commandHandler = <R>(command: string, args: any): Promise<R> => {
     return new Promise<R>((resolve) => {
-        console.log("[PageScript]", command, args);
+        logger.log("[PageScript]", command, args);
         const listener = (message: MessageEvent) => {
             if (
                 message.data &&
@@ -45,7 +46,7 @@ const isIgnored = ({ text, message }: { text: string; message: TextlintMessage }
 const lintEngine: LintEngineAPI = {
     async lintText({ text }) {
         const results = await commandHandler<ReturnType<LintEngineAPI["lintText"]>>("lintText", { text });
-        console.log("results", results);
+        logger.log("results", results);
         return results.map((result) => {
             return {
                 filePath: result.filePath,
@@ -78,7 +79,7 @@ async function contentScriptMain() {
         if (set.has(textAreaElement)) {
             return;
         }
-        console.log("[contentScript] attach textarea", textAreaElement);
+        logger.log("[contentScript] attach textarea", textAreaElement);
         attachToTextArea({
             textAreaElement: textAreaElement,
             lintingDebounceMs: 200,
@@ -106,7 +107,7 @@ async function contentScriptMain() {
     });
 }
 
-console.log("[PageScript]", "main loaded");
+logger.log("[PageScript]", "main loaded");
 contentScriptMain().catch((error) => {
-    console.error("[PageScript] Error", error);
+    logger.error("[PageScript] Error", error);
 });
