@@ -23,8 +23,8 @@ export type TextlintScriptParseResult = {
     metadata: TextlintScriptMetadata;
 };
 export const parseMetadata = (scriptContent: string): TextlintScriptMetadata => {
-    const metadataPattenr = /\/*! textlinteditor: (.*)\*\//;
-    const match = scriptContent.match(metadataPattenr);
+    const metadataPattern = /\/*! textlinteditor:@@@ (.*) @@@\s*\*\//;
+    const match = scriptContent.match(metadataPattern);
     if (!match) {
         throw new Error("Can not read metadata");
     }
