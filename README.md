@@ -17,9 +17,7 @@ textlint editor project.
 :memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`.
 If you navigate to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
 
-### Browser Extensions
 
-See [packages/webextension](packages/webextension/README.md)
 
 ## Supports textarea
 
