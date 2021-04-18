@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.3](https://github.com/textlint/editor/compare/v0.9.2...v0.9.3) (2021-04-18)
+
+
+### Bug Fixes
+
+* rename textlint.js to textlint-worker.js ([d9d2f3f](https://github.com/textlint/editor/commit/d9d2f3f9ab22d4beea73394f0ece805b56ea73f4)), closes [#27](https://github.com/textlint/editor/issues/27)
+
+
+
+
+
 # [0.9.0](https://github.com/textlint/editor/compare/v0.8.2...v0.9.0) (2021-04-17)
 
 

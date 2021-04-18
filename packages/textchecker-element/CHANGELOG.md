@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.3](https://github.com/textlint/editor/compare/v0.9.2...v0.9.3) (2021-04-18)
+
+
+### Bug Fixes
+
+* rename textlint.js to textlint-worker.js ([3a82df9](https://github.com/textlint/editor/commit/3a82df9f6b261ee3fd82ff777897d14d51e0b722)), closes [#27](https://github.com/textlint/editor/issues/27)
+* rename textlint.js to textlint-worker.js ([d9d2f3f](https://github.com/textlint/editor/commit/d9d2f3f9ab22d4beea73394f0ece805b56ea73f4)), closes [#27](https://github.com/textlint/editor/issues/27)
+
+
+
+
+
 ## [0.9.1](https://github.com/textlint/editor/compare/v0.9.0...v0.9.1) (2021-04-17)
 
 **Note:** Version bump only for package textchecker-element
