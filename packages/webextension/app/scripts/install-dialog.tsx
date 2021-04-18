@@ -38,7 +38,7 @@ async function installHandler({
 }
 
 function App() {
-    const [install, setInstall] = useState<"no" | "yes" | "installing">("no");
+    const [install, setInstall] = useState<"Install" | "Installed" | "Waiting">("Waiting");
     const [scriptURL, setScriptURL] = useState<string>("");
     const [scriptContent, setScriptContent] = useState<string>("");
     const [metadata, setMetadata] = useState<null | TextlintScriptMetadata>(null);
@@ -52,12 +52,13 @@ function App() {
             scriptURL
         }).catch((error) => {
             console.error(error);
-            setInstall("no");
+            setInstall("Install");
         });
-        setInstall("yes");
+        setInstall("Installed");
     }, [scriptContent, metadata, scriptURL]);
     useEffect(() => {
         (async function main() {
+            setInstall("Install");
             const url = new URL(location.href);
             const script = url.searchParams.get("script");
             if (!script) {
@@ -79,11 +80,12 @@ function App() {
                 <button
                     id="js-install-button"
                     className="install-button"
-                    disabled={install == "no"}
+                    disabled={install !== "Install"}
                     onClick={onInstall}
                 >
-                    Install
+                    {install}
                 </button>
+                {install === "Installed" ? "Success to install!" : null}
             </div>
             <div id="metadata" className="metadata">
                 <h3>Script metadata</h3>
