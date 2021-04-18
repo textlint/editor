@@ -1,11 +1,14 @@
-import webpack from "webpack";
-import { generateCode, loadTextlintrc } from "./CodeGenerator/worker-codegen";
-import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
 import * as fs from "fs";
 import path from "path";
+import webpack from "webpack";
+import type { TextlintScriptMetadata } from "@textlint/script-parser";
 // @ts-ignore
 import rimraf from "rimraf";
-import type { TextlintScriptMetadata } from "@textlint/script-parser";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+// @ts-ignore
+import TerserPlugin from "terser-webpack-plugin";
+import { generateCode, loadTextlintrc } from "./CodeGenerator/worker-codegen";
+import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
 
 export function validateTextlintScriptMetadata(metadata: {}): asserts metadata is Omit<
     TextlintScriptMetadata,
@@ -63,11 +66,11 @@ export const createWebpackConfig = ({
         mode: mode,
         devtool: false,
         entry: {
-            textlint: inputFilePath
+            "textlint-worker": inputFilePath
         },
         output: {
             library: "textlint",
-            libraryTarget: "self" as any, // umd
+            libraryTarget: "self",
             path: outputDir
         },
         plugins: [
@@ -84,13 +87,34 @@ export const createWebpackConfig = ({
             ),
             new webpack.BannerPlugin({
                 banner: `textlinteditor: ${JSON.stringify(metadata)}`
-            })
+            }),
+            // Node.js polyfill
+            new NodePolyfillPlugin({})
         ],
         module: {
             rules: experimentalInlining ? [fsInliningRule] : []
         },
-        node: {
-            fs: "empty"
+        optimization: {
+            minimize: true,
+            minimizer: [
+                // Preserve licence and banner comment
+                new TerserPlugin({
+                    terserOptions: {
+                        format: {
+                            comments: /^\**!|@preserve|@license|@cc_on/i
+                        }
+                    },
+                    extractComments: false
+                })
+            ]
+        },
+        resolve: {
+            fallback: {
+                fs: false
+            }
+        },
+        performance: {
+            hints: false
         }
     };
 };
@@ -134,7 +158,7 @@ export const compile = async (options: compileOptions) => {
                 config: configResult.rawConfig
             }
         });
-        webpack([config], (error: Error & { details?: string }, stats) => {
+        webpack([config], (error: undefined | (Error & { details?: string }), stats?) => {
             if (error) {
                 console.error(error.stack || error);
                 if (error.details) {
@@ -143,13 +167,13 @@ export const compile = async (options: compileOptions) => {
                 return reject(error);
             }
 
-            const info = stats.toJson();
-            if (stats.hasErrors()) {
-                console.error(info.errors.join("\n"));
-                return reject(new Error(info.errors.join("\n")));
+            const info = stats?.toJson();
+            if (stats?.hasErrors()) {
+                console.error(info?.errors);
+                return reject(info?.errors);
             }
-            if (stats.hasWarnings()) {
-                console.warn(info.warnings);
+            if (stats?.hasWarnings()) {
+                console.warn(info?.warnings);
             }
             resolve();
         });

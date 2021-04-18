@@ -6,7 +6,7 @@
 </head>
 <body>
 <script>
-    const worker = new Worker('textlint.js');
+    const worker = new Worker('textlint-worker.js');
     worker.addEventListener('message', function (event) {
         if (event.data.command === "init") {
             console.time("lint")

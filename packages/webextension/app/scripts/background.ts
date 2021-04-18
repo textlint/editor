@@ -50,15 +50,13 @@ async function openInstallDialog(url: string) {
 
 browser.webRequest.onHeadersReceived.addListener(
     (details) => {
-        console.log("details", details);
         if (details.method != "GET") return {};
         if (!responseHasUserScriptType(details.responseHeaders)) return {};
-
         openInstallDialog(details.url);
         // https://stackoverflow.com/a/18684302
         return { redirectUrl: "javascript:" };
     },
-    { urls: ["*://*/*textlint.js"], types: ["main_frame"] },
+    { urls: ["*://*/*textlint-worker.js"], types: ["main_frame"] },
     ["blocking", "responseHeaders"]
 );
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;

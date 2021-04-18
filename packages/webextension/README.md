@@ -42,7 +42,7 @@ The build tool also defines a variable named `process.env.NODE_ENV` in your scri
     - postMessage → Background Page
     - show result ← Background Page
 - Background Page
-    - → message → textlint.js(downloaed)
+    - → message → textlint-worker.js(downloaed)
     - ← message 
 
 Summary

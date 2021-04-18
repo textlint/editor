@@ -8,7 +8,7 @@ export type generateWebSiteOptions = compileOptions & {
 };
 export const generateWebSite = async (options: generateWebSiteOptions) => {
     const templateDir = path.join(__dirname, "../template");
-    // textlint.js
+    // textlint-worker.js
     await compile({
         mode: "production",
         compileTarget: "webworker",
@@ -18,7 +18,10 @@ export const generateWebSite = async (options: generateWebSiteOptions) => {
         metadata: options.metadata
     });
     // rename textlint.js to <id>.textlint.js;
-    fs.renameSync(path.join(options.outputDir, "textlint.js"), path.join(options.outputDir, "textlint.js"));
+    fs.renameSync(
+        path.join(options.outputDir, "textlint-worker.js"),
+        path.join(options.outputDir, "textlint-worker.js")
+    );
     // index.{js,html}
     const indexHtml = fs.readFileSync(path.join(templateDir, "index.html"), "utf-8");
     const filledHTML = indexHtml.replace("{{title}}", options.title).replace("{{placeholder}}", options.placeholder);
