@@ -230,7 +230,7 @@
         }
     </style>
 </head>
-<body>
+<body data-textlint-editor-embedded>
 <div class="content">
     <main class="main">
         <label for="input">Input text for linting:</label>
@@ -247,7 +247,7 @@ This spellinng is maybe a typo.
     <div id="metadata" class="metadata"></div>
 </div>
 <aside class="side">
-    <div id="js-status" class="status"></div>
+    <div id="js-status" class="status">Loading...</div>
 </aside>
 <script type="module">
     import { run } from "https://cdn.skypack.dev/textchecker-element/public-dist/textchecker-element.es.js";

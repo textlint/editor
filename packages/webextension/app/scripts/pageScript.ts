@@ -72,8 +72,15 @@ const lintEngine: LintEngineAPI = {
 const isHTMLTextAreaElement = (element: Element): element is HTMLTextAreaElement => {
     return element.tagName.toLowerCase() === "textarea";
 };
+const shouldSkipPage = () => {
+    return document.body.dataset.textlintEditorEmbedded !== undefined;
+};
 
 async function contentScriptMain() {
+    if (shouldSkipPage()) {
+        logger.log("Skip @textlint/editor because this page already has been embedded.");
+        return;
+    }
     const set = new WeakSet<HTMLTextAreaElement>();
     const callback = (textAreaElement: HTMLTextAreaElement) => {
         if (set.has(textAreaElement)) {
