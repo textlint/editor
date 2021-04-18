@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.1](https://github.com/textlint/editor/compare/v0.10.0...v0.10.1) (2021-04-18)
+
+
+### Bug Fixes
+
+* add build:public before publish ([7c5413f](https://github.com/textlint/editor/commit/7c5413f6c546db953f2ac31b68c4ff7ee60ac64b))
+
+
+
+
+
 # [0.10.0](https://github.com/textlint/editor/compare/v0.9.3...v0.10.0) (2021-04-18)
 
 
