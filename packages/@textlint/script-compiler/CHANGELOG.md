@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.3](https://github.com/textlint/editor/compare/v0.10.2...v0.10.3) (2021-04-19)
+
+
+### Bug Fixes
+
+* **textchecker-element:** remove dot ([371d4cf](https://github.com/textlint/editor/commit/371d4cf53c86183ae80a03c3aadb9e3fca0970d9))
+
+
+
+
+
 ## [0.10.2](https://github.com/textlint/editor/compare/v0.10.1...v0.10.2) (2021-04-18)
 
 **Note:** Version bump only for package @textlint/script-compiler

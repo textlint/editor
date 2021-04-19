@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.3](https://github.com/textlint/editor/compare/v0.10.2...v0.10.3) (2021-04-19)
+
+
+### Bug Fixes
+
+* **webextension:** fix to install ([61b92fe](https://github.com/textlint/editor/commit/61b92fe91d9e8c1bffefb200276b6806260bf14c))
+* **webextension:** remove activeTab ([c89a759](https://github.com/textlint/editor/commit/c89a7594c5e1eb2d79010c7a2beb99f0102c2e99))
+* uuid ([6376a7f](https://github.com/textlint/editor/commit/6376a7fc65684293afac00b6f166a9a18ed7248c))
+* **webextension:** use react in install-dialog ([09befb6](https://github.com/textlint/editor/commit/09befb6d9b1d920c04d1253a3f0fa2848247a3a8))
+
+
+
+
+
 ## [0.10.2](https://github.com/textlint/editor/compare/v0.10.1...v0.10.2) (2021-04-18)
 
 **Note:** Version bump only for package @textlint/webextension

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@textlint/webextension",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "textlint editor",
   "scripts": {
     "dev": "webextension-toolbox dev",
@@ -40,7 +40,7 @@
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
-    "textchecker-element": "^0.10.2",
+    "textchecker-element": "^0.10.3",
     "webextension-polyfill-ts": "^0.25.0"
   }
 }
