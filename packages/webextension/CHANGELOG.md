@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.5](https://github.com/textlint/editor/compare/v0.10.4...v0.10.5) (2021-04-19)
+
+**Note:** Version bump only for package @textlint/webextension
+
+
+
+
+
 ## [0.10.4](https://github.com/textlint/editor/compare/v0.10.3...v0.10.4) (2021-04-19)
 
 **Note:** Version bump only for package @textlint/webextension
