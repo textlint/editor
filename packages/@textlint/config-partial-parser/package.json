@@ -1,6 +1,6 @@
 {
   "name": "@textlint/config-partial-parser",
-  "version": "0.10.2",
+  "version": "0.10.4",
   "description": "A partial parser for textlintrc",
   "keywords": [
     "textlint",
@@ -44,7 +44,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^0.10.2",
+    "@textlint/config-loader": "^0.10.4",
     "@textlint/kernel": "^3.4.1",
     "@textlint/types": "^1.5.1",
     "@textlint/utils": "^1.2.4"
