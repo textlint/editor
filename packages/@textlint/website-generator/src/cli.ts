@@ -84,10 +84,10 @@ export const run = async (
         cwd: flags.cwd
     });
     const metadata = {
-        name: pkg.name ?? flags["metadataName"],
-        namespace: pkg.homepage ?? flags["metadataNamespace"],
-        homepage: pkg.homepage ?? flags["metadataHomepage"],
-        version: pkg.version ?? flags["metadataVersion"]
+        name: flags["metadataName"] ?? pkg.name,
+        namespace: flags["metadataNamespace"] ?? pkg.homepage,
+        homepage: flags["metadataHomepage"] ?? pkg.homepage,
+        version: flags["metadataVersion"] ?? pkg.version
     };
     // assert
     validateTextlintScriptMetadata(metadata);
