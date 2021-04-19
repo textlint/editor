@@ -5,10 +5,8 @@ textlint editor project.
 ## Usage
 
 1. Install Web Extensions
-
-- [ ] Chrome
-- [ ] Firefox
-
+   - [ ] Chrome
+   - [x] Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>
 2. Visit `textlint-worker.js` URL
    - Example: <https://azu.github.io/textlintrc/>
 3. Install the textlint worker script
@@ -17,6 +15,7 @@ textlint editor project.
 :memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`.
 If you navigate to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
 
+:memo: You want to use your customized rule, please use <https://github.com/textlint/editor-script-template>.
 
 ## Supports textarea
 
