@@ -126,6 +126,9 @@ export type compileOptions = {
     metadata: Omit<TextlintScriptMetadata, "config">;
 } & CodeGeneraterOptions;
 export const compile = async (options: compileOptions) => {
+    if (options.cwd && !path.isAbsolute(options.cwd)) {
+        throw new Error("option.cwd should be absolute path");
+    }
     const cwd = options.cwd || process.cwd();
     const configResult = await loadTextlintrc({
         cwd,

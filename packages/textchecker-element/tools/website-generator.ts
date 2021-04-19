@@ -6,14 +6,14 @@ const outputDir = path.join(__dirname, "../../@textlint/website-generator/templa
 const createHTMLTemplate = () => {
     const html = fs.readFileSync(path.join(__dirname, "../public/index.html"), "utf-8");
     return html
-        .replace("<title>.*</title>", "<title>{{title}}</title>")
+        .replace(/<title>[^]+<\/title>/, "<title>{{title}}</title>")
         .replace(
             `"/public/index.ts"`,
             `"https://cdn.skypack.dev/textchecker-element/public-dist/textchecker-element.es.js"`
         )
         .replace(
-            /<textarea class="textarea">[\s\S]+<\/textarea>/m,
-            `<textarea class="textarea">{{placeholder}}</textarea>`
+            /<textarea id="input" class="textarea" spellcheck="false">[^<]*?<\/textarea>/m,
+            `<textarea id="input" class="textarea" spellcheck="false">{{placeholder}}</textarea>`
         );
 };
 (async function () {

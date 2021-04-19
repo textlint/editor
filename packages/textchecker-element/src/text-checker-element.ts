@@ -67,7 +67,7 @@ export class TextCheckerElement extends HTMLElement {
         overlay.className = "overlay";
         overlay.setAttribute(
             "style",
-            "color: transparent; border: 1px dotted blue; position: absolute; top: 0px; left: 0px; pointer-events: none;"
+            "color: transparent; border: position: absolute; top: 0px; left: 0px; pointer-events: none;"
         );
         const annotationBox = document.createElement("div");
         annotationBox.className = "annotationBox";
