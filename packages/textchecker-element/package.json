@@ -37,6 +37,7 @@
     "compile:textlint": "textlint-script-compiler --outputDir public --metadataName \"example\" --metadataNamespace \"https://github.com/textlint/editor\"",
     "predev": "npm run compile:textlint",
     "dev": "vite",
+    "website": "vite build",
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",
     "build:public": "vite build",
     "website-generator": "ts-node tools/website-generator.ts",
