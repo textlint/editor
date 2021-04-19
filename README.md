@@ -5,15 +5,18 @@ textlint editor project.
 ## Usage
 
 1. Install Web Extensions
-   - [ ] Chrome
-   - [x] Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>
-2. Visit `textlint-worker.js` URL
-   - Example: <https://azu.github.io/textlintrc/>
+    - [ ] Chrome
+    - [x] Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>
+2. Install your favorites textlint worker scripts
+    - Example scripts:
+    - <https://azu.github.io/textlintrc/>
+    - <https://textlint-ja.github.io/textlint-rule-preset-japanese/>
+    - <https://textlint-ja.github.io/textlint-rule-preset-ja-technical-writing/>
 3. Install the textlint worker script
 4. After that, you can linting any supported textarea with your textlint worker script
 
-:memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`.
-If you navigate to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
+:memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`. If you navigate
+to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
 
 :memo: You want to use your customized rule, please use <https://github.com/textlint/editor-script-template>.
 
