@@ -31,7 +31,7 @@
     "build": "lerna run build --ignore \"@textlint/webextension\"",
     "test": "npm run build",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "website": "cd packages/textchecker-element && yarn run web",
+    "website": "cd packages/textchecker-element && yarn run website",
     "versionup": "lerna version --conventional-commits",
     "versionup:patch": "lerna version patch --conventional-commits",
     "versionup:minor": "lerna version minor --conventional-commits",
