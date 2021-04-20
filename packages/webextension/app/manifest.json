@@ -39,7 +39,6 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "tabs",
     "<all_urls>"
   ],
   "__firefox__applications": {
