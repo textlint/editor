@@ -1,4 +1,4 @@
-import { attachToTextArea, LintEngineAPI } from "../src";
+import { attachToTextArea, LintEngineAPI } from "./src";
 import type { TextlintScriptMetadata } from "@textlint/script-parser";
 import type { TextlintFixResult, TextlintMessage, TextlintResult } from "@textlint/types";
 import { applyFixesToText } from "@textlint/source-code-fixer";

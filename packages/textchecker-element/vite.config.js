@@ -1,11 +1,15 @@
 const path = require("path");
 
 module.exports = {
+    root: path.resolve(__dirname),
+    publicDir: path.resolve(__dirname, "public"),
+    base: "./",
     build: {
-        outDir: "public-dist",
-        lib: {
-            name: "textchecker-element-website",
-            entry: path.resolve(__dirname, "public/index.ts")
+        outDir: path.resolve(__dirname, "dist"),
+        rollupOptions: {
+            input: {
+                main: path.resolve(__dirname, "index.html")
+            }
         }
     }
 };

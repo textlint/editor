@@ -4,16 +4,13 @@ import { execFileSync } from "child_process";
 
 const outputDir = path.join(__dirname, "../../@textlint/website-generator/template");
 const createHTMLTemplate = () => {
-    const html = fs.readFileSync(path.join(__dirname, "../public/index.html"), "utf-8");
+    const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf-8");
     return html
         .replace(/<title>[^]+<\/title>/, "<title>{{title}}</title>")
+        .replace(`"./index.ts"`, `"https://cdn.skypack.dev/textchecker-element/public-dist/textchecker-element.es.js"`)
         .replace(
-            `"/public/index.ts"`,
-            `"https://cdn.skypack.dev/textchecker-element/public-dist/textchecker-element.es.js"`
-        )
-        .replace(
-            /<textarea id="input" class="textarea" spellcheck="false">[^<]*?<\/textarea>/m,
-            `<textarea id="input" class="textarea" spellcheck="false">{{placeholder}}</textarea>`
+            /<textarea id="input"([^>]*?)>[^<]*?<\/textarea>/m,
+            `<textarea id="input"$1>{{placeholder}}</textarea>`
         );
 };
 (async function () {

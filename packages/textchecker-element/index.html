@@ -235,7 +235,7 @@
 <div class="content">
     <main class="main">
         <label for="input">Input text for linting:</label>
-        <textarea id="input" class="textarea" spellcheck="false"></textarea>
+        <textarea id="input" class="textarea" spellcheck="false" placeholder="input your text"></textarea>
     </main>
     <button id="install">Install</button>
     <label for="install">* require <a href="https://github.com/textlint/editor/tree/master/packages/webextension">textlint-editor
@@ -246,7 +246,7 @@
     <div id="js-status" class="status">Loading...</div>
 </aside>
 <script type="module">
-    import { run } from "/public/index.ts";
+    import { run } from "./index.ts";
 
     run("./textlint-worker.js");
 </script>

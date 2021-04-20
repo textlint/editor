@@ -39,11 +39,11 @@
     "dev": "vite",
     "website": "vite build",
     "build": "tsc -p . && tsc --project ./tsconfig.module.json",
-    "build:public": "vite build",
+    "build:public-lib": "vite build --config vite.lib.config.js",
     "website-generator": "ts-node tools/website-generator.ts",
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "prepublishOnly": "npm run build:public && npm run build && npm run website-generator",
+    "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
     "test": "mocha \"test/**/*.ts\"",
     "watch": "tsc -p . --watch"
   },
