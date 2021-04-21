@@ -3,7 +3,7 @@ import { TextlintrcEditor } from "../component/TextlintrcEditor";
 import { RouteComponentProps } from "@reach/router";
 import { usePort } from "../StateContext";
 import "./EditPage.css";
-import { ActionButton, Flex, Form, TextField } from "@adobe/react-spectrum";
+import { ActionButton, Flex, Form, TextField, Text, Link } from "@adobe/react-spectrum";
 import { logger } from "../../utils/logger";
 
 export type EditPageProps = {
@@ -170,9 +170,17 @@ export const EditPage = (props: EditPageProps) => {
             <Flex direction="column" gap="size-100">
                 <h3 id="label-3">Script Information</h3>
                 <Form maxWidth="size-3600" aria-labelledby="label-3">
-                    <TextField label="Namespace" value={namespace} isReadOnly={true} />
-                    <TextField label="Name" value={name} isReadOnly={true} />
+                    <TextField label="Namespace" value={namespace} isReadOnly={true} isDisabled={true} />
+                    <TextField label="Name" value={name} isReadOnly={true} isDisabled={true} />
                     <TextField label="Pattern" value={matchPattern} minLength={1} onChange={handlers.matchPattern} />
+                    <Text>
+                        pattern use{" "}
+                        <Link>
+                            <a href="https://github.com/micromatch/micromatch" target={"_blank"}>
+                                micromatch
+                            </a>
+                        </Link>
+                    </Text>
                     <TextField label="File Extension" value={ext} minLength={1} onChange={handlers.ext} />
                 </Form>
                 <TextlintrcEditor textlintrc={textlintrc} onChange={handlers.textlintrc} />
