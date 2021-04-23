@@ -5,10 +5,10 @@ textlint editor project.
 ## Usage
 
 1. Install Web Extensions
-    - [ ] Chrome
+    - [x] Chrome: <https://chrome.google.com/webstore/detail/textlint-editor/gfhlfpnpjokocfohicmfbgjneiipfeil>
     - [x] Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>
 2. Install your favorites textlint worker scripts
-    - Example scripts:
+    - Example textlint worker scripts:
     - <https://azu.github.io/textlintrc/>
     - <https://textlint-ja.github.io/textlint-rule-preset-japanese/>
     - <https://textlint-ja.github.io/textlint-rule-preset-ja-technical-writing/>
