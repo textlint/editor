@@ -12,7 +12,7 @@ textlint editor project.
     - <https://azu.github.io/textlintrc/>
     - <https://textlint-ja.github.io/textlint-rule-preset-japanese/>
     - <https://textlint-ja.github.io/textlint-rule-preset-ja-technical-writing/>
-3. After that, you can linting any supported textarea with your textlint worker script
+3. Finally, you can linting any supported textarea with your textlint worker script
 
 :memo: @textlint/editor web extension hook the access of `https://*/*/textlint-worker.js`. If you navigate
 to `https://*/*/textlint-worker.js`, the web extension open installation dialog like Greasemonkey Extension.
