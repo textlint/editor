@@ -41,6 +41,7 @@
     "webRequestBlocking",
     "<all_urls>"
   ],
+  "content_security_policy": "script-src 'self'; object-src 'self'; worker-src 'self' blob:",
   "__firefox__applications": {
     "gecko": {
       "id": "editor@textlint.github.io"
