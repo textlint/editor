@@ -1,6 +1,6 @@
 import { createEndpoint } from "comlink-extension";
 import * as Comlink from "comlink";
-import type { backgroundExposedObject } from "./background";
+import type { BackgroundPopupObject } from "./background";
 import { browser } from "webextension-polyfill-ts";
 import { parseMetadata, TextlintScriptMetadata } from "@textlint/script-parser";
 import { logger } from "./utils/logger";
@@ -8,7 +8,7 @@ import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 
-const port = Comlink.wrap<backgroundExposedObject>(createEndpoint(browser.runtime.connect()));
+const port = Comlink.wrap<BackgroundPopupObject>(createEndpoint(browser.runtime.connect()));
 
 async function installHandler({
     script,
