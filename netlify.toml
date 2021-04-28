@@ -2,7 +2,7 @@
 [build]
   command = "yarn run build && yarn run website"
   functions = "functions"
-  publish = "packages/textchecker-element/public-dist"
+  publish = "packages/textchecker-element/dist"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.
