@@ -30,7 +30,6 @@
     "@textlint/config-loader": "^0.10.4",
     "@textlint/script-parser": "^0.10.4",
     "@textlint/types": "^1.5.1",
-    "@webcomponents/custom-elements": "^1.4.3",
     "codemirror": "^5.59.2",
     "comlink": "^4.3.0",
     "comlink-extension": "^1.0.8",
