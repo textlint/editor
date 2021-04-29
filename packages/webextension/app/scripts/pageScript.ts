@@ -81,9 +81,9 @@ async function contentScriptMain() {
         logger.log("Skip @textlint/editor because this page already has been embedded.");
         return;
     }
-    const set = new WeakSet<HTMLTextAreaElement>();
+    const attachedSet = new WeakSet<HTMLTextAreaElement>();
     const callback = (textAreaElement: HTMLTextAreaElement) => {
-        if (set.has(textAreaElement)) {
+        if (attachedSet.has(textAreaElement)) {
             return;
         }
         logger.log("[contentScript] attach textarea", textAreaElement);
@@ -92,7 +92,7 @@ async function contentScriptMain() {
             lintingDebounceMs: 200,
             lintEngine: lintEngine
         });
-        set.add(textAreaElement);
+        attachedSet.add(textAreaElement);
     };
     const targetElement = document.querySelectorAll("textarea:not([readonly])");
     targetElement.forEach((element) => {
@@ -104,7 +104,9 @@ async function contentScriptMain() {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
                 if (!(node instanceof HTMLElement)) return;
-                node.querySelectorAll("textarea").forEach(callback);
+                node.querySelectorAll("textarea:not([readonly])").forEach((value) => {
+                    callback(value as HTMLTextAreaElement);
+                });
             });
         });
     });

@@ -3,7 +3,6 @@ import { TextCheckerCard, TextCheckerPopupElement, TextCheckerPopupElementArgs }
 import type { TextlintMessage, TextlintResult } from "@textlint/types";
 import type { TextCheckerElementRectItem } from "./text-checker-store";
 import pDebounce from "p-debounce";
-import delay from "delay";
 import { debug } from "./util/logger";
 
 const createCompositionHandler = () => {
@@ -48,15 +47,58 @@ export type AttachTextAreaParams = {
     lintEngine: LintEngineAPI;
 };
 
-let textCheckerPopup: TextCheckerPopupElement;
 const createTextCheckerPopupElement = (args: TextCheckerPopupElementArgs) => {
-    if (textCheckerPopup) {
-        return textCheckerPopup;
-    }
-    textCheckerPopup = new TextCheckerPopupElement(args);
+    const textCheckerPopup = new TextCheckerPopupElement(args);
     document.body.append(textCheckerPopup);
     return textCheckerPopup;
 };
+
+/**
+ * Return true if the element in viewport
+ * @param element
+ */
+function isVisibleInViewport(element: HTMLElement): boolean {
+    const style = window.getComputedStyle(element);
+    if (style.display === "none" || style.visibility === "hidden") {
+        return false;
+    }
+    const rect = element.getBoundingClientRect();
+    if (rect.height === 0 || rect.width === 0) {
+        return false;
+    }
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
+/**
+ * Dismiss all popup
+ *
+ * - Update text(includes fixed)
+ * - Scroll textarea/Scroll window
+ * - Focus on textarea
+ * - Click out of textarea/popup
+ * - popup → textarea → other → dismiss
+ * - textarea → popup → other → dismiss
+ */
+
+/**
+ * Dismiss a single popup(500ms delay)
+ *
+ * - Leave from popup
+ * - Leave from RectItem
+ * - Focus on textarea
+ *
+ */
+
+/**
+ * Show popup condition
+ * - onUpdate
+ */
+
 /**
  * Attach text-checker component to `<textarea>` element
  */
@@ -73,32 +115,45 @@ export const attachToTextArea = ({
         debug("Can not attach textarea that is readonly", textAreaElement);
         return () => {};
     }
-    const textChecker = new TextCheckerElement({
-        targetElement: textAreaElement,
-        hoverPadding: 20
-    });
-    textAreaElement.before(textChecker);
-    const hoverMap = new Map<TextCheckerElementRectItem, boolean>();
+    if (textAreaElement.dataset.attachedTextCheckerElement === "true") {
+        debug("Can not attach textarea that is already attached", textAreaElement);
+        return () => {};
+    }
     const dismissCards = () => {
-        if (!textCheckerPopup.isHovering && hoverMap.size === 0) {
+        debug("dismissCards", {
+            textCheckerPopup: textCheckerPopup.isHovering,
+            textChecker: textChecker.isHovering,
+            textCheckerF: textChecker.isFocus
+        });
+        if (!textCheckerPopup.isHovering && !textChecker.isHovering && !textChecker.isFocus) {
             textCheckerPopup.dismissCards();
+            textChecker.resetHoverState();
         }
     };
     const textCheckerPopup = createTextCheckerPopupElement({
         onLeave() {
-            if (!textCheckerPopup.isHovering && hoverMap.size === 0) {
-                textCheckerPopup.dismissCards();
-            }
+            dismissCards();
         }
     });
+    const textChecker = new TextCheckerElement({
+        targetElement: textAreaElement,
+        hoverPadding: 20,
+        onLeave() {
+            dismissCards();
+        }
+    });
+    textAreaElement.before(textChecker);
     const compositionHandler = createCompositionHandler();
     const update = pDebounce(async () => {
+        if (!isVisibleInViewport(textAreaElement)) {
+            return;
+        }
         // stop lint on IME composition
         if (compositionHandler.onComposition) {
             return;
         }
         // dismiss card before update annotations
-        textCheckerPopup.dismissCards();
+        // dismissCards();
         const text = textAreaElement.value;
         const results = await lintEngine.lintText({
             text
@@ -120,19 +175,16 @@ export const attachToTextArea = ({
                     messageRuleId: message.ruleId,
                     fixable: Boolean(message.fix)
                 };
-                const abortSignalMap = new WeakMap<TextCheckerElementRectItem, AbortController>();
+                let dismissTimerId: null | any = null;
                 return {
                     id: `${message.ruleId}::${message.line}:${message.column}`,
                     start: message.index,
                     end: message.index + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
-                        hoverMap.set(rectItem, true);
-                        const controller = abortSignalMap.get(rectItem);
-                        debug("enter", controller);
-                        if (controller) {
-                            controller.abort();
+                        debug("annotation - onMouseEnter");
+                        if (dismissTimerId) {
+                            clearTimeout(dismissTimerId);
                         }
-                        abortSignalMap.set(rectItem, new AbortController());
                         textCheckerPopup.updateCard({
                             card: card,
                             rect: {
@@ -193,18 +245,20 @@ export const attachToTextArea = ({
                     },
                     async onMouseLeave({ rectItem }: { rectItem: TextCheckerElementRectItem }) {
                         try {
-                            hoverMap.delete(rectItem);
-                            const controller = abortSignalMap.get(rectItem);
-                            debug("leave", controller);
-                            await delay(500, {
-                                signal: controller?.signal
-                            });
-                            if (textCheckerPopup.isHovering || hoverMap.get(rectItem)) {
-                                return;
-                            }
-                            textCheckerPopup.dismissCard(card);
+                            debug("annotation - onMouseLeave");
+                            dismissTimerId = setTimeout(() => {
+                                const isHover = textChecker.isHoverRectItem(rectItem);
+                                debug("dismiss", {
+                                    textCheckerPopup: textCheckerPopup.isHovering,
+                                    isRectElementHover: isHover
+                                });
+                                if (textCheckerPopup.isHovering || isHover) {
+                                    return;
+                                }
+                                textCheckerPopup.dismissCard(card);
+                            }, 500);
                         } catch (error) {
-                            debug("Abort Canceled", error);
+                            debug("Abort dismiss popup", error);
                         }
                     }
                 };
@@ -213,14 +267,10 @@ export const attachToTextArea = ({
         debug("annotations", annotations);
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
-    textAreaElement.addEventListener("compositionstart", compositionHandler);
-    textAreaElement.addEventListener("compositionend", compositionHandler);
-    textAreaElement.addEventListener("input", update);
-    textAreaElement.addEventListener("focusout", dismissCards);
-    update();
+    // Events
     // when resize element, update annotation
     const resizeObserver = new ResizeObserver(() => {
-        debug("textarea resize");
+        debug("ResizeObserver do update");
         textCheckerPopup.dismissCards();
         textChecker.resetAnnotations();
         update();
@@ -228,19 +278,39 @@ export const attachToTextArea = ({
     resizeObserver.observe(textAreaElement);
     // when scroll window, update annotation
     const onScroll = () => {
+        textCheckerPopup.dismissCards();
         textChecker.resetAnnotations();
         update();
     };
+    const onFocus = () => {
+        textCheckerPopup.dismissCards();
+        update();
+    };
+    const onBlur = (event: FocusEvent) => {
+        // does not dismiss on click popup items(require tabindex)
+        if (event.relatedTarget === textChecker || event.relatedTarget === textCheckerPopup) {
+            return;
+        }
+        textCheckerPopup.dismissCards();
+    };
+    textAreaElement.addEventListener("compositionstart", compositionHandler);
+    textAreaElement.addEventListener("compositionend", compositionHandler);
+    textAreaElement.addEventListener("input", update);
+    textAreaElement.addEventListener("focus", onFocus);
+    textAreaElement.addEventListener("blur", onBlur);
+    textAreaElement.addEventListener("focusout", dismissCards);
     window.addEventListener("scroll", onScroll);
     // when scroll the element, update annotation
     textAreaElement.addEventListener("scroll", onScroll);
+    update();
     return () => {
         window.removeEventListener("scroll", onScroll);
         textAreaElement.removeEventListener("scroll", onScroll);
         textAreaElement.removeEventListener("compositionstart", compositionHandler);
         textAreaElement.removeEventListener("compositionend", compositionHandler);
         textAreaElement.removeEventListener("input", update);
-        textAreaElement.removeEventListener("blur", dismissCards);
+        textAreaElement.removeEventListener("focus", onFocus);
+        textAreaElement.removeEventListener("blur", onBlur);
         resizeObserver.disconnect();
     };
 };

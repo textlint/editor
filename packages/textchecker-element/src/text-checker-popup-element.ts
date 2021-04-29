@@ -317,6 +317,8 @@ export class TextCheckerPopupElement extends HTMLElement {
                 </svg>`
             }
         ];
+        // Require tabIndex for blur event's relatedElement
+        // https://stackoverflow.com/questions/42764494/blur-event-relatedtarget-returns-null
         const cardContent = html` <ul class="popoup-list" style="--padding: ${itemPadding}px">
             ${items.map((item) => {
                 const clickHandler = {
@@ -328,18 +330,28 @@ export class TextCheckerPopupElement extends HTMLElement {
                             @click=${clickHandler}
                             class="popup-listItem"
                             style="--padding: ${itemPadding}px;"
+                            tabindex="0"
                         >
                             <p class="popup-listItem-message">${item.message}</p>
                             <p class="popup-listItem-content">${item.icon}${item.label}</p>
                         </li>`;
                     } else {
-                        return html` <li class="popup-listItem" style="--padding: ${itemPadding}px; padding-bottom: 0;">
+                        return html` <li
+                            class="popup-listItem"
+                            style="--padding: ${itemPadding}px; padding-bottom: 0;"
+                            tabindex="0"
+                        >
                             <p class="popup-listItem-message">${item.message}</p>
                             <p class="popup-listItem-content">${item.icon}${item.label}</p>
                         </li>`;
                     }
                 }
-                return html` <li @click=${clickHandler} class="popup-listItem" style="--padding: ${itemPadding}px;">
+                return html` <li
+                    @click=${clickHandler}
+                    class="popup-listItem"
+                    style="--padding: ${itemPadding}px;"
+                    tabindex="0"
+                >
                     <p class="popup-listItem-content">${item.icon}${item.label}</p>
                 </li>`;
             })}
