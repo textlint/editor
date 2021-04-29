@@ -34,7 +34,7 @@ export type TextCheckerState = {
     visibleHeight: number;
     rectItems: TextCheckerElementRectItem[];
     annotationItems: AnnotationItem[];
-    mouseHoverReactIdMap: Map<TextCheckerElementRectItem["id"], boolean>;
+    mouseHoverRectIdMap: Map<TextCheckerElementRectItem["id"], boolean>;
     highlightRectIdSet: Set<TextCheckerElementRectItem["id"]>;
 };
 export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>) => {
@@ -46,7 +46,7 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
         rectItems: [],
         annotationItems: [],
         highlightRectIdSet: new Set(),
-        mouseHoverReactIdMap: new Map(),
+        mouseHoverRectIdMap: new Map(),
         ...initialState
     };
     const changeEvent = eventmit<void>();
@@ -72,6 +72,24 @@ export const createTextCheckerStore = (initialState?: Partial<TextCheckerState>)
             textCheckerState = {
                 ...textCheckerState,
                 ...state
+            };
+            changeEvent.emit();
+        },
+        clear() {
+            textCheckerState = {
+                ...textCheckerState,
+                rectItems: [],
+                annotationItems: [],
+                highlightRectIdSet: new Set(),
+                mouseHoverRectIdMap: new Map()
+            };
+            changeEvent.emit();
+        },
+        clearHoverState() {
+            textCheckerState = {
+                ...textCheckerState,
+                highlightRectIdSet: new Set(),
+                mouseHoverRectIdMap: new Map()
             };
             changeEvent.emit();
         }

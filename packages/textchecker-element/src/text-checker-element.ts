@@ -10,6 +10,8 @@ import {
 import toPX from "to-px";
 
 export type TextCheckerElementAttributes = {
+    onEnter?: () => void;
+    onLeave?: () => void;
     targetElement: HTMLTextAreaElement;
     hoverPadding: number;
 };
@@ -31,12 +33,18 @@ export class TextCheckerElement extends HTMLElement {
     private store: ReturnType<typeof createTextCheckerStore>;
     private hoverPadding: number = 8;
     private target!: string;
+    public isFocus: boolean = false;
+    public isHovering: boolean = false;
+    private onEnter: (() => void) | undefined;
+    private onLeave: (() => void) | undefined;
 
     constructor(args: TextCheckerElementAttributes) {
         super();
         this.store = createTextCheckerStore();
-        this.targetElement = args.targetElement;
-        this.hoverPadding = args.hoverPadding;
+        this.targetElement = args?.targetElement;
+        this.onEnter = args?.onEnter;
+        this.onLeave = args?.onLeave;
+        this.hoverPadding = args?.hoverPadding ?? 8;
     }
 
     static get observedAttributes() {
@@ -74,28 +82,43 @@ export class TextCheckerElement extends HTMLElement {
         overlay.append(annotationBox);
         shadow.append(overlay);
         this.annotationBox = annotationBox;
+        // we need to capture over textarea
+        this.targetElement.dataset.attachedTextCheckerElement = "true";
         this.targetElement.addEventListener("mousemove", this.onMouseUpdate);
-        // when scroll the element, update annoation
-        this.targetElement.addEventListener("scroll", this.updateOnScroll);
+        this.targetElement.addEventListener("focus", this.onFocus);
+        this.targetElement.addEventListener("blur", this.onBlur);
+        this.targetElement.addEventListener("mouseenter", this.onMouseEnter);
+        this.targetElement.addEventListener("mouseleave", this.onMouseLeave);
         this.store.onChange(() => {
             this.renderAnnotationMarkers(this.store.get());
         });
     }
 
-    updateOnScroll = () => {};
-
     disconnectedCallback() {
         this.targetElement.removeEventListener("mousemove", this.onMouseUpdate);
-        this.targetElement.removeEventListener("scroll", this.updateOnScroll);
+        this.targetElement.removeEventListener("focus", this.onFocus);
+        this.targetElement.removeEventListener("blur", this.onBlur);
+        this.targetElement.removeEventListener("mouseenter", this.onMouseEnter);
+        this.targetElement.removeEventListener("mouseleave", this.onMouseLeave);
     }
 
+    private onMouseEnter = () => {
+        this.isHovering = true;
+        this.onEnter?.();
+    };
+
+    private onMouseLeave = () => {
+        this.isHovering = false;
+        this.onLeave?.();
+        this.resetHoverState();
+    };
+
     resetAnnotations() {
-        if (this.store.get().rectItems.length === 0) {
-            return; // no update
-        }
-        this.store.update({
-            rectItems: []
-        });
+        this.store.clear();
+    }
+
+    resetHoverState() {
+        this.store.clearHoverState();
     }
 
     updateAnnotations(annotationItems: AnnotationItem[]) {
@@ -259,6 +282,18 @@ export class TextCheckerElement extends HTMLElement {
         render(items, this.annotationBox);
     };
 
+    onFocus = () => {
+        this.isFocus = true;
+    };
+    onBlur = () => {
+        this.isFocus = false;
+    };
+
+    isHoverRectItem = (rectItem: TextCheckerElementRectItem): boolean => {
+        const state = this.store.get();
+        return Boolean(state.mouseHoverRectIdMap.get(rectItem.id));
+    };
+
     onMouseUpdate = (event: MouseEvent) => {
         const state = this.store.get();
         const hoverPadding = this.hoverPadding;
@@ -270,9 +305,9 @@ export class TextCheckerElement extends HTMLElement {
                 };
                 return (
                     rect.left - hoverPadding <= point.x &&
-                    point.x <= rect.left + rect.width + hoverPadding &&
+                    rect.left + rect.width + hoverPadding >= point.x &&
                     rect.top - hoverPadding <= point.y &&
-                    point.y <= rect.top + rect.height + hoverPadding
+                    rect.top + rect.height + hoverPadding >= point.y
                 );
             })
             .map((item) => item.id);
@@ -280,22 +315,22 @@ export class TextCheckerElement extends HTMLElement {
         // naive implementation
         // TODO: https://github.com/mourner/flatbush is useful for search
         state.rectItems.forEach((rectItem) => {
-            const currentState = state.mouseHoverReactIdMap.get(rectItem.id);
+            const isHoverRect = state.mouseHoverRectIdMap.get(rectItem.id);
             const isIncludedMouse = isIncludedIndexes.includes(rectItem.id);
-            if (currentState === false && isIncludedMouse) {
+            if (!isHoverRect && isIncludedMouse) {
                 state.annotationItems
                     .find((item) => item.id === rectItem.id)
                     ?.onMouseEnter({
                         rectItem: rectItem
                     });
-            } else if (currentState === true && !isIncludedMouse) {
+            } else if (isHoverRect && !isIncludedMouse) {
                 state.annotationItems
                     .find((item) => item.id === rectItem.id)
                     ?.onMouseLeave({
                         rectItem: rectItem
                     });
             }
-            state.mouseHoverReactIdMap.set(rectItem.id, isIncludedMouse);
+            state.mouseHoverRectIdMap.set(rectItem.id, isIncludedMouse);
         });
         // update highlight
         this.store.highlightRectIndexes(isIncludedIndexes);
