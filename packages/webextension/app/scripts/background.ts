@@ -82,6 +82,7 @@ browser.runtime.onConnect.addListener(async (port) => {
 
     const isExtensionPage = (urlString: string) => {
         try {
+            // Note: browser.runtime.id is not uuid in Firefox
             const extensionPageUrl = new URL(browser.runtime.getURL("/pages/edit-script.html"));
             const currentUrl = new URL(urlString);
             if (!(currentUrl.protocol === "moz-extension:" || currentUrl.protocol === "chrome-extension:")) {
