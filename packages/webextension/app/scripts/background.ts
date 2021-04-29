@@ -59,14 +59,13 @@ browser.webRequest.onHeadersReceived.addListener(
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 
 type DataBase = ThenArg<ReturnType<typeof openDatabase>>;
-export type backgroundExposedObject = {
-    addScript: DataBase["addScript"];
-} & LintEngineAPI;
-export type backgroundPopupObject = {
+export type BackgroundToContentObject = LintEngineAPI;
+export type BackgroundToPopupObject = {
     findScriptsWithPatten: DataBase["findScriptsWithPatten"];
     findScriptsWithName: DataBase["findScriptsWithName"];
     deleteScript: DataBase["deleteScript"];
     updateScript: DataBase["updateScript"];
+    addScript: DataBase["addScript"];
     openEditor: (options: { name: string; namespace: string }) => void;
 };
 
@@ -80,12 +79,30 @@ browser.runtime.onConnect.addListener(async (port) => {
     if (!originUrl) {
         return;
     }
-    if (/^(moz|chrome)-extension:\/\/.*\/(edit-script.html|popup.html)/.test(originUrl)) {
-        const exports: backgroundPopupObject = {
+
+    const isExtensionPage = (urlString: string) => {
+        try {
+            // Note: browser.runtime.id is not uuid in Firefox
+            const extensionPageUrl = new URL(browser.runtime.getURL("/pages/edit-script.html"));
+            const currentUrl = new URL(urlString);
+            if (currentUrl.protocol !== extensionPageUrl.protocol) {
+                return false;
+            }
+            if (currentUrl.host !== extensionPageUrl.host) {
+                return false;
+            }
+            return currentUrl.pathname.startsWith(`/pages/`);
+        } catch {
+            return false;
+        }
+    };
+    if (isExtensionPage(originUrl)) {
+        const exports: BackgroundToPopupObject = {
             findScriptsWithPatten: db.findScriptsWithPatten,
             findScriptsWithName: db.findScriptsWithName,
             deleteScript: db.deleteScript,
             updateScript: db.updateScript,
+            addScript: db.addScript,
             openEditor: (options: { name: string; namespace: string }) => {
                 const editPageUrl = browser.runtime.getURL("/pages/edit-script.html");
                 browser.tabs.create({
@@ -147,12 +164,7 @@ browser.runtime.onConnect.addListener(async (port) => {
             throw new Error("No implement ignoreText on background");
         }
     };
-    const backgroundExposedObject: backgroundExposedObject = {
-        ...lintEngine,
-        addScript: (script) => {
-            return db.addScript(script);
-        }
-    };
+    const backgroundExposedObject: BackgroundToContentObject = lintEngine;
     port.onDisconnect.addListener(async () => {
         logger.log("dispose worker");
         const scripts = await db.findScriptsWithPatten(originUrl);
