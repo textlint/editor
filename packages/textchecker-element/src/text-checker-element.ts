@@ -70,7 +70,7 @@ export class TextCheckerElement extends HTMLElement {
         if (!target) {
             throw new Error("target element is not found");
         }
-        const shadow = this.attachShadow({ mode: "open" });
+        const shadow = this.attachShadow({ mode: "closed" });
         const overlay = document.createElement("div");
         overlay.className = "overlay";
         overlay.setAttribute(

@@ -100,7 +100,7 @@ export class TextCheckerPopupElement extends HTMLElement {
     };
 
     connectedCallback(): void {
-        const shadow = this.attachShadow({ mode: "open" });
+        const shadow = this.attachShadow({ mode: "closed" });
         const overlay = document.createElement("div");
         overlay.className = "popup";
         const style = document.createElement("style");
