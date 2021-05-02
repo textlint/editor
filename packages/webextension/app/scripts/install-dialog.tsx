@@ -86,7 +86,9 @@ function App() {
                 >
                     {install}
                 </button>
-                {install === "Installed" ? "Success to install!" : null}
+                {install === "Installed" ? (
+                    <p>🎉 Success to install 🎉 You can close this tab and use textlint on any textarea!</p>
+                ) : null}
             </div>
             <div id="metadata" className="metadata">
                 <h3>Script metadata</h3>

@@ -7,57 +7,23 @@ import { LintEngineAPI } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 import { scriptWorkerSet } from "./background/scriptWorkerSet";
 import { logger } from "./utils/logger";
+import { listenOnTextlintWorkerJsUrl } from "./background/onTextlintWorker";
 
-// browser.runtime.onInstalled.addListener((details) => {
-//     // logger.log("previousVersion", details.previousVersion);
-// });
-//
-// browser.tabs.onUpdated.addListener(async (tabId) => {
-//     // await browser?.pageAction?.show(tabId);
-// });
-
-const gContentTypeRe = (() => {
-    const userScriptTypes = [
-        "text/plain",
-        "application/ecmascript",
-        "application/javascript",
-        "application/x-javascript",
-        "text/ecmascript",
-        "text/javascript"
-    ];
-    return new RegExp(`^(${userScriptTypes.join("|")})\\b`);
-})();
-
-function responseHasUserScriptType(responseHeaders: any) {
-    for (let header of responseHeaders) {
-        let headerName = header.name.toLowerCase();
-        if ("content-type" === headerName && gContentTypeRe.test(header.value)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-async function openInstallDialog(url: string) {
+async function openInstallDialog({ tabId, url }: { tabId: number; url: string }) {
     const installUrl = browser.runtime.getURL("/pages/install-dialog.html") + "?script=" + encodeURIComponent(url);
-    await browser.tabs.create({
+    await browser.tabs.update(tabId, {
         url: installUrl
     });
 }
 
-browser.webRequest.onHeadersReceived.addListener(
-    (details) => {
-        if (details.method !== "GET") return {};
-        if (!responseHasUserScriptType(details.responseHeaders)) return {};
-        openInstallDialog(details.url);
-        // https://stackoverflow.com/a/18684302
-        return { redirectUrl: "javascript:" };
-    },
-    { urls: ["*://*/*textlint-worker.js"], types: ["main_frame"] },
-    ["blocking", "responseHeaders"]
-);
-type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
+// https://**/*textlint-worker.js
+listenOnTextlintWorkerJsUrl({
+    onTextlintWorkerUrl({ tabId, url }) {
+        return openInstallDialog({ tabId, url });
+    }
+});
 
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 type DataBase = ThenArg<ReturnType<typeof openDatabase>>;
 export type BackgroundToContentObject = LintEngineAPI;
 export type BackgroundToPopupObject = {
