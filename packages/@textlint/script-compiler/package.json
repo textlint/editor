@@ -1,6 +1,6 @@
 {
   "name": "@textlint/script-compiler",
-  "version": "0.10.4",
+  "version": "0.11.0",
   "description": "textlint script compiler tool",
   "keywords": [
     "textlint",
@@ -53,11 +53,11 @@
   },
   "dependencies": {
     "@babel/core": "^7.12.10",
-    "@textlint/config-loader": "^0.10.4",
-    "@textlint/config-partial-parser": "^0.10.4",
+    "@textlint/config-loader": "^0.11.0",
+    "@textlint/config-partial-parser": "^0.11.0",
     "@textlint/kernel": "^3.4.1",
-    "@textlint/runtime-helper": "^0.10.4",
-    "@textlint/script-parser": "^0.10.4",
+    "@textlint/runtime-helper": "^0.11.0",
+    "@textlint/script-parser": "^0.11.0",
     "@textlint/types": "^1.5.1",
     "babel-loader": "^8.2.2",
     "babel-plugin-static-fs": "^3.0.0",

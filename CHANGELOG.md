@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/textlint/editor/compare/v0.10.5...v0.11.0) (2021-05-02)
+
+
+### Bug Fixes
+
+* fix web url ([90248dd](https://github.com/textlint/editor/commit/90248dd025b54999c47e052f2afcb5b0c558a8ab))
+* **webextension:** use tabs instead of webRequest ([#45](https://github.com/textlint/editor/issues/45)) ([0a710fa](https://github.com/textlint/editor/commit/0a710fa17994e641c03a49f90eea412c3c640da0))
+* improve stability ([#44](https://github.com/textlint/editor/issues/44)) ([270b400](https://github.com/textlint/editor/commit/270b40080e903596b0ef5afd1fcaa2791b9609ac))
+* **webextension:** add worker-src: self blob to CSP ([#39](https://github.com/textlint/editor/issues/39)) ([adccedd](https://github.com/textlint/editor/commit/adccedd1a3586376344a4a1439bef15ebcee41c8))
+* **webextension:** do not expose background object to website ([#43](https://github.com/textlint/editor/issues/43)) ([3ee2a87](https://github.com/textlint/editor/commit/3ee2a8750528ced2bbbe719a4c47e0287bc3c8b0)), closes [#40](https://github.com/textlint/editor/issues/40)
+* **webextension:** remove tabs permission ([8fd47b4](https://github.com/textlint/editor/commit/8fd47b425ea6252689ee9b2d84d5669386e4b7e3))
+* use website ([37523f2](https://github.com/textlint/editor/commit/37523f23dd5109c056fb844bf6554ed071f4e92c))
+
+
+### Features
+
+* **webextension:** support to update Script ([339cf6f](https://github.com/textlint/editor/commit/339cf6f9a3e8e7037840506d44631d57e4dfcca1))
+
+
+
+
+
 ## [0.10.5](https://github.com/textlint/editor/compare/v0.10.4...v0.10.5) (2021-04-19)
 
 

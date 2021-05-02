@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/textlint/editor/compare/v0.10.5...v0.11.0) (2021-05-02)
+
+
+### Bug Fixes
+
+* fix web url ([90248dd](https://github.com/textlint/editor/commit/90248dd025b54999c47e052f2afcb5b0c558a8ab))
+* improve stability ([#44](https://github.com/textlint/editor/issues/44)) ([270b400](https://github.com/textlint/editor/commit/270b40080e903596b0ef5afd1fcaa2791b9609ac))
+
+
+
+
+
 ## [0.10.5](https://github.com/textlint/editor/compare/v0.10.4...v0.10.5) (2021-04-19)
 
 **Note:** Version bump only for package textchecker-element
