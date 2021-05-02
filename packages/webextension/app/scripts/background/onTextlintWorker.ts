@@ -13,7 +13,6 @@ export type listenOnTextlintWorkerJsUrlArgs = {
 };
 export const listenOnTextlintWorkerJsUrl = (args: listenOnTextlintWorkerJsUrlArgs) => {
     browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
-        console.log("changeInfo", changeInfo);
         if (changeInfo && changeInfo.url && isTextlintWorkerUrl(changeInfo.url)) {
             args.onTextlintWorkerUrl({
                 tabId,
@@ -24,7 +23,6 @@ export const listenOnTextlintWorkerJsUrl = (args: listenOnTextlintWorkerJsUrlArg
     browser.tabs.onActivated.addListener(async (activeInfo) => {
         // how to fetch tab url using activeInfo.tabid
         const tab = await browser.tabs.get(activeInfo.tabId);
-        console.log("tab", tab);
         if (tab && tab.id && tab.url && isTextlintWorkerUrl(tab.url)) {
             args.onTextlintWorkerUrl({
                 tabId: tab.id,
