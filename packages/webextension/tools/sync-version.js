@@ -5,5 +5,5 @@ const lerna = require("../../../lerna.json");
     const manifestFilePath = path.resolve(__dirname, "../app/manifest.json");
     const manifest = JSON.parse(await fs.readFile(manifestFilePath, "utf-8"));
     manifest["version"] = lerna["version"];
-    await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 4), "utf-8");
+    await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 4) + "\n", "utf-8");
 })();
