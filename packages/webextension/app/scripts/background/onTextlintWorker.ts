@@ -11,6 +11,7 @@ const isTextlintWorkerUrl = (urlString: string): boolean => {
 export type listenOnTextlintWorkerJsUrlArgs = {
     onTextlintWorkerUrl: ({ tabId, url }: { tabId: number; url: string }) => void;
 };
+// On access http?://**/*textlint-worker.js
 export const listenOnTextlintWorkerJsUrl = (args: listenOnTextlintWorkerJsUrlArgs) => {
     browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
         if (changeInfo && changeInfo.url && isTextlintWorkerUrl(changeInfo.url)) {
@@ -21,7 +22,6 @@ export const listenOnTextlintWorkerJsUrl = (args: listenOnTextlintWorkerJsUrlArg
         }
     });
     browser.tabs.onActivated.addListener(async (activeInfo) => {
-        // how to fetch tab url using activeInfo.tabid
         const tab = await browser.tabs.get(activeInfo.tabId);
         if (tab && tab.id && tab.url && isTextlintWorkerUrl(tab.url)) {
             args.onTextlintWorkerUrl({
