@@ -5,7 +5,8 @@
   "description": "textlint editor",
   "scripts": {
     "dev": "webextension-toolbox dev",
-    "build": "webextension-toolbox build"
+    "build": "webextension-toolbox build",
+    "version": "node tools/sync-version.js"
   },
   "devDependencies": {
     "@types/codemirror": "^0.0.106",
