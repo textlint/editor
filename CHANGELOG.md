@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.2](https://github.com/textlint/editor/compare/v0.11.1...v0.11.2) (2021-05-02)
+
+
+### Bug Fixes
+
+* **element:** use closed mode ([ed22ab0](https://github.com/textlint/editor/commit/ed22ab0fb43aaa8a034985d80b9d72bf7efd579a)), closes [#46](https://github.com/textlint/editor/issues/46)
+
+
+
+
+
 ## [0.11.1](https://github.com/textlint/editor/compare/v0.11.0...v0.11.1) (2021-05-02)
 
 **Note:** Version bump only for package @textlint/editor
