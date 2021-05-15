@@ -30,7 +30,7 @@ export const prh = async ({
     if (typeof options === "boolean" || options === undefined) {
         return options;
     }
-    const baseDir = path.basename(configFilePath);
+    const baseDir = path.dirname(configFilePath);
     return {
         ...options,
         rulePaths: [],
