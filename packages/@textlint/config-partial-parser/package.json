@@ -1,6 +1,6 @@
 {
   "name": "@textlint/config-partial-parser",
-  "version": "0.11.0",
+  "version": "0.11.3",
   "description": "A partial parser for textlintrc",
   "keywords": [
     "textlint",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.3](https://github.com/textlint/editor/compare/v0.11.2...v0.11.3) (2021-05-15)
+
+
+### Features
+
+* support @textlint/config-inliner in compiler ([630fd1e](https://github.com/textlint/editor/commit/630fd1ee938a2b39e8ae74afdbde157497125557))
+
+
+
+
+
 # [0.11.0](https://github.com/textlint/editor/compare/v0.10.5...v0.11.0) (2021-05-02)
 
 **Note:** Version bump only for package @textlint/script-compiler
