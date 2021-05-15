@@ -1,7 +1,15 @@
 import type { TextlintConfigDescriptor } from "@textlint/config-loader";
 import { prh } from "./rules/prh";
 
-export const inlineConfig = async (config: TextlintConfigDescriptor): Promise<TextlintConfigDescriptor> => {
+export const inlineConfig = async ({
+    cwd = process.cwd(),
+    configFilePath,
+    config
+}: {
+    cwd?: string;
+    configFilePath: string;
+    config: TextlintConfigDescriptor;
+}): Promise<TextlintConfigDescriptor> => {
     return {
         ...config,
         rules: await Promise.all(
@@ -9,7 +17,11 @@ export const inlineConfig = async (config: TextlintConfigDescriptor): Promise<Te
                 if (rule.ruleId === "prh") {
                     return {
                         ...rule,
-                        options: await prh(rule.options)
+                        options: await prh({
+                            cwd,
+                            configFilePath,
+                            options: rule.options
+                        })
                     };
                 }
                 return rule;

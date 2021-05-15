@@ -26,8 +26,12 @@ Install with [npm](https://www.npmjs.com/):
 ```ts
 import { loadConfig } from "@textlint/config-loader";
 import { inlineConfig } from "@textlint/config-inliner";
-const config = await loadConfig();
-const inlinedConfig = await inlineConfig(config);
+const configResult = await loadConfig();
+const inlinedConfig = await inlineConfig({
+    cwd: process.cwd(),
+    configFilePath: configResult.configFilePath,
+    config: configResult.config
+});
 ```
 
 ## Changelog

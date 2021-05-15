@@ -58,6 +58,7 @@
     "@textlint/kernel": "^3.4.1",
     "@textlint/runtime-helper": "^0.11.0",
     "@textlint/script-parser": "^0.11.0",
+    "@textlint/config-inliner": "^0.11.0",
     "@textlint/types": "^1.5.1",
     "babel-loader": "^8.2.2",
     "babel-plugin-static-fs": "^3.0.0",

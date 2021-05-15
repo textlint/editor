@@ -1,6 +1,5 @@
-import { loadConfig, TextlintConfigDescriptor } from "@textlint/config-loader";
-import { CodeGeneraterOptions } from "./CodeGeneraterOptions";
-import type { TextlintResult, TextlintFixResult } from "@textlint/types";
+import { TextlintConfigDescriptor } from "@textlint/config-loader";
+import type { TextlintFixResult, TextlintResult } from "@textlint/types";
 import { TextlintScriptMetadata } from "@textlint/script-parser";
 
 export type TextlintWorkerCommandLint = {
@@ -40,23 +39,6 @@ export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseLint
     | TextlintWorkerCommandResponseFix;
 
-export const loadTextlintrc = (options: CodeGeneraterOptions) => {
-    return loadConfig({
-        cwd: options.cwd,
-        configFilePath: options.configFilePath,
-        preLoadingPackage: (packageOptions) => {
-            // TODO: default plugin handling?
-            packageOptions.rawConfig.plugins = Array.isArray(packageOptions.rawConfig?.plugins)
-                ? ["@textlint/text", "@textlint/markdown"].concat(packageOptions.rawConfig?.plugins ?? [])
-                : {
-                      "@textlint/text": true,
-                      "@textlint/markdown": true,
-                      ...packageOptions.rawConfig?.plugins
-                  };
-            return packageOptions;
-        }
-    });
-};
 export const generateCode = async (config: TextlintConfigDescriptor) => {
     const stringify = (item: any[]): string => {
         // unwrap code

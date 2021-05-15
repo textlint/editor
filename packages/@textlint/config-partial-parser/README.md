@@ -1,6 +1,10 @@
 # @textlint/config-partial-parser
 
-A partial parser for textlintrc
+A partial parser for textlintrc.
+
+It is parser for textlintrc, it is not loader.
+
+The loader is `@textlint/config-loader`
 
 ## Install
 

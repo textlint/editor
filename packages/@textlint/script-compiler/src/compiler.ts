@@ -7,8 +7,10 @@ import rimraf from "rimraf";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 // @ts-ignore
 import TerserPlugin from "terser-webpack-plugin";
-import { generateCode, loadTextlintrc } from "./CodeGenerator/worker-codegen";
+import { generateCode } from "./CodeGenerator/worker-codegen";
 import { CodeGeneraterOptions } from "./CodeGenerator/CodeGeneraterOptions";
+import { loadConfig } from "@textlint/config-loader";
+import { inlineConfig } from "@textlint/config-inliner";
 
 export function validateTextlintScriptMetadata(metadata: {}): asserts metadata is Omit<
     TextlintScriptMetadata,
@@ -125,22 +127,51 @@ export type compileOptions = {
     mode: "production" | "development";
     metadata: Omit<TextlintScriptMetadata, "config">;
 } & CodeGeneraterOptions;
+
+export const loadTextlintrc = async (options: CodeGeneraterOptions) => {
+    const configResult = await loadConfig({
+        cwd: options.cwd,
+        configFilePath: options.configFilePath,
+        preLoadingPackage: (packageOptions) => {
+            // TODO: default plugin handling?
+            packageOptions.rawConfig.plugins = Array.isArray(packageOptions.rawConfig?.plugins)
+                ? ["@textlint/text", "@textlint/markdown"].concat(packageOptions.rawConfig?.plugins ?? [])
+                : {
+                      "@textlint/text": true,
+                      "@textlint/markdown": true,
+                      ...packageOptions.rawConfig?.plugins
+                  };
+            return packageOptions;
+        }
+    });
+    if (!configResult.ok) {
+        console.error(configResult.error.message, configResult.error.errors);
+        throw new Error(configResult.error.message);
+    }
+    // inline some rule config - in other word patch the config
+    const inlinedConfig = await inlineConfig({
+        cwd: options.cwd,
+        configFilePath: configResult.configFilePath,
+        config: configResult.config
+    });
+    return {
+        config: inlinedConfig,
+        rawConfig: configResult.rawConfig
+    };
+};
+
 export const compile = async (options: compileOptions) => {
     if (options.cwd && !path.isAbsolute(options.cwd)) {
         throw new Error("option.cwd should be absolute path");
     }
     const cwd = options.cwd || process.cwd();
-    const configResult = await loadTextlintrc({
+    const { config, rawConfig } = await loadTextlintrc({
         cwd,
         configFilePath: options.configFilePath
     });
-    if (configResult.ok === false) {
-        console.error(configResult.error.message, configResult.error.errors);
-        throw new Error(configResult.error.message);
-    }
     const code = await (async () => {
         if (options.compileTarget === "webworker") {
-            return generateCode(configResult.config);
+            return generateCode(config);
         }
         throw new Error(`Unknown compileTarget: ${options.compileTarget}`);
     })();
@@ -158,7 +189,7 @@ export const compile = async (options: compileOptions) => {
             mode: options.mode,
             metadata: {
                 ...options.metadata,
-                config: configResult.rawConfig
+                config: rawConfig
             }
         });
         webpack([config], (error: undefined | (Error & { details?: string }), stats?) => {
