@@ -1,6 +1,6 @@
 # @textlint/editor
 
-textlint editor project.
+textlint editor is privacy first linting tool on your browser.
 
 ## Usage
 
