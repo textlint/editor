@@ -1,6 +1,6 @@
 {
   "name": "@textlint/website-generator",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "description": "Website generator using @textlint/script-compiler",
   "keywords": [
     "textlint"
@@ -47,10 +47,10 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/script-compiler": "^0.11.3",
+    "@textlint/script-compiler": "^0.12.0",
     "meow": "^9.0.0",
     "read-pkg": "^5.2.0",
-    "textchecker-element": "^0.11.3"
+    "textchecker-element": "^0.12.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",

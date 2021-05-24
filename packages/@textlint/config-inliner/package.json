@@ -1,6 +1,6 @@
 {
   "name": "@textlint/config-inliner",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "description": "Inlining config for supporting browser.",
   "keywords": [
     "textlint"
@@ -44,7 +44,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^0.11.0",
+    "@textlint/config-loader": "^0.12.0",
     "untildify": "^4.0.0"
   },
   "devDependencies": {
