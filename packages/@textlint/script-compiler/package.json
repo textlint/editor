@@ -1,6 +1,6 @@
 {
   "name": "@textlint/script-compiler",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "textlint script compiler tool",
   "keywords": [
     "textlint",
@@ -59,9 +59,9 @@
     "@textlint/kernel": "^12.0.0",
     "@textlint/runtime-helper": "^0.12.0",
     "@textlint/script-parser": "^0.12.0",
-    "@textlint/types": "^12.0.0",
     "@textlint/textlint-plugin-markdown": "^12.0.0",
     "@textlint/textlint-plugin-text": "^12.0.0",
+    "@textlint/types": "^12.0.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-static-fs": "^3.0.0",
     "meow": "^9.0.0",

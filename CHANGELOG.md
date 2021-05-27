@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/textlint/editor/compare/v0.12.0...v0.12.1) (2021-05-27)
+
+
+### Bug Fixes
+
+* **script-compiler:** add deps for script-comppiler ([#51](https://github.com/textlint/editor/issues/51)) ([85cca5f](https://github.com/textlint/editor/commit/85cca5f1654782deb54f29856d6fe04b4bc4a648))
+
+
+
+
+
 # [0.12.0](https://github.com/textlint/editor/compare/v0.11.3...v0.12.0) (2021-05-24)
 
 
