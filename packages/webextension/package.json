@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webextension-toolbox dev",
     "build": "webextension-toolbox build",
-    "version": "node tools/sync-version.js && git add ./app/manifest.json && git commit -m 'chore(webextension): update version'"
+    "update-version": "node tools/sync-version.js && git add ./app/manifest.json && git commit -m 'chore(webextension): update version'"
   },
   "devDependencies": {
     "@types/codemirror": "^0.0.106",
