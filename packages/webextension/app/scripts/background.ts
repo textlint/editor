@@ -2,7 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
-import { openDatabase, Script } from "./background/database";
+import { keyOfScript, openDatabase, Script } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 import { scriptWorkerSet } from "./background/scriptWorkerSet";
@@ -90,6 +90,7 @@ browser.runtime.onConnect.addListener(async (port) => {
                 ext: script.ext
             };
         }
+        logger.log("start worker", keyOfScript(script));
         const textlintWorker = createTextlintWorker(script);
         scriptWorkerSet.add({ script, worker: textlintWorker });
         return {
@@ -104,6 +105,12 @@ browser.runtime.onConnect.addListener(async (port) => {
         });
         await Promise.all(scriptWorkers.map((worker) => worker.worker.ready()));
         return scriptWorkers;
+    };
+    const closeScriptWorkers = () => {
+        scripts.forEach((script) => {
+            logger.log("delete worker", keyOfScript(script));
+            return scriptWorkerSet.delete({ script });
+        });
     };
     // Support multiple workers
     const lintEngine: LintEngineAPI = {
@@ -138,6 +145,14 @@ browser.runtime.onConnect.addListener(async (port) => {
             throw new Error("No implement ignoreText on background");
         }
     };
+    port.onDisconnect.addListener(async () => {
+        logger.log("dispose worker - close workers");
+        // When some tab close, the related worker will disposed.
+        // It aims to reduce memory leak
+        // https://github.com/textlint/editor/issues/52
+        // scriptWorker will re-start when call `lint` or `fix` api automatically
+        closeScriptWorkers();
+    });
     const backgroundExposedObject: BackgroundToContentObject = lintEngine;
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
     port.postMessage("textlint-editor-boot");

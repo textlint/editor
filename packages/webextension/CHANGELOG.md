@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.2](https://github.com/textlint/editor/compare/v0.12.1...v0.12.2) (2021-06-19)
+
+
+### Bug Fixes
+
+* **webextension:** use LRU for storing TextlintWorker ([#53](https://github.com/textlint/editor/issues/53)) ([0ee9089](https://github.com/textlint/editor/commit/0ee9089741e511af5ace052d0f64a42f4d63fb44))
+* **webextension:** when tab is closed, shutdown related workers ([ecf27fd](https://github.com/textlint/editor/commit/ecf27fd71581d2012b7623080d95b465e58ee8e3))
+
+
+
+
+
 ## [0.12.1](https://github.com/textlint/editor/compare/v0.12.0...v0.12.1) (2021-05-27)
 
 **Note:** Version bump only for package @textlint/webextension
