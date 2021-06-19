@@ -2,7 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
-import { openDatabase, Script } from "./background/database";
+import { keyOfScript, openDatabase, Script } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 import { scriptWorkerSet } from "./background/scriptWorkerSet";
@@ -90,6 +90,7 @@ browser.runtime.onConnect.addListener(async (port) => {
                 ext: script.ext
             };
         }
+        logger.log("start worker", keyOfScript(script));
         const textlintWorker = createTextlintWorker(script);
         scriptWorkerSet.add({ script, worker: textlintWorker });
         return {
@@ -107,6 +108,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     };
     const closeScriptWorkers = () => {
         scripts.forEach((script) => {
+            logger.log("delete worker", keyOfScript(script));
             return scriptWorkerSet.delete({ script });
         });
     };
