@@ -105,6 +105,11 @@ browser.runtime.onConnect.addListener(async (port) => {
         await Promise.all(scriptWorkers.map((worker) => worker.worker.ready()));
         return scriptWorkers;
     };
+    const closeScriptWorkers = () => {
+        scripts.forEach((script) => {
+            return scriptWorkerSet.delete({ script });
+        });
+    };
     // Support multiple workers
     const lintEngine: LintEngineAPI = {
         async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
@@ -138,6 +143,14 @@ browser.runtime.onConnect.addListener(async (port) => {
             throw new Error("No implement ignoreText on background");
         }
     };
+    port.onDisconnect.addListener(async () => {
+        logger.log("dispose worker - close workers");
+        // When some tab close, the related worker will disposed.
+        // It aims to reduce memory leak
+        // https://github.com/textlint/editor/issues/52
+        // scriptWorker will re-start when call `lint` or `fix` api automatically
+        closeScriptWorkers();
+    });
     const backgroundExposedObject: BackgroundToContentObject = lintEngine;
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
     port.postMessage("textlint-editor-boot");
