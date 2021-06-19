@@ -1,37 +1,33 @@
 import { TextlintWorker } from "./textlint";
 import { keyOfScript, Script } from "./database";
 import { logger } from "../utils/logger";
+import QuickLRU from "quick-lru";
 
 // worker: Set<url>
-const _workerRunningUrlMap = new Map<TextlintWorker, Set<string>>();
-const _scriptRunningWorkerMap = new Map<string, TextlintWorker>();
+const workerLRU = new QuickLRU<string, TextlintWorker>({
+    // Max TTL is 30min
+    maxAge: 1000 * 60 * 30,
+    // Max worker size
+    maxSize: 16,
+    onEviction: (scriptKey, worker) => {
+        logger.log(`TextlintWorker(${scriptKey} dispose`);
+        worker.dispose();
+    }
+});
 export const scriptWorkerSet = {
     get(script: Script) {
-        return _scriptRunningWorkerMap.get(keyOfScript(script));
+        return workerLRU.get(keyOfScript(script));
     },
     has(script: Script) {
-        return _scriptRunningWorkerMap.has(keyOfScript(script));
+        return workerLRU.has(keyOfScript(script));
     },
-    add({ script, worker, url }: { script: Script; worker: TextlintWorker; url: string }) {
-        const set = _workerRunningUrlMap.get(worker) ?? new Set<string>();
-        set.add(url);
-        _workerRunningUrlMap.set(worker, set);
-        return _scriptRunningWorkerMap.set(keyOfScript(script), worker);
+    add({ script, worker }: { script: Script; worker: TextlintWorker }) {
+        return workerLRU.set(keyOfScript(script), worker);
     },
-    delete({ script, url }: { script: Script; url: string }) {
-        for (const [worker, urlSet] of _workerRunningUrlMap.entries()) {
-            if (urlSet.has(url)) {
-                urlSet.delete(url);
-            }
-            if (urlSet.size === 0) {
-                worker.dispose();
-                _workerRunningUrlMap.delete(worker);
-            }
-        }
-        return _scriptRunningWorkerMap.delete(keyOfScript(script));
+    delete({ script }: { script: Script }) {
+        return workerLRU.delete(keyOfScript(script));
     },
     dump() {
-        logger.log("Running Scripts: ", _scriptRunningWorkerMap.keys());
-        logger.log("Running Workers x URLs: ", _workerRunningUrlMap.entries());
+        logger.log("Running Workers", [...workerLRU.entriesDescending()]);
     }
 };

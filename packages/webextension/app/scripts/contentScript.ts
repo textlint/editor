@@ -38,9 +38,9 @@ window.addEventListener("message", (event) => {
         };
         const command = event.data.command as keyof typeof lintEngine;
         const args = event.data.args;
-        const lintEngineElement = lintEngine[command];
-        if (Object.prototype.hasOwnProperty.call(lintEngine, command) && typeof lintEngineElement === "function") {
-            const newVar: Promise<any> = lintEngineElement(args);
+        const lintEngineCommand = lintEngine[command];
+        if (Object.prototype.hasOwnProperty.call(lintEngine, command) && typeof lintEngineCommand === "function") {
+            const newVar: Promise<any> = lintEngineCommand(args);
             newVar.then((result) => {
                 window.postMessage(
                     {
