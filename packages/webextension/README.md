@@ -38,16 +38,24 @@ The build tool also defines a variable named `process.env.NODE_ENV` in your scri
 
 ## Architecture
 
-- Page Contents
+- Page Scripts
+    - postMessage → Content Script
+- Content Scripts
     - postMessage → Background Page
-    - show result ← Background Page
+    - Pass Page Scripts ← Background Page
 - Background Page
     - → message → textlint-worker.js(downloaed)
     - ← message 
 
 Summary
 
-- WebPage → Content Script → Background Page → WebWorker(textlint) → Background Page → Content Script → WebPage
+- WebPage(Page Scripts) → Content Script → Background Page → WebWorker(textlint) → Background Page → Content Script → WebPage
+
+**Why use PageScript?**
+
+Chrome and Firefox does work WebComponent in Content Script.
+
+- [390807 - Content scripts can't define custom elements - chromium](https://bugs.chromium.org/p/chromium/issues/detail?id=390807)
 
 ## Deploy
 

@@ -2,7 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
-import { openDatabase } from "./background/database";
+import { openDatabase, Script } from "./background/database";
 import { LintEngineAPI } from "textchecker-element";
 import { TextlintResult } from "@textlint/types";
 import { scriptWorkerSet } from "./background/scriptWorkerSet";
@@ -82,7 +82,7 @@ browser.runtime.onConnect.addListener(async (port) => {
     }
     const scripts = await db.findScriptsWithPatten(originUrl);
     logger.log("scripts", scripts);
-    const scriptWorkers = scripts.map((script) => {
+    const getWorker = (script: Script) => {
         const runningWorker = scriptWorkerSet.get(script);
         if (runningWorker) {
             return {
@@ -90,19 +90,26 @@ browser.runtime.onConnect.addListener(async (port) => {
                 ext: script.ext
             };
         }
-        // TODO: comment support for textlintrc
         const textlintWorker = createTextlintWorker(script);
-        scriptWorkerSet.add({ script, worker: textlintWorker, url: originUrl });
+        scriptWorkerSet.add({ script, worker: textlintWorker });
         return {
             worker: textlintWorker,
             ext: script.ext
         };
-    });
-    logger.log("workers started", scriptWorkers);
+    };
+    // get script workers which are ready to work
+    const readyScriptWorkers = async () => {
+        const scriptWorkers = scripts.map((script) => {
+            return getWorker(script);
+        });
+        await Promise.all(scriptWorkers.map((worker) => worker.worker.ready()));
+        return scriptWorkers;
+    };
     // Support multiple workers
     const lintEngine: LintEngineAPI = {
         async lintText({ text }: { text: string }): Promise<TextlintResult[]> {
             logger.log("text:", text);
+            const scriptWorkers = await readyScriptWorkers();
             const allLintResults = await Promise.all(
                 scriptWorkers.map(({ worker, ext }) => {
                     return worker.createLintEngine({ ext }).lintText({ text });
@@ -113,6 +120,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         },
         async fixText({ text }): Promise<{ output: string }> {
             let output = text;
+            const scriptWorkers = await readyScriptWorkers();
             for (const { worker, ext } of scriptWorkers) {
                 await worker
                     .createLintEngine({ ext })
@@ -131,16 +139,6 @@ browser.runtime.onConnect.addListener(async (port) => {
         }
     };
     const backgroundExposedObject: BackgroundToContentObject = lintEngine;
-    port.onDisconnect.addListener(async () => {
-        logger.log("dispose worker");
-        const scripts = await db.findScriptsWithPatten(originUrl);
-        scripts.forEach((script) => {
-            scriptWorkerSet.delete({ script: script, url: originUrl });
-        });
-    });
-    logger.log("content port", port);
-    scriptWorkerSet.dump();
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
-    await Promise.all(scriptWorkers.map(({ worker }) => worker.ready()));
     port.postMessage("textlint-editor-boot");
 });
