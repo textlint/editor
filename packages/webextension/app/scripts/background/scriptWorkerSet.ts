@@ -10,10 +10,19 @@ const workerLRU = new QuickLRU<string, TextlintWorker>({
     // Max worker size
     maxSize: 16,
     onEviction: (scriptKey, worker) => {
-        logger.log(`TextlintWorker(${scriptKey} dispose`);
+        logger.log(`onEviction: TextlintWorker(${scriptKey} disposed`);
         worker.dispose();
     }
 });
+const deleteWorker = (scirpt: Script) => {
+    const scriptKey = keyOfScript(scirpt);
+    const worker = workerLRU.get(scriptKey);
+    if (!worker) {
+        return;
+    }
+    logger.log(`TextlintWorker(${scriptKey} disposed`);
+    worker.dispose();
+};
 export const scriptWorkerSet = {
     get(script: Script) {
         return workerLRU.get(keyOfScript(script));
@@ -25,6 +34,7 @@ export const scriptWorkerSet = {
         return workerLRU.set(keyOfScript(script), worker);
     },
     delete({ script }: { script: Script }) {
+        deleteWorker(script);
         return workerLRU.delete(keyOfScript(script));
     },
     dump() {

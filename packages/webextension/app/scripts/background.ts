@@ -90,7 +90,7 @@ browser.runtime.onConnect.addListener(async (port) => {
                 ext: script.ext
             };
         }
-        logger.log("start worker", keyOfScript(script));
+        logger.log("Start worker", keyOfScript(script));
         const textlintWorker = createTextlintWorker(script);
         scriptWorkerSet.add({ script, worker: textlintWorker });
         return {
@@ -108,8 +108,12 @@ browser.runtime.onConnect.addListener(async (port) => {
     };
     const closeScriptWorkers = () => {
         scripts.forEach((script) => {
-            logger.log("delete worker", keyOfScript(script));
-            return scriptWorkerSet.delete({ script });
+            const deleted = scriptWorkerSet.delete({ script });
+            if (deleted) {
+                logger.log("Success to delete worker", keyOfScript(script));
+            } else {
+                logger.log("Fail to delete worker", keyOfScript(script));
+            }
         });
     };
     // Support multiple workers
@@ -152,6 +156,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         // https://github.com/textlint/editor/issues/52
         // scriptWorker will re-start when call `lint` or `fix` api automatically
         closeScriptWorkers();
+        scriptWorkerSet.dump();
     });
     const backgroundExposedObject: BackgroundToContentObject = lintEngine;
     Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
