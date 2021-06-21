@@ -1,43 +1,42 @@
 import { TextlintWorker } from "./textlint";
 import { keyOfScript, Script } from "./database";
 import { logger } from "../utils/logger";
-import QuickLRU from "quick-lru";
 
-// worker: Set<url>
-const workerLRU = new QuickLRU<string, TextlintWorker>({
-    // Max TTL is 30min
-    maxAge: 1000 * 60 * 30,
-    // Max worker size
-    maxSize: 16,
-    onEviction: (scriptKey, worker) => {
-        logger.log(`onEviction: TextlintWorker(${scriptKey} disposed`);
-        worker.dispose();
-    }
-});
+const workerMap = new Map<string, TextlintWorker>();
 const deleteWorker = (scirpt: Script) => {
     const scriptKey = keyOfScript(scirpt);
-    const worker = workerLRU.get(scriptKey);
+    const worker = workerMap.get(scriptKey);
     if (!worker) {
         return;
     }
-    logger.log(`TextlintWorker(${scriptKey} disposed`);
+    logger.log(`TextlintWorker(${scriptKey}) is disposed`);
     worker.dispose();
+};
+const updateWorker = (script: Script, newWorker: TextlintWorker): void => {
+    const scriptKey = keyOfScript(script);
+    const worker = workerMap.get(scriptKey);
+    if (!worker) {
+        workerMap.set(scriptKey, newWorker);
+    } else {
+        deleteWorker(script);
+        workerMap.set(scriptKey, newWorker);
+    }
 };
 export const scriptWorkerSet = {
     get(script: Script) {
-        return workerLRU.get(keyOfScript(script));
+        return workerMap.get(keyOfScript(script));
     },
     has(script: Script) {
-        return workerLRU.has(keyOfScript(script));
+        return workerMap.has(keyOfScript(script));
     },
-    add({ script, worker }: { script: Script; worker: TextlintWorker }) {
-        return workerLRU.set(keyOfScript(script), worker);
+    set({ script, worker }: { script: Script; worker: TextlintWorker }) {
+        return updateWorker(script, worker);
     },
     delete({ script }: { script: Script }) {
         deleteWorker(script);
-        return workerLRU.delete(keyOfScript(script));
+        return workerMap.delete(keyOfScript(script));
     },
     dump() {
-        logger.log("Running Workers", [...workerLRU.entriesDescending()]);
+        logger.log("Running Workers", [...workerMap]);
     }
 };

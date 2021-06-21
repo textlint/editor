@@ -92,7 +92,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         }
         logger.log("Start worker", keyOfScript(script));
         const textlintWorker = createTextlintWorker(script);
-        scriptWorkerSet.add({ script, worker: textlintWorker });
+        scriptWorkerSet.set({ script, worker: textlintWorker });
         return {
             worker: textlintWorker,
             ext: script.ext

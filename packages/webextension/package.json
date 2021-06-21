@@ -37,7 +37,6 @@
     "enable-webcomponents-in-content-scripts": "^1.0.7",
     "idb": "^5.0.4",
     "minimatch": "^3.0.4",
-    "quick-lru": "^6.0.0",
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
