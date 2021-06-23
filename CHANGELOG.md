@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.5](https://github.com/textlint/editor/compare/v0.12.4...v0.12.5) (2021-06-23)
+
+
+### Bug Fixes
+
+* **webextension:** force release reference ([a14c018](https://github.com/textlint/editor/commit/a14c018b14c7b9d40270d213e4af12fb9b89a28b))
+
+
+
+
+
 ## [0.12.4](https://github.com/textlint/editor/compare/v0.12.3...v0.12.4) (2021-06-21)
 
 
