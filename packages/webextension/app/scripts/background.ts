@@ -80,6 +80,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         };
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
+    // release after close connection
     let scripts = await db.findScriptsWithPatten(originUrl);
     const getWorker = (script: Script) => {
         const runningWorker = scriptWorkerSet.get(script);
@@ -158,11 +159,6 @@ browser.runtime.onConnect.addListener(async (port) => {
         // Release reference - force GC
         scripts = [];
     });
-    const backgroundExposedObject: BackgroundToContentObject = lintEngine;
-    const ep = createBackgroundEndpoint(port);
-    ep.addEventListener("message", (evt) => {
-        console.log("message", evt);
-    });
-    Comlink.expose(backgroundExposedObject, ep);
+    Comlink.expose(lintEngine, createBackgroundEndpoint(port));
     port.postMessage("textlint-editor-boot");
 });
