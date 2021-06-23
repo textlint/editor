@@ -80,8 +80,7 @@ browser.runtime.onConnect.addListener(async (port) => {
         };
         return Comlink.expose(exports, createBackgroundEndpoint(port));
     }
-    const scripts = await db.findScriptsWithPatten(originUrl);
-    logger.log("scripts", scripts);
+    let scripts = await db.findScriptsWithPatten(originUrl);
     const getWorker = (script: Script) => {
         const runningWorker = scriptWorkerSet.get(script);
         if (runningWorker) {
@@ -156,9 +155,14 @@ browser.runtime.onConnect.addListener(async (port) => {
         // https://github.com/textlint/editor/issues/52
         // scriptWorker will re-start when call `lint` or `fix` api automatically
         closeScriptWorkers();
-        scriptWorkerSet.dump();
+        // Release reference - force GC
+        scripts = [];
     });
     const backgroundExposedObject: BackgroundToContentObject = lintEngine;
-    Comlink.expose(backgroundExposedObject, createBackgroundEndpoint(port));
+    const ep = createBackgroundEndpoint(port);
+    ep.addEventListener("message", (evt) => {
+        console.log("message", evt);
+    });
+    Comlink.expose(backgroundExposedObject, ep);
     port.postMessage("textlint-editor-boot");
 });
