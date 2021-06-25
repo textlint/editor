@@ -8,6 +8,11 @@ const commandHandler = <R>(command: string, args: any): Promise<R> => {
     return new Promise<R>((resolve) => {
         logger.log("[PageScript]", command, args);
         const listener = (message: MessageEvent) => {
+            // prevent to receive message from other origin
+            // ContentScript send message from current page's origin
+            if (message.origin !== window.location.origin) {
+                return;
+            }
             if (
                 message.data &&
                 message.data.direction === "from-content-script" &&
@@ -25,7 +30,7 @@ const commandHandler = <R>(command: string, args: any): Promise<R> => {
                 direction: "from-page-script",
                 nonRandomKey
             },
-            "*"
+            window.location.origin
         );
     });
 };
@@ -46,7 +51,6 @@ const isIgnored = ({ text, message }: { text: string; message: TextlintMessage }
 const lintEngine: LintEngineAPI = {
     async lintText({ text }) {
         const results = await commandHandler<ReturnType<LintEngineAPI["lintText"]>>("lintText", { text });
-        logger.log("results", results);
         return results.map((result) => {
             return {
                 filePath: result.filePath,
