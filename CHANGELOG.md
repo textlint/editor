@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.6](https://github.com/textlint/editor/compare/v0.12.5...v0.12.6) (2021-06-25)
+
+
+### Bug Fixes
+
+* **webextension:** prevent to send/receive message from other origin ([#56](https://github.com/textlint/editor/issues/56)) ([9a740b2](https://github.com/textlint/editor/commit/9a740b21f7bdffed0af51139d7a446f8d6ea8215))
+
+
+
+
+
 ## [0.12.5](https://github.com/textlint/editor/compare/v0.12.4...v0.12.5) (2021-06-23)
 
 
