@@ -48,7 +48,7 @@ window.addEventListener("message", (event) => {
                         direction: "from-content-script",
                         result
                     },
-                    "*"
+                    window.location.origin
                 );
             });
         }
