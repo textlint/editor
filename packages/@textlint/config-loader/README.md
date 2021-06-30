@@ -1,6 +1,6 @@
 # @textlint/config-loader
 
-Config loader for textlint. .textlintrc loader
+Config loader for textlint. It is `.textlintrc` loader
 
 ## Install
 
