@@ -197,7 +197,7 @@ export class TextCheckerElement extends HTMLElement {
             const startCoordinate = getCoordinates(this.targetElement, start, {
                 reuse: true,
                 returnHeight: true,
-                returnDiv: true,
+                returnDiv: false,
                 debug: false
             });
             // Stop to search if out of visible
