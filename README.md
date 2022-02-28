@@ -6,7 +6,7 @@ textlint editor is privacy first linting tool on your browser.
 
 1. Install Web Extensions
     - [x] Chrome: <https://chrome.google.com/webstore/detail/textlint-editor/gfhlfpnpjokocfohicmfbgjneiipfeil>
-    - [x] Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>
+    - [x] ~Firefox: <https://addons.mozilla.org/ja/firefox/addon/textlint-editor/>~ See [#61](https://github.com/textlint/editor/issues/61)
 2. Install your favorites textlint worker scripts
     - Example textlint worker scripts:
     - <https://azu.github.io/textlintrc/>
