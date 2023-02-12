@@ -1,0 +1,79 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "build:public-lib",
+          "website-generator",
+          "build:example"
+        ]
+      }
+    }
+  },
+  "targetDefaults": {
+    "compile:textlint": {
+      "dependsOn": [
+        "^compile:textlint"
+      ]
+    },
+    "predev": {
+      "dependsOn": [
+        "^predev"
+      ]
+    },
+    "website": {
+      "dependsOn": [
+        "^website"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/lib",
+        "{projectRoot}/module",
+        "{projectRoot}/example"
+      ]
+    },
+    "build:public-lib": {
+      "dependsOn": [
+        "^build:public-lib"
+      ],
+      "outputs": [
+        "{projectRoot}/public-dist"
+      ]
+    },
+    "website-generator": {
+      "dependsOn": [
+        "^website-generator"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/template"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ]
+    },
+    "prebuild:example": {
+      "dependsOn": [
+        "^prebuild:example"
+      ]
+    },
+    "build:example": {
+      "dependsOn": [
+        "^build:example"
+      ],
+      "outputs": [
+        "{projectRoot}/lib",
+        "{projectRoot}/module"
+      ]
+    }
+  }
+}

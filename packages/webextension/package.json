@@ -5,7 +5,7 @@
   "description": "textlint editor",
   "scripts": {
     "dev": "webextension-toolbox dev",
-    "build": "webextension-toolbox build",
+    "dist": "webextension-toolbox build",
     "update-version": "node tools/sync-version.js && git add ./app/manifest.json && git commit -m 'chore(webextension): update version'"
   },
   "devDependencies": {
