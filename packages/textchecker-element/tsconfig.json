@@ -27,6 +27,11 @@
     /* Report errors for fallthrough cases in switch statement. */
     "noFallthroughCasesInSwitch": true
   },
+  "ts-node": {
+    "include": [
+      "**/*"
+    ]
+  },
   "include": [
     "src/**/*"
   ],

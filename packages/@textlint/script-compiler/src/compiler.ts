@@ -73,7 +73,8 @@ export const createWebpackConfig = ({
         output: {
             library: "textlint",
             libraryTarget: "self",
-            path: outputDir
+            path: outputDir,
+            hashFunction: "xxhash64"
         },
         plugins: [
             // https://github.com/azu/kuromojin injection

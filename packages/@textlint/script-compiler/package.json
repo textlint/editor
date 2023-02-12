@@ -40,7 +40,7 @@
     "clean": "rimraf lib/ module/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "prepublish": "npm run --if-present build",
-    "test": "mocha \"test/**/*.ts\"",
+    "test": "npm run build:example",
     "watch": "tsc -p . --watch",
     "prebuild:example": "npm run build",
     "build:example": "./bin/cmd.js --outputDir example/ --metadataName test --metadataNamespace example.com"
@@ -54,34 +54,34 @@
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@textlint/config-inliner": "^0.12.0",
-    "@textlint/config-loader": "^0.12.0",
+    "@textlint/config-loader": "^13.3.0",
     "@textlint/config-partial-parser": "^0.12.0",
-    "@textlint/kernel": "^12.0.0",
+    "@textlint/kernel": "^13.3.0",
     "@textlint/runtime-helper": "^0.12.0",
     "@textlint/script-parser": "^0.12.0",
-    "@textlint/textlint-plugin-markdown": "^12.0.0",
-    "@textlint/textlint-plugin-text": "^12.0.0",
-    "@textlint/types": "^12.0.0",
+    "@textlint/textlint-plugin-markdown": "^13.3.0",
+    "@textlint/textlint-plugin-text": "^13.3.0",
+    "@textlint/types": "^13.3.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-static-fs": "^3.0.0",
     "meow": "^9.0.0",
-    "node-polyfill-webpack-plugin": "^1.1.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "read-pkg": "^5.2.0",
     "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.1.1",
-    "webpack": "^5.33.2"
+    "terser-webpack-plugin": "^5.3.6",
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^15.6.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
     "@types/webpack": "^4.41.26",
     "mocha": "^8.4.0",
     "prettier": "^2.3.0",
     "textlint-rule-no-dropping-the-ra": "^3.0.0",
     "textlint-rule-preset-ja-technical-writing": "^6.0.0",
-    "ts-node": "^9.1.1",
-    "ts-node-test-register": "^9.0.1",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.9.1",
+    "ts-node-test-register": "^10.0.0",
+    "typescript": "^4.9.5"
   },
   "publishConfig": {
     "access": "public"
