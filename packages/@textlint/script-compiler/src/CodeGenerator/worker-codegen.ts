@@ -49,6 +49,7 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
         });
     };
 
+    console.log(config.rules);
     return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
@@ -56,14 +57,17 @@ import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
 const kernel = new TextlintKernel();
 const rules = ${stringify(
         config.rules.flatMap((rule) => {
-            const [_presetName, ruleName] = rule.ruleId.split("/");
-            return {
-                ruleId: rule.ruleId,
-                rule: ruleName
-                    ? `!__moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])__!`
-                    : `!__moduleInterop(require('${rule.filePath}'))__!`,
-                options: rule.options
-            };
+            return rule.type === "Rule"
+                ? {
+                      ruleId: rule.ruleId,
+                      rule: `!__moduleInterop(require('${rule.filePath}'))__!`,
+                      options: rule.options
+                  }
+                : {
+                      ruleId: rule.ruleId,
+                      rule: `!__moduleInterop(require('${rule.moduleName}').rules['${rule.ruleKey}'])__!`,
+                      options: rule.options
+                  };
         })
     )};
 const filterRules = ${stringify(
