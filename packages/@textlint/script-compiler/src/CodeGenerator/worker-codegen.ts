@@ -49,7 +49,6 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
         });
     };
 
-    console.log(config.rules);
     return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
