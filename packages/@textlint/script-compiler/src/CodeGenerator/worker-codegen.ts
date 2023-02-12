@@ -40,7 +40,7 @@ export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseFix;
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
-    // macro
+    // macro replacement
     // !__moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])__! -> moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])
     const stringify = (item: any[]): string => {
         // unwrap code
