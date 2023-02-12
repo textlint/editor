@@ -40,29 +40,28 @@ export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseFix;
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
+    // macro
+    // !__moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])__! -> moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])
     const stringify = (item: any[]): string => {
         // unwrap code
-        return JSON.stringify(item, null, 4)
-            .replace(/"(moduleInterop\(require\('.*?'\)\))"/g, "$1")
-            .replace(/"(presetToKernelRules\(.+\))"/g, "$1");
+        return JSON.stringify(item, null, 4).replace(/"!__(.*)__!"/g, (_, code) => {
+            return code.replaceAll(/\\/g, "");
+        });
     };
 
     return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
-import { presetToKernelRules } from "@textlint/runtime-helper"
 import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
 const kernel = new TextlintKernel();
-const presetRules = ${stringify(
-        config.presets.map((preset) => {
-            return `presetToKernelRules(moduleInterop(require('${preset.moduleName}')), '${preset.id}')`;
-        })
-    )}.flat();
 const rules = ${stringify(
         config.rules.flatMap((rule) => {
+            const [_presetName, ruleName] = rule.ruleId.split("/");
             return {
                 ruleId: rule.ruleId,
-                rule: `moduleInterop(require('${rule.moduleName}'))`,
+                rule: ruleName
+                    ? `!__moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])__!`
+                    : `!__moduleInterop(require('${rule.filePath}'))__!`,
                 options: rule.options
             };
         })
@@ -71,7 +70,7 @@ const filterRules = ${stringify(
         config.filterRules.map((rule) => {
             return {
                 ruleId: rule.ruleId,
-                rule: `moduleInterop(require('${rule.moduleName}'))`,
+                rule: `!__moduleInterop(require('${rule.moduleName}'))__!`,
                 options: rule.options
             };
         })
@@ -80,14 +79,13 @@ const plugins = ${stringify(
         config.plugins.map((plugin) => {
             return {
                 pluginId: plugin.pluginId,
-                plugin: `moduleInterop(require('${plugin.moduleName}'))`,
+                plugin: `!__moduleInterop(require('${plugin.moduleName}'))__!`,
                 options: plugin.options
             };
         })
     )};
-const allRules = rules.concat(presetRules);
 const config = {
-    rules: allRules,
+    rules: rules,
     filterRules: filterRules,
     plugins: plugins
 };
