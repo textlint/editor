@@ -52,7 +52,7 @@ export class TextCheckerElement extends HTMLElement {
     }
 
     attributeChangedCallback = (
-        name: typeof TextCheckerElement.observedAttributes[number],
+        name: (typeof TextCheckerElement.observedAttributes)[number],
         _oldValue: any,
         newValue: any
     ) => {

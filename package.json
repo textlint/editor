@@ -30,7 +30,6 @@
   "scripts": {
     "build": "lerna run build --ignore \"@textlint/webextension\"",
     "test": "npm run build",
-    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "website": "cd packages/textchecker-element && yarn run website",
     "versionup": "lerna version",
     "ci:versionup:patch": "lerna version patch --no-push --no-git-tag-version --yes && npm run commit-version",
@@ -38,27 +37,23 @@
     "ci:versionup:major": "lerna version major --no-push --no-git-tag-version --yes && npm run commit-version",
     "commit-version": "git add . && git commit -m \"chore(release): v`node -p 'require(\"./lerna.json\").version'`\"",
     "release": "lerna publish from-package",
-    "ci:release": "lerna publish from-package --yes"
+    "ci:release": "lerna publish from-package --yes",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "prepare": "git config --local core.hooksPath .githooks"
   },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
-    "husky": "^8.0.3",
     "lerna": "^6.4.1",
     "lint-staged": "^13.1.1",
-    "prettier": "^2.3.0"
+    "prettier": "^2.8.4"
   },
   "prettier": {
     "singleQuote": false,
     "printWidth": 120,
     "tabWidth": 4,
     "trailingComma": "none"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css}": [
