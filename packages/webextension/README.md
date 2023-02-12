@@ -23,10 +23,10 @@ An example of textlint script is https://azu.github.io/textlintrc/
 
 ## Build
 
-    npm run build chrome
-    npm run build firefox
-    npm run build opera
-    npm run build edge
+    npm run dist chrome
+    npm run dist firefox
+    npm run dist opera
+    npm run dist edge
 
 ## Environment
 
