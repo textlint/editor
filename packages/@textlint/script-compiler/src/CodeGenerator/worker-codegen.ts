@@ -93,6 +93,7 @@ const config = {
     filterRules: filterRules,
     plugins: plugins
 };
+// merge config
 const assignConfig = (textlintrc) => {
     const userDefinedConfig = parseOptionsFromConfig(textlintrc);
     if (userDefinedConfig.rules) {
