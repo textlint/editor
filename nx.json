@@ -33,7 +33,10 @@
         "^build"
       ],
       "outputs": [
-        "{projectRoot}/dist, lib, module, public, public-dist, example"
+        "{projectRoot}/dist",
+        "{projectRoot}/lib",
+        "{projectRoot}/module",
+        "{projectRoot}/example"
       ]
     },
     "build:public-lib": {
@@ -49,7 +52,8 @@
         "^website-generator"
       ],
       "outputs": [
-        "{projectRoot}/dist"
+        "{projectRoot}/dist",
+        "{projectRoot}/template"
       ]
     },
     "test": {
@@ -67,7 +71,8 @@
         "^build:example"
       ],
       "outputs": [
-        "{projectRoot}/lib, module"
+        "{projectRoot}/lib",
+        "{projectRoot}/module"
       ]
     }
   }
