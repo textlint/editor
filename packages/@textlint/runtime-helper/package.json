@@ -41,11 +41,11 @@
   },
   "dependencies": {
     "@kvs/env": "^1.1.0",
-    "@textlint/config-loader": "^0.12.0",
-    "@textlint/kernel": "^12.0.0",
-    "@textlint/module-interop": "^12.0.0",
-    "@textlint/types": "^12.0.0",
-    "@textlint/utils": "^12.0.0"
+    "@textlint/config-loader": "^13.0.0",
+    "@textlint/kernel": "^13.2.0",
+    "@textlint/module-interop": "^13.2.0",
+    "@textlint/types": "^13.0.0",
+    "@textlint/utils": "^13.2.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",
@@ -53,9 +53,9 @@
     "mocha": "^8.4.0",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
-    "ts-node-test-register": "^9.0.1",
-    "typescript": "^4.1.3"
+    "ts-node": "^10.9.1",
+    "ts-node-test-register": "^10.0.0",
+    "typescript": "^4.9.5"
   },
   "publishConfig": {
     "access": "public"

@@ -44,7 +44,7 @@
     "trailingComma": "none"
   },
   "dependencies": {
-    "@textlint/config-loader": "^0.12.0",
+    "@textlint/config-loader": "^13.0.0",
     "untildify": "^4.0.0"
   },
   "devDependencies": {
@@ -53,9 +53,9 @@
     "mocha": "^8.4.0",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
-    "ts-node-test-register": "^9.0.1",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.9.1",
+    "ts-node-test-register": "^10.0.0",
+    "typescript": "^4.9.5"
   },
   "publishConfig": {
     "access": "public"
