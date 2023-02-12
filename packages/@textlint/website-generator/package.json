@@ -53,8 +53,8 @@
     "textchecker-element": "^0.12.1"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^15.6.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
     "@types/rimraf": "3.0.0",
     "mocha": "^8.4.0",
     "prettier": "^2.3.0",
