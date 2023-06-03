@@ -2,6 +2,7 @@ import type { TextlintConfigDescriptor } from "@textlint/config-loader";
 import { prh } from "./rules/prh";
 
 export const inlineConfig = async ({
+    cwd = process.cwd(),
     configFilePath,
     config
 }: {
@@ -17,6 +18,7 @@ export const inlineConfig = async ({
                     return {
                         ...rule,
                         options: await prh({
+                            cwd,
                             configFilePath,
                             options: rule.options
                         })
