@@ -18,7 +18,6 @@ export const inlineConfig = async ({
                     return {
                         ...rule,
                         options: await prh({
-                            cwd,
                             configFilePath,
                             options: rule.options
                         })
