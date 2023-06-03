@@ -23,7 +23,6 @@ export const prh = async ({
     configFilePath,
     options
 }: {
-    cwd?: string;
     configFilePath: string;
     options: TextlintRuleOptions | undefined | boolean;
 }): Promise<PrhOptions | undefined | boolean> => {
