@@ -6,7 +6,7 @@ permissions:
   contents: read
 jobs:
   test:
-    name: "Test on Node.js ${{ matrix.node-version }}"
+    name: "Test on Node.js ${{ matrix.node-version }} x ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

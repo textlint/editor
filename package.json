@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "test": "npm run build",
+    "test": "lerna run build && lerna run test",
     "website": "cd packages/textchecker-element && yarn run website",
     "versionup": "lerna version",
     "ci:versionup:patch": "lerna version patch --no-push --no-git-tag-version --yes && npm run commit-version",
