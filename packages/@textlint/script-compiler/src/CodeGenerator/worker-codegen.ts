@@ -44,12 +44,7 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
     // !__moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])__! -> moduleInterop(require('${rule.moduleName}').rules['${ruleName}'])
     const stringify = (item: any[]): string => {
         // unwrap code
-        return JSON.stringify(item, null, 4).replace(/"!__(.*)__!"/g, (_, code) => {
-            console.log({
-                code
-            });
-            return code.replaceAll(/\\/g, "");
-        });
+        return JSON.stringify(item, null, 4).replace(/"!__(.*)__!"/g, "$1");
     };
 
     return `// Generated webworker code by textlint-script-compiler
