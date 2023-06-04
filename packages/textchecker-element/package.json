@@ -44,7 +44,6 @@
         "clean": "rimraf lib/ module/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
-        "test": "mocha \"test/**/*.ts\"",
         "watch": "tsc -p . --watch"
     },
     "prettier": {

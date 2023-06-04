@@ -43,7 +43,7 @@
         "test": "npm run build:example",
         "watch": "tsc -p . --watch",
         "prebuild:example": "npm run build",
-        "build:example": "./bin/cmd.js --outputDir example/ --metadataName test --metadataNamespace example.com"
+        "build:example": "node ./bin/cmd.js --outputDir ./example/ --metadataName test --metadataNamespace example.com"
     },
     "prettier": {
         "printWidth": 120,

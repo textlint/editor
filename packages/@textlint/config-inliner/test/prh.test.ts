@@ -6,7 +6,10 @@ import * as fs from "fs";
 describe("prh", function () {
     it("inline rulePaths to ruleContents", async () => {
         const prhOptions = await prh({
-            rulePaths: [path.join(__dirname, "fixtures/prh/prh.yml")]
+            configFilePath: path.join(__dirname, "fixtures/prh/.textlintrc"),
+            options: {
+                rulePaths: [path.join(__dirname, "fixtures/prh/prh.yml")]
+            }
         });
         assert.deepStrictEqual(prhOptions, {
             rulePaths: [],
