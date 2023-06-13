@@ -5,6 +5,7 @@ import { TextlintScriptMetadata } from "@textlint/script-parser";
 export type TextlintWorkerCommandLint = {
     command: "lint";
     text: string;
+    ext: string;
     ruleId?: string;
 };
 export type TextlintWorkerCommandFix = {
