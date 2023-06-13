@@ -1,6 +1,6 @@
 {
     "name": "textchecker-element",
-    "version": "0.13.1",
+    "version": "0.13.2",
     "description": "Overlay text checker web compoentns.",
     "keywords": [
         "webcomponent",
@@ -54,7 +54,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
-        "@textlint/script-compiler": "^0.13.1",
+        "@textlint/script-compiler": "^0.13.2",
         "@types/mocha": "^10.0.1",
         "@types/node": "^18.13.0",
         "@types/rimraf": "^3.0.0",
