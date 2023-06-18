@@ -40,10 +40,22 @@ export type TextlintWorkerCommandResponseFix = {
     command: "fix:result";
     result: TextlintFixResult;
 };
+export type TextlintWorkerCommandResponseLintError = {
+    id: MessageId | undefined;
+    command: "lint:error";
+    error: any;
+};
+export type TextlintWorkerCommandResponseFixError = {
+    id: MessageId | undefined;
+    command: "fix:error";
+    error: any;
+};
 export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseInit
     | TextlintWorkerCommandResponseLint
-    | TextlintWorkerCommandResponseFix;
+    | TextlintWorkerCommandResponseFix
+    | TextlintWorkerCommandResponseLintError
+    | TextlintWorkerCommandResponseFixError;
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
     // macro replacement
@@ -139,6 +151,12 @@ self.addEventListener('message', (event) => {
                     command: "lint:result",
                     result
                 });
+            }).catch(error => {
+                return self.postMessage({
+                    id: data.id,
+                    command: "lint:error",
+                    error
+                });
             });
         case "fix":
             return kernel.fixText(data.text, {
@@ -152,6 +170,12 @@ self.addEventListener('message', (event) => {
                     id: data.id,
                     command: "fix:result",
                     result
+                });
+            }).catch(error => {
+                return self.postMessage({
+                    id: data.id,
+                    command: "fix:error",
+                    error
                 });
             });
         default:

@@ -155,9 +155,15 @@ export const attachToTextArea = ({
         // dismiss card before update annotations
         // dismissCards();
         const text = textAreaElement.value;
-        const results = await lintEngine.lintText({
-            text
-        });
+        let results;
+        try {
+            results = await lintEngine.lintText({
+                text
+            });
+        } catch (e) {
+            debug("lint error", e);
+            results = [] as const;
+        }
         debug("lint results", results);
         const updateText = async (newText: string, card: TextCheckerCard) => {
             const currentText = textAreaElement.value;

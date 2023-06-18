@@ -41,16 +41,40 @@ const generateMessageId = () => crypto.randomUUID();
 const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
     const lintText: LintEngineAPI["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult[]> => {
         updateStatus("linting...");
-        return new Promise((resolve, _reject) => {
+        return new Promise((resolve, reject) => {
             const id = generateMessageId();
-            worker.addEventListener("message", function handler(event) {
-                const data: TextlintWorkerCommandResponse = event.data;
-                if (data.command === "lint:result" && data.id === id) {
-                    resolve([data.result]);
-                    worker.removeEventListener("message", handler);
+            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
+                const data = event.data;
+                if ("id" in data && data.id === id) {
+                    if (data.command === "lint:error") {
+                        reject(data.error);
+                        updateStatus("failed to lint");
+                    } else if (data.command === "lint:result") {
+                        resolve([data.result]);
+                        updateStatus("linted");
+                    }
+                    worker.removeEventListener("message", onMessage);
+                    worker.removeEventListener("messageerror", onMessageError);
+                    worker.removeEventListener("error", onError);
                 }
-                updateStatus("linted");
-            });
+            }
+            function onMessageError(event: MessageEvent<any>) {
+                reject(event.data);
+                updateStatus("failed to lint");
+                worker.removeEventListener("message", onMessage);
+                worker.removeEventListener("messageerror", onMessageError);
+                worker.removeEventListener("error", onError);
+            }
+            function onError(event: ErrorEvent) {
+                reject(event);
+                updateStatus("failed to lint");
+                worker.removeEventListener("message", onMessage);
+                worker.removeEventListener("messageerror", onMessageError);
+                worker.removeEventListener("error", onError);
+            }
+            worker.addEventListener("message", onMessage);
+            worker.addEventListener("messageerror", onMessageError);
+            worker.addEventListener("error", onError);
             return worker.postMessage({
                 id,
                 command: "lint",
@@ -67,16 +91,40 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
         updateStatus("fixing...");
-        return new Promise((resolve, _reject) => {
+        return new Promise((resolve, reject) => {
             const id = generateMessageId();
-            worker.addEventListener("message", function handler(event) {
-                const data: TextlintWorkerCommandResponse = event.data;
-                if (data.command === "fix:result" && data.id === id) {
-                    resolve(data.result);
-                    worker.removeEventListener("message", handler);
+            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
+                const data = event.data;
+                if ("id" in data && data.id === id) {
+                    if (data.command === "fix:error") {
+                        reject(data.error);
+                        updateStatus("failed to fix");
+                    } else if (data.command === "fix:result") {
+                        resolve(data.result);
+                        updateStatus("fixed");
+                    }
+                    worker.removeEventListener("message", onMessage);
+                    worker.removeEventListener("messageerror", onMessageError);
+                    worker.removeEventListener("error", onError);
                 }
-                updateStatus("fixed");
-            });
+            }
+            function onMessageError(event: MessageEvent<any>) {
+                reject(event.data);
+                updateStatus("failed to fix");
+                worker.removeEventListener("message", onMessage);
+                worker.removeEventListener("messageerror", onMessageError);
+                worker.removeEventListener("error", onError);
+            }
+            function onError(event: ErrorEvent) {
+                reject(event);
+                updateStatus("failed to fix");
+                worker.removeEventListener("message", onMessage);
+                worker.removeEventListener("messageerror", onMessageError);
+                worker.removeEventListener("error", onError);
+            }
+            worker.addEventListener("message", onMessage);
+            worker.addEventListener("messageerror", onMessageError);
+            worker.addEventListener("error", onError);
             return worker.postMessage({
                 id,
                 command: "fix",
