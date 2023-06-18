@@ -46,7 +46,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
-                    if (data.command === "lint:error") {
+                    if (data.command === "error") {
                         reject(data.error);
                         updateStatus("failed to lint");
                     } else if (data.command === "lint:result") {
@@ -96,7 +96,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
-                    if (data.command === "fix:error") {
+                    if (data.command === "error") {
                         reject(data.error);
                         updateStatus("failed to fix");
                     } else if (data.command === "fix:result") {

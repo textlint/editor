@@ -61,7 +61,7 @@ export const createTextlintWorker = (script: Script) => {
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
-                    if (data.command === "lint:error") {
+                    if (data.command === "error") {
                         reject(data.error);
                     } else if (data.command === "lint:result") {
                         resolve([data.result]);
@@ -111,7 +111,7 @@ export const createTextlintWorker = (script: Script) => {
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
-                    if (data.command === "fix:error") {
+                    if (data.command === "error") {
                         reject(data.error);
                     } else if (data.command === "fix:result") {
                         resolve(data.result);
