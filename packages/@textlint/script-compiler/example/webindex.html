@@ -22,8 +22,10 @@
                     }
                 },
             });
+            const id = crypto.randomUUID();
             setTimeout(() => {
                 worker.postMessage({
+                    id,
                     command: "lint",
                     text: "お刺身が食べれない",
                     ext: ".md"

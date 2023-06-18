@@ -47,6 +47,7 @@ const createWorkerRef = (worker: Worker) => {
         }
     };
 };
+const generateMessageId = () => crypto.randomUUID();
 export type TextlintWorker = ReturnType<typeof createTextlintWorker>;
 export const createTextlintWorker = (script: Script) => {
     const blob = new Blob([script.code], { type: "application/javascript" });
@@ -56,19 +57,16 @@ export const createTextlintWorker = (script: Script) => {
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
         return new Promise((resolve, _reject) => {
-            workerRef.current.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "lint:result") {
-                        resolve([data.result]);
-                    }
-                },
-                {
-                    once: true
+            const id = generateMessageId();
+            workerRef.current.addEventListener("message", function handler(event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "lint:result" && data.id === id) {
+                    resolve([data.result]);
+                    workerRef.current.removeEventListener("message", handler);
                 }
-            );
+            });
             return workerRef.current.postMessage({
+                id,
                 command: "lint",
                 text,
                 ext
@@ -88,19 +86,16 @@ export const createTextlintWorker = (script: Script) => {
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
         return new Promise((resolve, _reject) => {
-            workerRef.current.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "fix:result") {
-                        resolve(data.result);
-                    }
-                },
-                {
-                    once: true
+            const id = generateMessageId();
+            workerRef.current.addEventListener("message", function handler(event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "fix:result" && data.id === id) {
+                    resolve(data.result);
+                    workerRef.current.removeEventListener("message", handler);
                 }
-            );
+            });
             return workerRef.current.postMessage({
+                id,
                 command: "fix",
                 text,
                 ruleId: message?.ruleId,

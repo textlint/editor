@@ -49,9 +49,11 @@ worker.addEventListener('message', function (event) {
                 }
             },
         });
+        const id = crypto.randomUUID();
         setTimeout(() => {
             // lint
             worker.postMessage({
+                id,
                 command: "lint",
                 text: "お刺身が食べれない",
                 ext: ".md"

@@ -2,13 +2,16 @@ import { TextlintConfigDescriptor } from "@textlint/config-loader";
 import type { TextlintFixResult, TextlintResult } from "@textlint/types";
 import { TextlintScriptMetadata } from "@textlint/script-parser";
 
+export type MessageId = string;
 export type TextlintWorkerCommandLint = {
+    id?: MessageId;
     command: "lint";
     text: string;
     ext: string;
     ruleId?: string;
 };
 export type TextlintWorkerCommandFix = {
+    id?: MessageId;
     command: "fix";
     text: string;
     ext: string;
@@ -28,10 +31,12 @@ export type TextlintWorkerCommandResponseInit = {
     metadata: TextlintScriptMetadata;
 };
 export type TextlintWorkerCommandResponseLint = {
+    id: MessageId | undefined;
     command: "lint:result";
     result: TextlintResult;
 };
 export type TextlintWorkerCommandResponseFix = {
+    id: MessageId | undefined;
     command: "fix:result";
     result: TextlintFixResult;
 };
@@ -130,6 +135,7 @@ self.addEventListener('message', (event) => {
                 ext: data.ext,
             }).then(result => {
                 return self.postMessage({
+                    id: data.id,
                     command: "lint:result",
                     result
                 });
@@ -143,6 +149,7 @@ self.addEventListener('message', (event) => {
                 ext: data.ext,
             }).then(result => {
                 return self.postMessage({
+                    id: data.id,
                     command: "fix:result",
                     result
                 });
