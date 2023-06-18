@@ -106,15 +106,36 @@ export const createTextlintWorker = (script: Script) => {
         ext: string;
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
-        return new Promise((resolve, _reject) => {
+        return new Promise((resolve, reject) => {
             const id = generateMessageId();
-            workerRef.current.addEventListener("message", function handler(event) {
-                const data: TextlintWorkerCommandResponse = event.data;
-                if (data.command === "fix:result" && data.id === id) {
-                    resolve(data.result);
-                    workerRef.current.removeEventListener("message", handler);
+            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
+                const data = event.data;
+                if ("id" in data && data.id === id) {
+                    if (data.command === "fix:error") {
+                        reject(data.error);
+                    } else if (data.command === "fix:result") {
+                        resolve(data.result);
+                    }
+                    workerRef.current.removeEventListener("message", onMessage);
+                    workerRef.current.removeEventListener("messageerror", onMessageError);
+                    workerRef.current.removeEventListener("error", onError);
                 }
-            });
+            }
+            function onMessageError(event: MessageEvent<any>) {
+                reject(event.data);
+                workerRef.current.removeEventListener("message", onMessage);
+                workerRef.current.removeEventListener("messageerror", onMessageError);
+                workerRef.current.removeEventListener("error", onError);
+            }
+            function onError(event: ErrorEvent) {
+                reject(event);
+                workerRef.current.removeEventListener("message", onMessage);
+                workerRef.current.removeEventListener("messageerror", onMessageError);
+                workerRef.current.removeEventListener("error", onError);
+            }
+            workerRef.current.addEventListener("message", onMessage);
+            workerRef.current.addEventListener("messageerror", onMessageError);
+            workerRef.current.addEventListener("error", onError);
             return workerRef.current.postMessage({
                 id,
                 command: "fix",
