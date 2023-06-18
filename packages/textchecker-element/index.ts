@@ -37,24 +37,22 @@ const waiterForInit = (worker: Worker) => {
         }
     };
 };
+const generateMessageId = () => crypto.randomUUID();
 const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
     const lintText: LintEngineAPI["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult[]> => {
         updateStatus("linting...");
         return new Promise((resolve, _reject) => {
-            worker.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "lint:result") {
-                        resolve([data.result]);
-                    }
-                    updateStatus("linted");
-                },
-                {
-                    once: true
+            const id = generateMessageId();
+            worker.addEventListener("message", function handler(event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "lint:result" && data.id === id) {
+                    resolve([data.result]);
+                    worker.removeEventListener("message", handler);
                 }
-            );
+                updateStatus("linted");
+            });
             return worker.postMessage({
+                id,
                 command: "lint",
                 text,
                 ext: ext
@@ -70,20 +68,17 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
     }): Promise<TextlintFixResult> => {
         updateStatus("fixing...");
         return new Promise((resolve, _reject) => {
-            worker.addEventListener(
-                "message",
-                function (event) {
-                    const data: TextlintWorkerCommandResponse = event.data;
-                    if (data.command === "fix:result") {
-                        resolve(data.result);
-                    }
-                    updateStatus("fixed");
-                },
-                {
-                    once: true
+            const id = generateMessageId();
+            worker.addEventListener("message", function handler(event) {
+                const data: TextlintWorkerCommandResponse = event.data;
+                if (data.command === "fix:result" && data.id === id) {
+                    resolve(data.result);
+                    worker.removeEventListener("message", handler);
                 }
-            );
+                updateStatus("fixed");
+            });
             return worker.postMessage({
+                id,
                 command: "fix",
                 text,
                 ruleId: message?.ruleId,
