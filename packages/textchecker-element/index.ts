@@ -46,14 +46,9 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if ("id" in data && data.id === id) {
-                    if (data.command === "error") {
-                        reject(data.error);
-                        updateStatus("failed to lint");
-                    } else if (data.command === "lint:result") {
-                        resolve([data.result]);
-                        updateStatus("linted");
-                    }
+                if (data.command === "lint:result" && data.id === id) {
+                    resolve([data.result]);
+                    updateStatus("linted");
                     controller.abort();
                 }
             }
@@ -63,6 +58,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                 controller.abort();
             }
             function onError(event: ErrorEvent) {
+                debugger;
                 reject(event);
                 updateStatus("failed to lint");
                 controller.abort();
@@ -91,14 +87,9 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if ("id" in data && data.id === id) {
-                    if (data.command === "error") {
-                        reject(data.error);
-                        updateStatus("failed to fix");
-                    } else if (data.command === "fix:result") {
-                        resolve(data.result);
-                        updateStatus("fixed");
-                    }
+                if (data.command === "fix:result" && data.id === id) {
+                    resolve(data.result);
+                    updateStatus("fixed");
                     controller.abort();
                 }
             }
@@ -108,6 +99,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                 controller.abort();
             }
             function onError(event: ErrorEvent) {
+                debugger;
                 reject(event);
                 updateStatus("failed to fix");
                 controller.abort();

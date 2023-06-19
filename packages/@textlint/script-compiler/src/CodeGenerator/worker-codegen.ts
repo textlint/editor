@@ -40,16 +40,25 @@ export type TextlintWorkerCommandResponseFix = {
     command: "fix:result";
     result: TextlintFixResult;
 };
-export type TextlintWorkerCommandResponseError = {
-    id: MessageId | undefined;
-    command: "error";
-    error: any;
-};
 export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseInit
     | TextlintWorkerCommandResponseLint
-    | TextlintWorkerCommandResponseFix
-    | TextlintWorkerCommandResponseError;
+    | TextlintWorkerCommandResponseFix;
+
+export type TextlintErrorOptions = {
+    id: MessageId | undefined;
+} & ErrorOptions;
+export class TextlintError extends Error {
+    public id: MessageId | undefined;
+    static {
+        this.prototype.name = "TextlintError";
+    }
+    constructor(message: string, options: TextlintErrorOptions = { id: undefined }) {
+        const { id, ...errorOptions } = options;
+        super(message, errorOptions);
+        this.id = id;
+    }
+}
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
     // macro replacement
@@ -63,6 +72,7 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
+import { TextlintError } from "@textlint/script-compiler/module/CodeGenerator/worker-codegen.js"; // FIX ME: to make import smarter
 const kernel = new TextlintKernel();
 const rules = ${stringify(
         config.rules.flatMap((rule) => {
@@ -140,17 +150,19 @@ self.addEventListener('message', (event) => {
                 filePath: "/path/to/README" + data.ext,
                 ext: data.ext,
             }).then(result => {
+                // return Promise.reject(new TypeError("lintText is not supported")); // for debug
+                // throw new Error("something went wrong"); // for debug
                 return self.postMessage({
                     id: data.id,
                     command: "lint:result",
                     result
                 });
             }).catch(error => {
-                return self.postMessage({
+                const textlintError = new TextlintError("failed to lint text", {
                     id: data.id,
-                    command: "error",
-                    error
+                    cause: error
                 });
+                reportError(new ErrorEvent("textlint error", { error: textlintError, message: textlintError.message }));
             });
         case "fix":
             return kernel.fixText(data.text, {
@@ -166,11 +178,11 @@ self.addEventListener('message', (event) => {
                     result
                 });
             }).catch(error => {
-                return self.postMessage({
+                const textlintError = new TextlintError("failed to fix text", {
                     id: data.id,
-                    command: "error",
-                    error
+                    cause: error
                 });
+                reportError(new ErrorEvent("textlint error", { error: textlintError, message: textlintError.message }));
             });
         default:
             console.log("Unknown command: " + data.command);

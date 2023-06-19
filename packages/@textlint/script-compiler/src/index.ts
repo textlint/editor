@@ -7,5 +7,7 @@ export type {
     TextlintWorkerCommandLint,
     TextlintWorkerCommandResponseFix,
     TextlintWorkerCommandResponseInit,
-    TextlintWorkerCommandResponseLint
+    TextlintWorkerCommandResponseLint,
+    TextlintErrorOptions,
+    TextlintError
 } from "./CodeGenerator/worker-codegen";

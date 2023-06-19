@@ -61,12 +61,8 @@ export const createTextlintWorker = (script: Script) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if ("id" in data && data.id === id) {
-                    if (data.command === "error") {
-                        reject(data.error);
-                    } else if (data.command === "lint:result") {
-                        resolve([data.result]);
-                    }
+                if (data.command === "lint:result" && data.id === id) {
+                    resolve([data.result]);
                     controller.abort();
                 }
             }
@@ -106,12 +102,8 @@ export const createTextlintWorker = (script: Script) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if ("id" in data && data.id === id) {
-                    if (data.command === "error") {
-                        reject(data.error);
-                    } else if (data.command === "fix:result") {
-                        resolve(data.result);
-                    }
+                if (data.command === "fix:result" && data.id === id) {
+                    resolve(data.result);
                     controller.abort();
                 }
             }
