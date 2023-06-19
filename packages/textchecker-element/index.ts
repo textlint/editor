@@ -43,6 +43,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
         updateStatus("linting...");
         return new Promise((resolve, reject) => {
             const id = generateMessageId();
+            const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
@@ -53,28 +54,22 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                         resolve([data.result]);
                         updateStatus("linted");
                     }
-                    worker.removeEventListener("message", onMessage);
-                    worker.removeEventListener("messageerror", onMessageError);
-                    worker.removeEventListener("error", onError);
+                    controller.abort();
                 }
             }
             function onMessageError(event: MessageEvent<any>) {
                 reject(event.data);
                 updateStatus("failed to lint");
-                worker.removeEventListener("message", onMessage);
-                worker.removeEventListener("messageerror", onMessageError);
-                worker.removeEventListener("error", onError);
+                controller.abort();
             }
             function onError(event: ErrorEvent) {
                 reject(event);
                 updateStatus("failed to lint");
-                worker.removeEventListener("message", onMessage);
-                worker.removeEventListener("messageerror", onMessageError);
-                worker.removeEventListener("error", onError);
+                controller.abort();
             }
-            worker.addEventListener("message", onMessage);
-            worker.addEventListener("messageerror", onMessageError);
-            worker.addEventListener("error", onError);
+            worker.addEventListener("message", onMessage, { signal: controller.signal });
+            worker.addEventListener("messageerror", onMessageError, { signal: controller.signal });
+            worker.addEventListener("error", onError, { signal: controller.signal });
             return worker.postMessage({
                 id,
                 command: "lint",
@@ -93,6 +88,7 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
         updateStatus("fixing...");
         return new Promise((resolve, reject) => {
             const id = generateMessageId();
+            const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
                 if ("id" in data && data.id === id) {
@@ -103,28 +99,22 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                         resolve(data.result);
                         updateStatus("fixed");
                     }
-                    worker.removeEventListener("message", onMessage);
-                    worker.removeEventListener("messageerror", onMessageError);
-                    worker.removeEventListener("error", onError);
+                    controller.abort();
                 }
             }
             function onMessageError(event: MessageEvent<any>) {
                 reject(event.data);
                 updateStatus("failed to fix");
-                worker.removeEventListener("message", onMessage);
-                worker.removeEventListener("messageerror", onMessageError);
-                worker.removeEventListener("error", onError);
+                controller.abort();
             }
             function onError(event: ErrorEvent) {
                 reject(event);
                 updateStatus("failed to fix");
-                worker.removeEventListener("message", onMessage);
-                worker.removeEventListener("messageerror", onMessageError);
-                worker.removeEventListener("error", onError);
+                controller.abort();
             }
-            worker.addEventListener("message", onMessage);
-            worker.addEventListener("messageerror", onMessageError);
-            worker.addEventListener("error", onError);
+            worker.addEventListener("message", onMessage, { signal: controller.signal });
+            worker.addEventListener("messageerror", onMessageError, { signal: controller.signal });
+            worker.addEventListener("error", onError, { signal: controller.signal });
             return worker.postMessage({
                 id,
                 command: "fix",
