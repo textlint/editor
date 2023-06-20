@@ -46,26 +46,18 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if (data.command === "lint:result" && data.id === id) {
+                // global error or ID-specified error
+                if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                    reject(data.error);
+                    updateStatus("failed to lint");
+                    controller.abort();
+                } else if (data.command === "lint:result" && data.id === id) {
                     resolve([data.result]);
                     updateStatus("linted");
                     controller.abort();
                 }
             }
-            function onMessageError(event: MessageEvent<any>) {
-                reject(event.data);
-                updateStatus("failed to lint");
-                controller.abort();
-            }
-            function onError(event: ErrorEvent) {
-                debugger;
-                reject(event);
-                updateStatus("failed to lint");
-                controller.abort();
-            }
             worker.addEventListener("message", onMessage, { signal: controller.signal });
-            worker.addEventListener("messageerror", onMessageError, { signal: controller.signal });
-            worker.addEventListener("error", onError, { signal: controller.signal });
             return worker.postMessage({
                 id,
                 command: "lint",
@@ -87,26 +79,18 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
             const controller = new AbortController();
             function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
                 const data = event.data;
-                if (data.command === "fix:result" && data.id === id) {
+                // global error or ID-specified error
+                if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                    reject(data.error);
+                    updateStatus("failed to fix");
+                    controller.abort();
+                } else if (data.command === "fix:result" && data.id === id) {
                     resolve(data.result);
                     updateStatus("fixed");
                     controller.abort();
                 }
             }
-            function onMessageError(event: MessageEvent<any>) {
-                reject(event.data);
-                updateStatus("failed to fix");
-                controller.abort();
-            }
-            function onError(event: ErrorEvent) {
-                debugger;
-                reject(event);
-                updateStatus("failed to fix");
-                controller.abort();
-            }
             worker.addEventListener("message", onMessage, { signal: controller.signal });
-            worker.addEventListener("messageerror", onMessageError, { signal: controller.signal });
-            worker.addEventListener("error", onError, { signal: controller.signal });
             return worker.postMessage({
                 id,
                 command: "fix",

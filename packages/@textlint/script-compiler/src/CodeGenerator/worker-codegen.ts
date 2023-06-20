@@ -40,25 +40,16 @@ export type TextlintWorkerCommandResponseFix = {
     command: "fix:result";
     result: TextlintFixResult;
 };
+export type TextlintWorkerCommandResponseError = {
+    id?: MessageId | undefined;
+    command: "error";
+    error: Error;
+};
 export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseInit
     | TextlintWorkerCommandResponseLint
-    | TextlintWorkerCommandResponseFix;
-
-export type TextlintErrorOptions = {
-    id: MessageId | undefined;
-} & ErrorOptions;
-export class TextlintError extends Error {
-    public id: MessageId | undefined;
-    static {
-        this.prototype.name = "TextlintError";
-    }
-    constructor(message: string, options: TextlintErrorOptions = { id: undefined }) {
-        const { id, ...errorOptions } = options;
-        super(message, errorOptions);
-        this.id = id;
-    }
-}
+    | TextlintWorkerCommandResponseFix
+    | TextlintWorkerCommandResponseError;
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
     // macro replacement
@@ -72,7 +63,6 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
-import { TextlintError } from "@textlint/script-compiler/module/CodeGenerator/worker-codegen.js"; // FIX ME: to make import smarter
 const kernel = new TextlintKernel();
 const rules = ${stringify(
         config.rules.flatMap((rule) => {
@@ -134,6 +124,24 @@ const assignConfig = (textlintrc) => {
         });
     }
 };
+self.addEventListener('error', (event) => {
+    self.postMessage({
+        command: "error",
+        // wrapping any type error with Error
+        error: new Error("unexpected error", {
+            cause: event.error
+        })
+    })
+});
+self.addEventListener('unhandledrejection', (event) => {
+    self.postMessage({
+        command: "error",
+        // wrapping any type error with Error
+        error: new Error("unexpected unhandled promise rejection", {
+            cause: event.reason
+        })
+    })
+});
 self.addEventListener('message', (event) => {
     const data = event.data;
     const rules = data.ruleId === undefined
@@ -150,19 +158,20 @@ self.addEventListener('message', (event) => {
                 filePath: "/path/to/README" + data.ext,
                 ext: data.ext,
             }).then(result => {
-                // return Promise.reject(new TypeError("lintText is not supported")); // for debug
-                // throw new Error("something went wrong"); // for debug
                 return self.postMessage({
                     id: data.id,
                     command: "lint:result",
                     result
                 });
             }).catch(error => {
-                const textlintError = new TextlintError("failed to lint text", {
+                return self.postMessage({
                     id: data.id,
-                    cause: error
-                });
-                reportError(new ErrorEvent("textlint error", { error: textlintError, message: textlintError.message }));
+                    command: "error",
+                    // wrapping any type error with Error
+                    error: new Error("failed to lint text", {
+                        cause: error
+                    })
+                })
             });
         case "fix":
             return kernel.fixText(data.text, {
@@ -178,11 +187,11 @@ self.addEventListener('message', (event) => {
                     result
                 });
             }).catch(error => {
-                const textlintError = new TextlintError("failed to fix text", {
+                return self.postMessage({
                     id: data.id,
-                    cause: error
-                });
-                reportError(new ErrorEvent("textlint error", { error: textlintError, message: textlintError.message }));
+                    command: "error",
+                    error
+                })
             });
         default:
             console.log("Unknown command: " + data.command);

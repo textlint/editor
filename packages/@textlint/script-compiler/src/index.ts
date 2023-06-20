@@ -8,6 +8,5 @@ export type {
     TextlintWorkerCommandResponseFix,
     TextlintWorkerCommandResponseInit,
     TextlintWorkerCommandResponseLint,
-    TextlintErrorOptions,
-    TextlintError
+    TextlintWorkerCommandResponseError
 } from "./CodeGenerator/worker-codegen";
