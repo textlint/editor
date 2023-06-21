@@ -155,21 +155,15 @@ export const attachToTextArea = ({
         // dismiss card before update annotations
         // dismissCards();
         const text = textAreaElement.value;
-        let results;
-        try {
-            results = await lintEngine.lintText({
-                text
-            });
-        } catch (e) {
-            debug("lint error", e);
-            results = [] as const;
-        }
+        const results = await lintEngine.lintText({
+            text
+        });
         debug("lint results", results);
         const updateText = async (newText: string, card: TextCheckerCard) => {
             const currentText = textAreaElement.value;
             if (currentText === text && currentText !== newText) {
                 textAreaElement.value = newText;
-                await update();
+                await updateOrClearAnnotationsIfFailed();
                 textCheckerPopup.dismissCard(card);
             }
         };
@@ -234,7 +228,7 @@ export const attachToTextArea = ({
                                         text,
                                         message
                                     });
-                                    await update();
+                                    await updateOrClearAnnotationsIfFailed();
                                 },
                                 onSeeDocument() {
                                     const id = message.ruleId.includes("/")
@@ -273,24 +267,32 @@ export const attachToTextArea = ({
         debug("annotations", annotations);
         textChecker.updateAnnotations(annotations);
     }, lintingDebounceMs);
+    const updateOrClearAnnotationsIfFailed = async () => {
+        try {
+            await update();
+        } catch (error) {
+            debug("update error", error);
+            textChecker.updateAnnotations([]);
+        }
+    };
     // Events
     // when resize element, update annotation
     const resizeObserver = new ResizeObserver(() => {
         debug("ResizeObserver do update");
         textCheckerPopup.dismissCards();
         textChecker.resetAnnotations();
-        update();
+        updateOrClearAnnotationsIfFailed();
     });
     resizeObserver.observe(textAreaElement);
     // when scroll window, update annotation
     const onScroll = () => {
         textCheckerPopup.dismissCards();
         textChecker.resetAnnotations();
-        update();
+        updateOrClearAnnotationsIfFailed();
     };
     const onFocus = () => {
         textCheckerPopup.dismissCards();
-        update();
+        updateOrClearAnnotationsIfFailed();
     };
     const onBlur = (event: FocusEvent) => {
         // does not dismiss on click popup items(require tabindex)
@@ -308,7 +310,7 @@ export const attachToTextArea = ({
     window.addEventListener("scroll", onScroll);
     // when scroll the element, update annotation
     textAreaElement.addEventListener("scroll", onScroll);
-    update();
+    updateOrClearAnnotationsIfFailed();
     return () => {
         window.removeEventListener("scroll", onScroll);
         textAreaElement.removeEventListener("scroll", onScroll);
