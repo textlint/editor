@@ -41,23 +41,22 @@ const generateMessageId = () => crypto.randomUUID();
 const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
     const lintText: LintEngineAPI["lintText"] = async ({ text }: { text: string }): Promise<TextlintResult[]> => {
         updateStatus("linting...");
-        return new Promise((resolve, reject) => {
+        const controller = new AbortController();
+        const lintPromise = new Promise<TextlintResult[]>((resolve, reject) => {
             const id = generateMessageId();
-            const controller = new AbortController();
-            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
-                const data = event.data;
-                // global error or ID-specified error
-                if (data.command === "error" && (!("id" in data) || data.id === id)) {
-                    reject(data.error);
-                    updateStatus("failed to lint");
-                    controller.abort();
-                } else if (data.command === "lint:result" && data.id === id) {
-                    resolve([data.result]);
-                    updateStatus("linted");
-                    controller.abort();
-                }
-            }
-            worker.addEventListener("message", onMessage, { signal: controller.signal });
+            worker.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "lint:result" && data.id === id) {
+                        resolve([data.result]);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return worker.postMessage({
                 id,
                 command: "lint",
@@ -65,6 +64,17 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                 ext: ext
             } as TextlintWorkerCommandLint);
         });
+        lintPromise
+            .then(() => {
+                updateStatus("linted");
+            })
+            .catch(() => {
+                updateStatus("failed to lint");
+            })
+            .finally(() => {
+                controller.abort();
+            });
+        return lintPromise;
     };
     const fixText = async ({
         text,
@@ -74,23 +84,22 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
         updateStatus("fixing...");
-        return new Promise((resolve, reject) => {
+        const controller = new AbortController();
+        const fixPromise = new Promise<TextlintFixResult>((resolve, reject) => {
             const id = generateMessageId();
-            const controller = new AbortController();
-            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
-                const data = event.data;
-                // global error or ID-specified error
-                if (data.command === "error" && (!("id" in data) || data.id === id)) {
-                    reject(data.error);
-                    updateStatus("failed to fix");
-                    controller.abort();
-                } else if (data.command === "fix:result" && data.id === id) {
-                    resolve(data.result);
-                    updateStatus("fixed");
-                    controller.abort();
-                }
-            }
-            worker.addEventListener("message", onMessage, { signal: controller.signal });
+            worker.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "fix:result" && data.id === id) {
+                        resolve(data.result);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return worker.postMessage({
                 id,
                 command: "fix",
@@ -99,6 +108,17 @@ const createTextlint = ({ worker, ext }: { worker: Worker; ext: string }) => {
                 ext: ext
             } as TextlintWorkerCommandFix);
         });
+        fixPromise
+            .then(() => {
+                updateStatus("fixed");
+            })
+            .catch(() => {
+                updateStatus("failed to fix");
+            })
+            .finally(() => {
+                controller.abort();
+            });
+        return fixPromise;
     };
     return {
         lintText,

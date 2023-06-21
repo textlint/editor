@@ -56,21 +56,22 @@ export const createTextlintWorker = (script: Script) => {
     const defaultWorker = new Worker(workerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
-        return new Promise((resolve, reject) => {
+        const controller = new AbortController();
+        const lintPromise = new Promise<TextlintResult[]>((resolve, reject) => {
             const id = generateMessageId();
-            const controller = new AbortController();
-            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
-                const data = event.data;
-                // global error or ID-specified error
-                if (data.command === "error" && (!("id" in data) || data.id === id)) {
-                    reject(data.error);
-                    controller.abort();
-                } else if (data.command === "lint:result" && data.id === id) {
-                    resolve([data.result]);
-                    controller.abort();
-                }
-            }
-            workerRef.current.addEventListener("message", onMessage, { signal: controller.signal });
+            workerRef.current.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "lint:result" && data.id === id) {
+                        resolve([data.result]);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return workerRef.current.postMessage({
                 id,
                 command: "lint",
@@ -78,6 +79,10 @@ export const createTextlintWorker = (script: Script) => {
                 ext
             } as TextlintWorkerCommandLint);
         });
+        lintPromise.finally(() => {
+            controller.abort();
+        });
+        return lintPromise;
     };
     // Note: currently does not use background implementation.
     // Just use @textlint/source-code-fixer
@@ -91,21 +96,22 @@ export const createTextlintWorker = (script: Script) => {
         ext: string;
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
-        return new Promise((resolve, reject) => {
+        const controller = new AbortController();
+        const fixPromise = new Promise<TextlintFixResult>((resolve, reject) => {
             const id = generateMessageId();
-            const controller = new AbortController();
-            function onMessage(event: MessageEvent<TextlintWorkerCommandResponse>) {
-                const data = event.data;
-                // global error or ID-specified error
-                if (data.command === "error" && (!("id" in data) || data.id === id)) {
-                    reject(data.error);
-                    controller.abort();
-                } else if (data.command === "fix:result" && data.id === id) {
-                    resolve(data.result);
-                    controller.abort();
-                }
-            }
-            workerRef.current.addEventListener("message", onMessage, { signal: controller.signal });
+            workerRef.current.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "fix:result" && data.id === id) {
+                        resolve(data.result);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return workerRef.current.postMessage({
                 id,
                 command: "fix",
@@ -114,6 +120,10 @@ export const createTextlintWorker = (script: Script) => {
                 ext: ext
             } as TextlintWorkerCommandFix);
         });
+        fixPromise.finally(() => {
+            controller.abort();
+        });
+        return fixPromise;
     };
     const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<void> => {
         return new Promise((resolve, _reject) => {
