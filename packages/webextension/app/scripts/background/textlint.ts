@@ -57,7 +57,7 @@ export const createTextlintWorker = (script: Script) => {
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
         const controller = new AbortController();
-        const lintPromise = new Promise<TextlintResult[]>((resolve, reject) => {
+        return new Promise<TextlintResult[]>((resolve, reject) => {
             const id = generateMessageId();
             workerRef.current.addEventListener(
                 "message",
@@ -78,11 +78,9 @@ export const createTextlintWorker = (script: Script) => {
                 text,
                 ext
             } as TextlintWorkerCommandLint);
-        });
-        lintPromise.finally(() => {
+        }).finally(() => {
             controller.abort();
         });
-        return lintPromise;
     };
     // Note: currently does not use background implementation.
     // Just use @textlint/source-code-fixer
@@ -97,7 +95,7 @@ export const createTextlintWorker = (script: Script) => {
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
         const controller = new AbortController();
-        const fixPromise = new Promise<TextlintFixResult>((resolve, reject) => {
+        return new Promise<TextlintFixResult>((resolve, reject) => {
             const id = generateMessageId();
             workerRef.current.addEventListener(
                 "message",
@@ -119,11 +117,9 @@ export const createTextlintWorker = (script: Script) => {
                 ruleId: message?.ruleId,
                 ext: ext
             } as TextlintWorkerCommandFix);
-        });
-        fixPromise.finally(() => {
+        }).finally(() => {
             controller.abort();
         });
-        return fixPromise;
     };
     const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<void> => {
         return new Promise((resolve, _reject) => {
