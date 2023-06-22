@@ -56,21 +56,30 @@ export const createTextlintWorker = (script: Script) => {
     const defaultWorker = new Worker(workerUrl);
     const workerRef = createWorkerRef(defaultWorker);
     const lintText = async ({ text, ext }: { text: string; ext: string }): Promise<TextlintResult[]> => {
-        return new Promise((resolve, _reject) => {
+        const controller = new AbortController();
+        return new Promise<TextlintResult[]>((resolve, reject) => {
             const id = generateMessageId();
-            workerRef.current.addEventListener("message", function handler(event) {
-                const data: TextlintWorkerCommandResponse = event.data;
-                if (data.command === "lint:result" && data.id === id) {
-                    resolve([data.result]);
-                    workerRef.current.removeEventListener("message", handler);
-                }
-            });
+            workerRef.current.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "lint:result" && data.id === id) {
+                        resolve([data.result]);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return workerRef.current.postMessage({
                 id,
                 command: "lint",
                 text,
                 ext
             } as TextlintWorkerCommandLint);
+        }).finally(() => {
+            controller.abort();
         });
     };
     // Note: currently does not use background implementation.
@@ -85,15 +94,22 @@ export const createTextlintWorker = (script: Script) => {
         ext: string;
         message?: TextlintMessage;
     }): Promise<TextlintFixResult> => {
-        return new Promise((resolve, _reject) => {
+        const controller = new AbortController();
+        return new Promise<TextlintFixResult>((resolve, reject) => {
             const id = generateMessageId();
-            workerRef.current.addEventListener("message", function handler(event) {
-                const data: TextlintWorkerCommandResponse = event.data;
-                if (data.command === "fix:result" && data.id === id) {
-                    resolve(data.result);
-                    workerRef.current.removeEventListener("message", handler);
-                }
-            });
+            workerRef.current.addEventListener(
+                "message",
+                (event: MessageEvent<TextlintWorkerCommandResponse>) => {
+                    const data = event.data;
+                    // global error or ID-specified error
+                    if (data.command === "error" && (!("id" in data) || data.id === id)) {
+                        reject(data.error);
+                    } else if (data.command === "fix:result" && data.id === id) {
+                        resolve(data.result);
+                    }
+                },
+                { signal: controller.signal }
+            );
             return workerRef.current.postMessage({
                 id,
                 command: "fix",
@@ -101,6 +117,8 @@ export const createTextlintWorker = (script: Script) => {
                 ruleId: message?.ruleId,
                 ext: ext
             } as TextlintWorkerCommandFix);
+        }).finally(() => {
+            controller.abort();
         });
     };
     const mergeConfig = async ({ textlintrc }: { textlintrc: TextlintRcConfig }): Promise<void> => {

@@ -40,10 +40,16 @@ export type TextlintWorkerCommandResponseFix = {
     command: "fix:result";
     result: TextlintFixResult;
 };
+export type TextlintWorkerCommandResponseError = {
+    id?: MessageId | undefined;
+    command: "error";
+    error: Error;
+};
 export type TextlintWorkerCommandResponse =
     | TextlintWorkerCommandResponseInit
     | TextlintWorkerCommandResponseLint
-    | TextlintWorkerCommandResponseFix;
+    | TextlintWorkerCommandResponseFix
+    | TextlintWorkerCommandResponseError;
 
 export const generateCode = async (config: TextlintConfigDescriptor) => {
     // macro replacement
@@ -118,6 +124,24 @@ const assignConfig = (textlintrc) => {
         });
     }
 };
+self.addEventListener('error', (event) => {
+    self.postMessage({
+        command: "error",
+        // wrapping any type error with Error
+        error: new Error("unexpected error", {
+            cause: event.error
+        })
+    })
+});
+self.addEventListener('unhandledrejection', (event) => {
+    self.postMessage({
+        command: "error",
+        // wrapping any type error with Error
+        error: new Error("unexpected unhandled promise rejection", {
+            cause: event.reason
+        })
+    })
+});
 self.addEventListener('message', (event) => {
     const data = event.data;
     const rules = data.ruleId === undefined
@@ -139,6 +163,15 @@ self.addEventListener('message', (event) => {
                     command: "lint:result",
                     result
                 });
+            }).catch(error => {
+                return self.postMessage({
+                    id: data.id,
+                    command: "error",
+                    // wrapping any type error with Error
+                    error: new Error("failed to lint text", {
+                        cause: error
+                    })
+                })
             });
         case "fix":
             return kernel.fixText(data.text, {
@@ -153,6 +186,12 @@ self.addEventListener('message', (event) => {
                     command: "fix:result",
                     result
                 });
+            }).catch(error => {
+                return self.postMessage({
+                    id: data.id,
+                    command: "error",
+                    error
+                })
             });
         default:
             console.log("Unknown command: " + data.command);
