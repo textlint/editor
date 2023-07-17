@@ -6,6 +6,7 @@ module.exports = {
         outDir: "public-dist",
         lib: {
             name: "textchecker-element-website",
+            formats: ["esm", "umd"],
             entry: path.resolve(__dirname, "./index.ts")
         }
     }

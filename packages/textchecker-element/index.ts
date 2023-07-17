@@ -149,8 +149,9 @@ export async function run(workerUrl: string) {
     type IgnoreTextSet = Set<string>;
     const ignoreMarkMap = new Map<string, IgnoreTextSet>();
     const getMatchText = (text: string, message: TextlintMessage) => {
-        // workaround: textlint message has not range
-        const range = message.fix ? message.fix.range : [message.index, message.index + 1];
+        // message.range is introduced in textlint@12.2.0
+        // https://github.com/textlint/textlint/releases/tag/v12.2.0
+        const range = message.range ?? message?.fix?.range ?? [message.index, message.index + 1];
         return text.slice(range[0], range[1]);
     };
     const isIgnored = ({ text, message }: { text: string; message: TextlintMessage }) => {

@@ -13,7 +13,12 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
-- [ ] Write usage instructions
+- See [index.ts](./index.ts)
+
+## Note
+
+This component used textlint-editor scripts that is web worker script.
+textlint-editor scripts is build by @textlint/script-compiler.
 
 ## Changelog
 

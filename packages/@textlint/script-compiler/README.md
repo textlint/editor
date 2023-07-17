@@ -19,8 +19,16 @@ Install with [npm](https://www.npmjs.com/):
                                   Default: .textlintrc.{json,yaml,js}
       --output-dir                [path:String] output file path that is written of reported result.
       --mode                      [String] build mode: "production" or "development"
+      
+    Metadata Options
+
+      Metadata is inferred from package.json by default.
+      If you want to set metadata by manually, please use these flags.
+    
       --metadataName              [String] generated script name
       --metadataNamespace         [String] generated script namespace
+      --metadataHomepage          [String] generated script homepage url
+      --metadataVersion           [String] generated script version
  
     Examples
       $ textlint-script-compiler --output-dir ./dist --metadataName "test" --metadataNamespace "https://example.com"

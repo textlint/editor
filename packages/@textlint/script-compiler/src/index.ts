@@ -1,4 +1,5 @@
 export { createWebpackConfig, compile, compileOptions, validateTextlintScriptMetadata } from "./compiler";
+// TODO: move to separate package
 export type {
     TextlintWorkerCommand,
     TextlintWorkerCommandResponse,

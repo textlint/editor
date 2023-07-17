@@ -39,8 +39,8 @@
         "dev": "vite",
         "website": "npm run compile:textlint && vite build",
         "build": "tsc -p . && tsc --project ./tsconfig.module.json",
-        "build:public-lib": "vite build --config vite.lib.config.js",
-        "website-generator": "ts-node tools/website-generator.ts",
+        "build:public-lib": "vite build --mode production --config vite.lib.config.js && npm run build:public-lib-backward-compat",
+        "build:public-lib-backward-compat": "cp public-dist/textchecker-element.esm.js public-dist/textchecker-element.es.js",
         "clean": "rimraf lib/ module/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
@@ -61,15 +61,14 @@
         "mocha": "^8.4.0",
         "prettier": "^2.3.0",
         "rimraf": "^3.0.2",
-        "textlint-rule-preset-ja-technical-writing": "^6.0.0",
+        "textlint-rule-preset-ja-technical-writing": "^8.0.0",
         "ts-node": "^10.9.1",
         "ts-node-test-register": "^10.0.0",
         "typescript": "^4.9.5",
-        "vite": "^2.1.5"
+        "vite": "^4.4.4"
     },
     "dependencies": {
         "@textlint/source-code-fixer": "^13.3.0",
-        "delay": "^4.4.0",
         "eventmit": "^1.1.0",
         "lit-html": "^1.3.0",
         "p-debounce": "^2.1.0",

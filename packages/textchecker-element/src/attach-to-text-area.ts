@@ -169,17 +169,20 @@ export const attachToTextArea = ({
         };
         const annotations = results.flatMap((result) => {
             return result.messages.map((message) => {
+                // message.range is introduced in textlint@12.2.0
+                // https://github.com/textlint/textlint/releases/tag/v12.2.0
+                const range = message.range ?? message.fix?.range ?? [message.index, message.index + 1];
                 const card: TextCheckerCard = {
-                    id: message.ruleId + "::" + message.index,
+                    id: `${message.ruleId}::${range[0]}-${range[1]}`,
                     message: message.message,
                     messageRuleId: message.ruleId,
                     fixable: Boolean(message.fix)
                 };
                 let dismissTimerId: null | any = null;
                 return {
-                    id: `${message.ruleId}::${message.line}:${message.column}`,
-                    start: message.index,
-                    end: message.index + 1,
+                    id: `${message.ruleId}::${range[0]}-${range[1]}`,
+                    start: range[0],
+                    end: range[1],
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
                         debug("annotation - onMouseEnter");
                         if (dismissTimerId) {
