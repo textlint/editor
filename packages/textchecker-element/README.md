@@ -13,7 +13,7 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
-- [ ] Write usage instructions
+- See [index.ts](./index.ts)
 
 ## Changelog
 
