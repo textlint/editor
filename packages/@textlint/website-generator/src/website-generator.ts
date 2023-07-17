@@ -17,11 +17,12 @@ export const generateWebSite = async (options: generateWebSiteOptions) => {
         cwd: options.cwd,
         metadata: options.metadata
     });
-    // rename textlint.js to <id>.textlint.js;
-    fs.renameSync(
-        path.join(options.outputDir, "textlint-worker.js"),
-        path.join(options.outputDir, "textlint-worker.js")
+    // copy template/textchecker-element.esm.js
+    fs.copyFileSync(
+        path.join(templateDir, "textchecker-element.esm.js"),
+        path.join(options.outputDir, "textchecker-element.esm.js")
     );
+
     // index.{js,html}
     const indexHtml = fs.readFileSync(path.join(templateDir, "index.html"), "utf-8");
     const filledHTML = indexHtml.replace("{{title}}", options.title).replace("{{placeholder}}", options.placeholder);
