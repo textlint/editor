@@ -18,7 +18,7 @@ export const cli = meow(
     Metadata Options
 
       Metadata is inferred from package.json by default.
-      If you want to set metadata by manually, please use theme flags.
+      If you want to set metadata by manually, please use these flags.
     
       --metadataName              [String] generated script name
       --metadataNamespace         [String] generated script namespace
