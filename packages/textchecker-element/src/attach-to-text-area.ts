@@ -179,7 +179,7 @@ export const attachToTextArea = ({
                 return {
                     id: `${message.ruleId}::${message.range[0]}-${message.range[1]}`,
                     start: message.range[0],
-                    end: message.range[1] + 1,
+                    end: message.range[1],
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
                         debug("annotation - onMouseEnter");
                         if (dismissTimerId) {
