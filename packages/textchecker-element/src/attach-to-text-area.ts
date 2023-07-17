@@ -170,16 +170,16 @@ export const attachToTextArea = ({
         const annotations = results.flatMap((result) => {
             return result.messages.map((message) => {
                 const card: TextCheckerCard = {
-                    id: message.ruleId + "::" + message.index,
+                    id: `${message.ruleId}::${message.range[0]}-${message.range[1]}`,
                     message: message.message,
                     messageRuleId: message.ruleId,
                     fixable: Boolean(message.fix)
                 };
                 let dismissTimerId: null | any = null;
                 return {
-                    id: `${message.ruleId}::${message.line}:${message.column}`,
-                    start: message.index,
-                    end: message.index + 1,
+                    id: `${message.ruleId}::${message.range[0]}-${message.range[1]}`,
+                    start: message.range[0],
+                    end: message.range[1] + 1,
                     onMouseEnter: ({ rectItem }: { rectItem: TextCheckerElementRectItem }) => {
                         debug("annotation - onMouseEnter");
                         if (dismissTimerId) {

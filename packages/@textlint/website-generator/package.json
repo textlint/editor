@@ -37,7 +37,9 @@
         "clean": "rimraf lib/ module/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublish": "npm run --if-present build",
-        "watch": "tsc -p . --watch"
+        "generate-template": "node tools/website-generator.mjs",
+        "watch": "tsc -p . --watch",
+        "prepack": "npm run generate-template"
     },
     "prettier": {
         "printWidth": 120,
