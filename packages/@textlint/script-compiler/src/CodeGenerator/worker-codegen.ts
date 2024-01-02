@@ -74,21 +74,25 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
         }
       ];
      */
+    const normalizeModuleName = (moduleName: string) => {
+        // window path -> posix path
+        return moduleName.replace(/\\/g, "/");
+    };
     const createImportCode = (a: TextlintConfigRule, index: number) => {
         if (a.type === "Rule") {
-            return `import __rule${index} from "${a.moduleName}";`;
+            return `import __rule${index} from "${normalizeModuleName(a.moduleName)}";`;
         } else if (a.type === "RuleInPreset") {
-            return `import __rulePreset${index} from "${a.moduleName}";
+            return `import __rulePreset${index} from "${normalizeModuleName(a.moduleName)}";
 const __rule${index} = __rulePreset${index}.rules["${a.ruleKey}"];`;
         } else {
             throw new Error("Unknown type");
         }
     };
     const createFilterRuleImportCode = (a: TextlintConfigFilterRule, index: number) => {
-        return `import __filterRule${index} from "${a.moduleName}";`;
+        return `import __filterRule${index} from "${normalizeModuleName(a.moduleName)}";`;
     };
     const createPluginImportCode = (a: TextlintConfigPlugin, index: number) => {
-        return `import __plugin${index} from "${a.moduleName}";`;
+        return `import __plugin${index} from "${normalizeModuleName(a.moduleName)}";`;
     };
     return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";

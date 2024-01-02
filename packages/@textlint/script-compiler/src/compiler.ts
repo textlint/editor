@@ -193,8 +193,6 @@ export const compile = async (options: compileOptions) => {
                 config: rawConfig
             }
         });
-        console.log("DEBUG: inputFilePath");
-        console.log(fs.readFileSync(inputFilePath, "utf-8"));
         webpack([config], (error: undefined | (Error & { details?: string }), stats?) => {
             if (error) {
                 console.error(error.stack || error);
