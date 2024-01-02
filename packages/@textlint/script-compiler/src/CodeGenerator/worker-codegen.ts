@@ -69,7 +69,7 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
       const rules = [
         {
           ruleId: "rule1",
-          rule: __rule1,
+          rule: moduleInterop(__rule1),
           options: {}
         }
       ];
