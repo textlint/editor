@@ -122,11 +122,11 @@ const filterRules = ${stringify(
     )};
     
 const plugins = ${stringify(
-        config.plugins.map((rule, index) => {
+        config.plugins.map((plugin, index) => {
             return {
-                pluginId: rule.pluginId,
+                pluginId: plugin.pluginId,
                 plugin: `!__moduleInterop(__plugin${index})__!`,
-                options: rule.options
+                options: plugin.options
             };
         })
     )};
