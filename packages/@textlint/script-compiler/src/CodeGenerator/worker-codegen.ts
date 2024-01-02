@@ -1,4 +1,9 @@
-import { TextlintConfigDescriptor } from "@textlint/config-loader";
+import type {
+    TextlintConfigDescriptor,
+    TextlintConfigFilterRule,
+    TextlintConfigPlugin,
+    TextlintConfigRule
+} from "@textlint/config-loader";
 import type { TextlintFixResult, TextlintResult } from "@textlint/types";
 import { TextlintScriptMetadata } from "@textlint/script-parser";
 
@@ -59,40 +64,72 @@ export const generateCode = async (config: TextlintConfigDescriptor) => {
         return JSON.stringify(item, null, 4).replace(/"!__(.*)__!"/g, "$1");
     };
 
+    /*
+      import __rule1 from "rule1"
+      const rules = [
+        {
+          ruleId: "rule1",
+          rule: __rule1,
+          options: {}
+        }
+      ];
+     */
+    const normalizeModuleName = (moduleName: string) => {
+        // window path -> posix path
+        return moduleName.replace(/\\/g, "/");
+    };
+    const createImportCode = (a: TextlintConfigRule, index: number) => {
+        if (a.type === "Rule") {
+            return `import __rule${index} from "${normalizeModuleName(a.moduleName)}";`;
+        } else if (a.type === "RuleInPreset") {
+            return `import __rulePreset${index} from "${normalizeModuleName(a.moduleName)}";
+const __rule${index} = __rulePreset${index}.rules["${a.ruleKey}"];`;
+        } else {
+            throw new Error("Unknown type");
+        }
+    };
+    const createFilterRuleImportCode = (a: TextlintConfigFilterRule, index: number) => {
+        return `import __filterRule${index} from "${normalizeModuleName(a.moduleName)}";`;
+    };
+    const createPluginImportCode = (a: TextlintConfigPlugin, index: number) => {
+        return `import __plugin${index} from "${normalizeModuleName(a.moduleName)}";`;
+    };
     return `// Generated webworker code by textlint-script-compiler
 import { TextlintKernel } from "@textlint/kernel";
 import { moduleInterop } from "@textlint/module-interop";
 import { parseOptionsFromConfig } from "@textlint/config-partial-parser"
+// import rules
+${config.rules.map(createImportCode).join("\n")}
+// import filterRules
+${config.filterRules.map(createFilterRuleImportCode).join("\n")}
+// import plugins
+${config.plugins.map(createPluginImportCode).join("\n")}
+// ====
 const kernel = new TextlintKernel();
 const rules = ${stringify(
-        config.rules.flatMap((rule) => {
-            return rule.type === "Rule"
-                ? {
-                      ruleId: rule.ruleId,
-                      rule: `!__moduleInterop(require('${rule.filePath}'))__!`,
-                      options: rule.options
-                  }
-                : {
-                      ruleId: rule.ruleId,
-                      rule: `!__moduleInterop(require('${rule.moduleName}').rules['${rule.ruleKey}'])__!`,
-                      options: rule.options
-                  };
-        })
-    )};
-const filterRules = ${stringify(
-        config.filterRules.map((rule) => {
+        config.rules.map((rule, index) => {
             return {
                 ruleId: rule.ruleId,
-                rule: `!__moduleInterop(require('${rule.moduleName}'))__!`,
+                rule: `!__moduleInterop(__rule${index})__!`,
                 options: rule.options
             };
         })
     )};
+const filterRules = ${stringify(
+        config.filterRules.map((rule, index) => {
+            return {
+                ruleId: rule.ruleId,
+                rule: `!__moduleInterop(__filterRule${index})__!`,
+                options: rule.options
+            };
+        })
+    )};
+    
 const plugins = ${stringify(
-        config.plugins.map((plugin) => {
+        config.plugins.map((plugin, index) => {
             return {
                 pluginId: plugin.pluginId,
-                plugin: `!__moduleInterop(require('${plugin.moduleName}'))__!`,
+                plugin: `!__moduleInterop(__plugin${index})__!`,
                 options: plugin.options
             };
         })
