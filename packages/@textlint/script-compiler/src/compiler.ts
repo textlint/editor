@@ -91,6 +91,12 @@ export const createWebpackConfig = ({
             new webpack.BannerPlugin({
                 banner: `textlinteditor:@@@ ${JSON.stringify(metadata)} @@@`
             }),
+            // Remove the `node:` prefix
+            // see: https://github.com/webpack/webpack/issues/14166
+            // see: https://github.com/web-infra-dev/rsbuild/pull/1402
+            new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+                resource.request = resource.request.replace(/^node:/, "");
+            }),
             // Node.js polyfill
             new NodePolyfillPlugin({})
         ],
@@ -193,7 +199,7 @@ export const compile = async (options: compileOptions) => {
                 config: rawConfig
             }
         });
-        webpack([config], (error: undefined | (Error & { details?: string }), stats?) => {
+        webpack([config], (error: null | (Error & { details?: string }), stats?) => {
             if (error) {
                 console.error(error.stack || error);
                 if (error.details) {

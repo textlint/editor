@@ -44,10 +44,10 @@
         "trailingComma": "none"
     },
     "dependencies": {
-        "@textlint/config-loader": "^13.3.0",
-        "@textlint/kernel": "^13.3.0",
-        "@textlint/types": "^13.3.0",
-        "@textlint/utils": "^13.3.0"
+        "@textlint/config-loader": "^14.0.4",
+        "@textlint/kernel": "^14.0.4",
+        "@textlint/types": "^14.0.4",
+        "@textlint/utils": "^14.0.4"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",

@@ -1,6 +1,11 @@
 {
   "rules": {
     "no-dropping-the-ra": true,
-    "preset-ja-technical-writing": true
+    "preset-ja-technical-writing": true,
+    "prh": {
+      "rulePaths": [
+        "./prh.yml"
+      ]
+    }
   }
 }
