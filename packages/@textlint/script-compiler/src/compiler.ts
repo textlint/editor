@@ -193,7 +193,7 @@ export const compile = async (options: compileOptions) => {
                 config: rawConfig
             }
         });
-        webpack([config], (error: undefined | (Error & { details?: string }), stats?) => {
+        webpack([config], (error: null | (Error & { details?: string }), stats?) => {
             if (error) {
                 console.error(error.stack || error);
                 if (error.details) {

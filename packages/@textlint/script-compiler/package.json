@@ -54,14 +54,14 @@
     "dependencies": {
         "@babel/core": "^7.12.10",
         "@textlint/config-inliner": "^0.16.0",
-        "@textlint/config-loader": "^13.3.0",
+        "@textlint/config-loader": "^14.0.4",
         "@textlint/config-partial-parser": "^0.16.0",
-        "@textlint/kernel": "^13.3.0",
+        "@textlint/kernel": "^14.0.4",
         "@textlint/runtime-helper": "^0.16.0",
         "@textlint/script-parser": "^0.16.0",
-        "@textlint/textlint-plugin-markdown": "^13.3.0",
-        "@textlint/textlint-plugin-text": "^13.3.0",
-        "@textlint/types": "^13.3.0",
+        "@textlint/textlint-plugin-markdown": "^14.0.4",
+        "@textlint/textlint-plugin-text": "^14.0.4",
+        "@textlint/types": "^14.0.4",
         "babel-loader": "^8.2.2",
         "babel-plugin-static-fs": "^3.0.0",
         "meow": "^9.0.0",
@@ -69,7 +69,7 @@
         "read-pkg": "^5.2.0",
         "rimraf": "^3.0.2",
         "terser-webpack-plugin": "^5.3.6",
-        "webpack": "^5.75.0"
+        "webpack": "^5.91.0"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",
@@ -79,6 +79,7 @@
         "prettier": "^2.3.0",
         "textlint-rule-no-dropping-the-ra": "^3.0.0",
         "textlint-rule-preset-ja-technical-writing": "^6.0.0",
+        "textlint-rule-prh": "^6.0.0",
         "ts-node": "^10.9.1",
         "ts-node-test-register": "^10.0.0",
         "typescript": "^4.9.5"
