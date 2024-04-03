@@ -93,6 +93,7 @@ export const createWebpackConfig = ({
             }),
             // Remove the `node:` prefix
             // see: https://github.com/webpack/webpack/issues/14166
+            // see: https://github.com/web-infra-dev/rsbuild/pull/1402
             new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
                 resource.request = resource.request.replace(/^node:/, "");
             }),
