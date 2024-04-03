@@ -1,6 +1,6 @@
 {
     "name": "@textlint/config-inliner",
-    "version": "0.16.0",
+    "version": "0.17.0",
     "description": "Inlining config for supporting browser.",
     "keywords": [
         "textlint"
