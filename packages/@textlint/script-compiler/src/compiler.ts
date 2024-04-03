@@ -91,6 +91,11 @@ export const createWebpackConfig = ({
             new webpack.BannerPlugin({
                 banner: `textlinteditor:@@@ ${JSON.stringify(metadata)} @@@`
             }),
+            // Remove the `node:` prefix
+            // see: https://github.com/webpack/webpack/issues/14166
+            new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+                resource.request = resource.request.replace(/^node:/, "");
+            }),
             // Node.js polyfill
             new NodePolyfillPlugin({})
         ],
