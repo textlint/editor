@@ -5,12 +5,21 @@ env:
 permissions:
   contents: read
 jobs:
+  get-node-active-major-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{steps.get_versions.outputs.versions}}
+    steps:
+      - name: Get versions
+        id: get_versions
+        uses: massongit/actions-get-node-active-major-versions@v1
   test:
     name: "Test on Node.js ${{ matrix.node-version }} x ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
+    needs: get-node-active-major-versions
     strategy:
       matrix:
-        node-version: [ 18, 20, 22 ]
+        node-version: ${{fromJson(needs.get-node-active-major-versions.outputs.versions)}}
         os: [ ubuntu-latest, windows-latest ]
     steps:
       - name: checkout
