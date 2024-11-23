@@ -124,7 +124,7 @@ const useForm = (props: ScriptMetaProps) => {
                     } catch (error) {
                         return {
                             ...prevState,
-                            textlintrc: error
+                            textlintrc: error instanceof Error ? error : null
                         };
                     }
                 });
