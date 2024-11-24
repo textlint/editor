@@ -7,6 +7,7 @@ module.exports = {
         // Add typescript loader. supports .ts and .tsx files as entry points
         config.resolve.extensions.push(".ts");
         config.resolve.extensions.push(".tsx");
+        config.resolve.fallback = { path: require.resolve("path-browserify") };
         config.entry = GlobEntriesPlugin.getEntries([
             path.resolve("app", "*.{js,mjs,jsx,ts,tsx}"),
             path.resolve("app", "?(scripts)/*.{js,mjs,jsx,ts,tsx}")
