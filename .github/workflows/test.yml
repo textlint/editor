@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [ 16, 18, 20, 22 ]
+        node-version: [ 18, 20, 22 ]
         os: [ ubuntu-latest, windows-latest ]
     steps:
       - name: checkout
@@ -26,7 +26,7 @@ jobs:
         run: yarn run build
       - name: Build webextension (Chrome)
         run: npm run dist chrome
-        if: matrix.node-version == 16
+        if: matrix.os == 'ubuntu-latest'
         working-directory: packages/webextension
       - name: Test
         run: yarn test
