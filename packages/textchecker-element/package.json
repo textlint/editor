@@ -58,7 +58,7 @@
         "@types/mocha": "^10.0.1",
         "@types/node": "^18.13.0",
         "@types/rimraf": "^3.0.0",
-        "mocha": "^8.4.0",
+        "mocha": "^9.2.2",
         "prettier": "^2.3.0",
         "rimraf": "^3.0.2",
         "textlint-rule-preset-ja-technical-writing": "^8.0.0",
