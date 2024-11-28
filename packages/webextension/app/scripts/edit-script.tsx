@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { AppStateProvider } from "./InstalledApp/StateContext";
 import { Provider, defaultTheme } from "@adobe/react-spectrum";
-import { Router } from "@reach/router";
+import { Router } from "@gatsbyjs/reach-router";
 import { EditPage } from "./InstalledApp/pages/EditPage";
 
 const url = new URL(location.href);

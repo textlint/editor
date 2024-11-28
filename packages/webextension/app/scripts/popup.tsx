@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Router } from "@reach/router";
+import { Router } from "@gatsbyjs/reach-router";
 import { AppStateProvider } from "./InstalledApp/StateContext";
 import { Provider, defaultTheme } from "@adobe/react-spectrum";
 import { InstalledAppPage } from "./InstalledApp/pages/InstalledAppPage";

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { TextlintrcEditor } from "../component/TextlintrcEditor";
-import { RouteComponentProps } from "@reach/router";
+import { RouteComponentProps } from "@gatsbyjs/reach-router";
 import { usePort } from "../StateContext";
 import "./EditPage.css";
 import { ActionButton, Flex, Form, TextField, Text, Link } from "@adobe/react-spectrum";
