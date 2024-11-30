@@ -37,5 +37,5 @@ module.exports = {
         // Important: return the modified config
         return config;
     },
-    copyIgnore: ["**/*.js", "**/*.json", "**/*.ts", "**/*.tsx"]
+    copyIgnore: ["**/*.js", "**/*.ts", "**/*.tsx"]
 };

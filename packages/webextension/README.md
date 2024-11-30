@@ -8,6 +8,9 @@ textlint editor
     yarn install 
     yarn run build
 
+    # on this dir
+    patch -p1 < diff.patch
+
 ### Install textlint scripts
 
 textlint editor install your textlint scripts like Greasemonkey.

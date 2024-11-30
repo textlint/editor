@@ -7,7 +7,7 @@ import {
     TextlintWorkerCommandResponse
 } from "@textlint/script-compiler";
 import type { TextlintRcConfig } from "@textlint/config-loader";
-import { Script } from "./database";
+import { Script } from "../utils/script";
 import { logger } from "../utils/logger";
 
 const waiterForInit = (worker: Worker) => {

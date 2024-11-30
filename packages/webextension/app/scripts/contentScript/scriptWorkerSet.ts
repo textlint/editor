@@ -1,5 +1,5 @@
 import { TextlintWorker } from "./textlint";
-import { keyOfScript, Script } from "./database";
+import { keyOfScript, Script } from "../utils/script";
 import { logger } from "../utils/logger";
 
 const workerMap = new Map<string, TextlintWorker>();
