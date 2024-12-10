@@ -77,7 +77,6 @@
         "@types/webpack": "^5.28.5",
         "mocha": "^10.8.2",
         "prettier": "^2.3.0",
-        "textlint": "^12.2.1",
         "textlint-rule-no-dropping-the-ra": "^3.0.0",
         "textlint-rule-preset-ja-technical-writing": "^8.0.0",
         "textlint-rule-prh": "^6.0.0",
