@@ -1,0 +1,22 @@
+diff --git a/comlink-extension/src/adapter.ts b/comlink-extension/src/adapter.ts
+index 11038b3..2b50a15 100644
+--- a/comlink-extension/src/adapter.ts
++++ b/comlink-extension/src/adapter.ts
+@@ -27,7 +27,7 @@ export function createEndpoint(
+ 
+   function serialize(data: any): void {
+     if (Array.isArray(data)) {
+-      data.forEach((value, i) => {
++      data.forEach((value) => {
+         serialize(value);
+       });
+     } else if (data && typeof data === "object") {
+@@ -97,7 +97,7 @@ export function createEndpoint(
+   }
+ 
+   return {
+-    postMessage: (message, transfer: MessagePort[]) => {
++    postMessage: (message) => {
+       serialize(message);
+       port.postMessage(message);
+     },

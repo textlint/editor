@@ -4306,6 +4306,11 @@
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
 
+"@types/webextension-polyfill@^0.10.1":
+  version "0.10.7"
+  resolved "https://registry.yarnpkg.com/@types/webextension-polyfill/-/webextension-polyfill-0.10.7.tgz#de059250599733a60ed26c8a0c81e21e11183b90"
+  integrity sha512-10ql7A0qzBmFB+F+qAke/nP1PIonS0TXZAOMVOxEUsm+lGSW6uwVcISFNa0I4Oyj0884TZVWGGMIWeXOVSNFHw==
+
 "@types/webpack@^5.28.5":
   version "5.28.5"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-5.28.5.tgz#0e9d9a15efa09bbda2cef41356ca4ac2031ea9a2"
@@ -5615,17 +5620,10 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-comlink-extension@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/comlink-extension/-/comlink-extension-1.0.8.tgz#ce3c5187812d1cce26062257d933da3cfd9340c3"
-  integrity sha512-iFTvW79mu98SReqIxkLy5ll9T5MNbtemSUfI+KbotVXm8eGS5i45CsFpG1lr41FQAJoWY/Hq1hc8ubxJkVa57g==
-  dependencies:
-    webextension-polyfill-ts "^0.19.0"
-
-comlink@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.3.0.tgz#80b3366baccd87897dab3638ebfcfae28b2f87c7"
-  integrity sha512-mu4KKKNuW8TvkfpW/H88HBPeILubBS6T94BdD1VWBXNXfiyqVtwUCVNO1GeNOBTsIswzsMjWlycYr+77F5b84g==
+comlink@^4.4.1:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.4.2.tgz#cbbcd82742fbebc06489c28a183eedc5c60a2bca"
+  integrity sha512-OxGdvBmJuNKSCMO4NTl1L47VRp6xn2wG4F/2hYzB6tiCb709otOxtEYCSvK80PtjODfXXZu8ds+Nw5kVCjqd2g==
 
 comma-separated-tokens@^1.0.0:
   version "1.0.8"
@@ -12601,29 +12599,10 @@ webcomponentsjs-custom-element-v0@^1.0.1:
   resolved "https://registry.yarnpkg.com/webcomponentsjs-custom-element-v0/-/webcomponentsjs-custom-element-v0-1.0.2.tgz#3cd13aba3222680b1b1da823719c8d3cc3d594ee"
   integrity sha512-Xlaa+HQw6pR9+hCxQKy41m12V0M4kEGmsvDVAF98nidSAR/X1fqmWHjb5cszD8RRLhWQjrCOFb7QQNipfsN5mg==
 
-webextension-polyfill-ts@^0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill-ts/-/webextension-polyfill-ts-0.19.0.tgz#3e3a059c656936c853b47d2a57bf114c615c1e1e"
-  integrity sha512-VcA7bdf0dzUc8JXQwQU+spSUTV0Gc0Y7VPsdrEFLbuTxJluC4xBoKVWtfUXRqykVfDvFsfo591+p1MmPSJezsw==
-  dependencies:
-    webextension-polyfill "^0.6.0"
-
-webextension-polyfill-ts@^0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill-ts/-/webextension-polyfill-ts-0.25.0.tgz#fff041626365dbd0e29c40b197e989a55ec221ca"
-  integrity sha512-ikQhwwHYkpBu00pFaUzIKY26I6L87DeRI+Q6jBT1daZUNuu8dSrg5U9l/ZbqdaQ1M/TTSPKeAa3kolP5liuedw==
-  dependencies:
-    webextension-polyfill "^0.7.0"
-
-webextension-polyfill@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.6.0.tgz#1afd925f3274a0d4848083579b9c0b649a5c6763"
-  integrity sha512-PlYwiX8e4bNZrEeBFxbFFsLtm0SMPxJliLTGdNCA0Bq2XkWrAn2ejUd+89vZm+8BnfFB1BclJyCz3iKsm2atNg==
-
-webextension-polyfill@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.7.0.tgz#0df1120ff0266056319ce1a622b09ad8d4a56505"
-  integrity sha512-su48BkMLxqzTTvPSE1eWxKToPS2Tv5DLGxKexLEVpwFd6Po6N8hhSLIvG6acPAg7qERoEaDL+Y5HQJeJeml5Aw==
+webextension-polyfill@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.10.0.tgz#ccb28101c910ba8cf955f7e6a263e662d744dbb8"
+  integrity sha512-c5s35LgVa5tFaHhrZDnr3FpQpjj1BB+RXhLTYUxGqBVN460HkbM8TBtEqdXWbpTKfzwCcjAZVF7zXCYSKtcp9g==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

@@ -1,4 +1,4 @@
-import { browser } from "webextension-polyfill-ts";
+import browser from "webextension-polyfill";
 
 const isTextlintWorkerUrl = (urlString: string): boolean => {
     try {

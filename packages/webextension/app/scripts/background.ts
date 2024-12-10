@@ -1,5 +1,5 @@
-import { browser } from "webextension-polyfill-ts";
-import { createBackgroundEndpoint, isMessagePort } from "comlink-extension";
+import browser from "webextension-polyfill";
+import { createBackgroundEndpoint, isMessagePort } from "../../comlink-extension/src";
 import * as Comlink from "comlink";
 import { createTextlintWorker } from "./background/textlint";
 import { keyOfScript, openDatabase, Script } from "./background/database";

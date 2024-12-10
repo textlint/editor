@@ -1,6 +1,6 @@
 import { LintEngineAPI } from "textchecker-element";
-import { browser } from "webextension-polyfill-ts";
-import { createEndpoint } from "comlink-extension";
+import browser from "webextension-polyfill";
+import { createEndpoint } from "../../comlink-extension/src";
 import * as Comlink from "comlink";
 import type { BackgroundToContentObject } from "./background";
 import { nonRandomKey } from "./shared/page-contents-shared";
@@ -14,7 +14,7 @@ rawPort.onMessage.addListener((event) => {
         logger.log("[ContentScript]", "boot event received");
         // Inject page-script
         try {
-            const script = browser.extension.getURL("scripts/pageScript.js");
+            const script = browser.runtime.getURL("scripts/pageScript.js");
             const pageScript = document.createElement("script");
             pageScript.src = script;
             document.body.append(pageScript);
