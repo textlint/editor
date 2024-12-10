@@ -44,7 +44,7 @@ The build tool also defines a variable named `process.env.NODE_ENV` in your scri
     - postMessage → Background Page
     - Pass Page Scripts ← Background Page
 - Background Page
-    - → message → textlint-worker.js(downloaed)
+    - → message → textlint-worker.js(downloaded)
     - ← message 
 
 Summary
