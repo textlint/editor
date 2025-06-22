@@ -44,7 +44,7 @@
         "trailingComma": "none"
     },
     "dependencies": {
-        "@textlint/config-loader": "^14.0.4",
+        "@textlint/config-loader": "^15.0.0",
         "untildify": "^4.0.0"
     },
     "devDependencies": {

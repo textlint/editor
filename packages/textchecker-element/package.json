@@ -61,14 +61,14 @@
         "mocha": "^10.8.2",
         "prettier": "^2.3.0",
         "rimraf": "^3.0.2",
-        "textlint-rule-preset-ja-technical-writing": "^8.0.0",
+        "textlint-rule-preset-ja-technical-writing": "^12.0.2",
         "ts-node": "^10.9.1",
         "ts-node-test-register": "^10.0.0",
         "typescript": "^4.9.5",
         "vite": "^4.4.4"
     },
     "dependencies": {
-        "@textlint/source-code-fixer": "^14.0.4",
+        "@textlint/source-code-fixer": "^15.0.0",
         "eventmit": "^1.1.0",
         "lit-html": "^1.3.0",
         "p-debounce": "^2.1.0",

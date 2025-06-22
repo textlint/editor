@@ -40,11 +40,11 @@
     },
     "dependencies": {
         "@kvs/env": "^1.1.0",
-        "@textlint/config-loader": "^14.0.4",
-        "@textlint/kernel": "^14.0.4",
-        "@textlint/module-interop": "^14.0.4",
-        "@textlint/types": "^14.0.4",
-        "@textlint/utils": "^14.0.4"
+        "@textlint/config-loader": "^15.0.0",
+        "@textlint/kernel": "^15.0.0",
+        "@textlint/module-interop": "^15.0.0",
+        "@textlint/types": "^15.0.0",
+        "@textlint/utils": "^15.0.0"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",
