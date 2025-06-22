@@ -121,7 +121,7 @@ export const createWebpackConfig = ({
             fallback: {
                 fs: false
             },
-            // "module" filed should be ignored
+            // "module" field should be ignored
             // type=commonjs and "module" field is not compatible
             mainFields: ["browser", "main"]
         },
