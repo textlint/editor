@@ -17,7 +17,7 @@
     "author": "azu",
     "sideEffects": false,
     "main": "lib/config-inliner.js",
-    "module": "module/config-inliner.js",
+
     "types": "lib/config-inliner.d.ts",
     "directories": {
         "lib": "lib",
