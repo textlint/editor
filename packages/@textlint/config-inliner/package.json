@@ -17,7 +17,6 @@
     "author": "azu",
     "sideEffects": false,
     "main": "lib/config-inliner.js",
-    "module": "module/config-inliner.js",
     "types": "lib/config-inliner.d.ts",
     "directories": {
         "lib": "lib",
@@ -44,7 +43,7 @@
         "trailingComma": "none"
     },
     "dependencies": {
-        "@textlint/config-loader": "^14.0.4",
+        "@textlint/config-loader": "^15.0.1",
         "untildify": "^4.0.0"
     },
     "devDependencies": {

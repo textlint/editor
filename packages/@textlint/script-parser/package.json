@@ -17,7 +17,7 @@
     "author": "azu",
     "sideEffects": false,
     "main": "lib/script-parser.js",
-    "module": "module/script-parser.js",
+
     "types": "lib/script-parser.d.ts",
     "directories": {
         "lib": "lib",
