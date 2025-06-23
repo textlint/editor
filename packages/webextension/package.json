@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@textlint/webextension",
-    "version": "0.17.0",
+    "version": "0.17.1",
     "description": "textlint editor",
     "scripts": {
         "dev": "webextension-toolbox dev --config webextension-toolbox.config.js",
@@ -22,8 +22,8 @@
         "style-loader": "^1.2.1",
         "ts-loader": "^9.5.1",
         "typescript": "^5.2.2",
-        "webpack": "^5.99.9",
-        "webpack-sources": "^3.3.3",
+        "webpack": "^5.90.0",
+        "webpack-sources": "^3.2.3",
         "webpack-watched-glob-entries-plugin": "^3.0.0"
     },
     "dependencies": {
@@ -32,9 +32,9 @@
         "@kvs/env": "^1.1.0",
         "@react-stately/data": "^3.1.2",
         "@spectrum-icons/workflow": "^3.2.0",
-        "@textlint/config-loader": "^15.0.0",
-        "@textlint/script-parser": "^0.17.0",
-        "@textlint/types": "^15.0.0",
+        "@textlint/config-loader": "^14.0.4",
+        "@textlint/script-parser": "^0.17.1",
+        "@textlint/types": "^14.0.4",
         "codemirror": "^5.59.2",
         "comlink": "^4.3.0",
         "comlink-extension": "^1.0.8",
@@ -44,7 +44,7 @@
         "react": "^17.0.2",
         "react-codemirror2": "^8.0.0",
         "react-dom": "^17.0.2",
-        "textchecker-element": "^0.17.0",
+        "textchecker-element": "^0.17.1",
         "webextension-polyfill-ts": "^0.25.0"
     }
 }
