@@ -14,7 +14,6 @@
     "author": "azu",
     "sideEffects": false,
     "main": "lib/index.js",
-
     "types": "lib/index.d.ts",
     "directories": {
         "lib": "lib",
@@ -40,11 +39,11 @@
     },
     "dependencies": {
         "@kvs/env": "^1.1.0",
-        "@textlint/config-loader": "^15.0.0",
-        "@textlint/kernel": "^15.0.0",
-        "@textlint/module-interop": "^15.0.0",
-        "@textlint/types": "^15.0.0",
-        "@textlint/utils": "^15.0.0"
+        "@textlint/config-loader": "^15.0.1",
+        "@textlint/kernel": "^15.0.1",
+        "@textlint/module-interop": "^15.0.1",
+        "@textlint/types": "^15.0.1",
+        "@textlint/utils": "^15.0.1"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.1",
