@@ -1,5 +1,5 @@
 const debugStorageValue = localStorage.DEBUG ?? "";
-const DEBUG = debugStorageValue === "*" ?? debugStorageValue.startsWith("@textlint");
+const DEBUG = debugStorageValue === "*" ? debugStorageValue.startsWith("@textlint") : false;
 export const debug = (...args: any): void => {
     if (!DEBUG) {
         return;

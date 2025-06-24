@@ -16,6 +16,7 @@
     ],
     /* Strict Type-Checking Options */
     "strict": true,
+    "skipLibCheck": true,
     /* Additional Checks */
     /* Report errors on unused locals. */
     "noUnusedLocals": true,
