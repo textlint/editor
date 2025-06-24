@@ -25,15 +25,14 @@
     "files": [
         "bin/",
         "lib/",
-        "module/",
         "src/"
     ],
     "scripts": {
         "test": "mocha \"test/**/*.ts\"",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-        "build": "tsc -p . && tsc -p ./tsconfig.module.json",
+        "build": "tsc -p .",
         "watch": "tsc -p . --watch",
-        "clean": "rimraf lib/ module/",
+        "clean": "rimraf lib/",
         "prepublishOnly": "npm run clean && npm run build"
     },
     "prettier": {

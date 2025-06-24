@@ -21,7 +21,6 @@
         "lib/textchecker-element.js"
     ],
     "main": "lib/index.js",
-    "module": "module/index.js",
     "types": "lib/index.d.ts",
     "directories": {
         "lib": "lib",
@@ -30,7 +29,6 @@
     "files": [
         "bin/",
         "lib/",
-        "module/",
         "public-dist/"
     ],
     "scripts": {
@@ -38,10 +36,10 @@
         "predev": "npm run compile:textlint",
         "dev": "vite",
         "website": "npm run compile:textlint && vite build",
-        "build": "tsc -p . && tsc --project ./tsconfig.module.json",
+        "build": "tsc -p .",
         "build:public-lib": "vite build --mode production --config vite.lib.config.js && npm run build:public-lib-backward-compat",
         "build:public-lib-backward-compat": "cp public-dist/textchecker-element.esm.js public-dist/textchecker-element.es.js",
-        "clean": "rimraf lib/ module/",
+        "clean": "rimraf lib/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
         "watch": "tsc -p . --watch"

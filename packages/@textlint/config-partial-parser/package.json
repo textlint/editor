@@ -25,12 +25,11 @@
     },
     "files": [
         "bin/",
-        "lib/",
-        "module"
+        "lib/"
     ],
     "scripts": {
-        "build": "tsc -p . && tsc -p ./tsconfig.module.json",
-        "clean": "rimraf lib/ module/",
+        "build": "tsc -p .",
+        "clean": "rimraf lib/",
         "prepublishOnly": "npm run clean && npm run build",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "test": "mocha \"test/**/*.ts\"",

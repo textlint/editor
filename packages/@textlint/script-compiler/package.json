@@ -20,7 +20,6 @@
     "author": "azu",
     "sideEffects": false,
     "main": "lib/index.js",
-    "module": "module/index.js",
     "types": "lib/index.d.ts",
     "directories": {
         "lib": "lib",
@@ -32,12 +31,11 @@
     "files": [
         "bin/",
         "lib/",
-        "module/",
         "patch/"
     ],
     "scripts": {
-        "build": "tsc -p . && tsc --project ./tsconfig.module.json",
-        "clean": "rimraf lib/ module/",
+        "build": "tsc -p .",
+        "clean": "rimraf lib/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublish": "npm run --if-present build",
         "test": "npm run build:example",
