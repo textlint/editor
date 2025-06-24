@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@textlint/webextension",
-    "version": "0.17.1",
+    "version": "0.18.0",
     "description": "textlint editor",
     "scripts": {
         "dev": "webextension-toolbox dev --config webextension-toolbox.config.js",
@@ -33,7 +33,7 @@
         "@react-stately/data": "^3.1.2",
         "@spectrum-icons/workflow": "^3.2.0",
         "@textlint/config-loader": "^15.0.1",
-        "@textlint/script-parser": "^0.17.1",
+        "@textlint/script-parser": "^0.18.0",
         "@textlint/types": "^15.0.1",
         "codemirror": "^5.59.2",
         "comlink": "^4.3.0",
@@ -44,7 +44,7 @@
         "react": "^17.0.2",
         "react-codemirror2": "^8.0.0",
         "react-dom": "^17.0.2",
-        "textchecker-element": "^0.17.1",
+        "textchecker-element": "^0.18.0",
         "webextension-polyfill-ts": "^0.25.0"
     }
 }
