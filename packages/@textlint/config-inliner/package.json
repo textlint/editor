@@ -25,15 +25,14 @@
     "files": [
         "bin/",
         "lib/",
-        "module/",
         "src/"
     ],
     "scripts": {
         "test": "mocha \"test/**/*.ts\"",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-        "build": "tsc -p . && tsc -p ./tsconfig.module.json",
+        "build": "tsc -p .",
         "watch": "tsc -p . --watch",
-        "clean": "rimraf lib/ module/",
+        "clean": "rimraf lib/",
         "prepublishOnly": "npm run clean && npm run build"
     },
     "prettier": {
@@ -47,14 +46,14 @@
         "untildify": "^4.0.0"
     },
     "devDependencies": {
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.13.0",
-        "mocha": "^10.8.2",
-        "prettier": "^2.3.0",
-        "rimraf": "^3.0.2",
-        "ts-node": "^10.9.1",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^24.0.3",
+        "mocha": "^11.7.0",
+        "prettier": "^3.6.0",
+        "rimraf": "^6.0.1",
+        "ts-node": "^10.9.2",
         "ts-node-test-register": "^10.0.0",
-        "typescript": "^4.9.5"
+        "typescript": "^5.8.3"
     },
     "publishConfig": {
         "access": "public"

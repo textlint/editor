@@ -45,9 +45,9 @@
     "access": "public"
   },
   "devDependencies": {
-    "lerna": "^6.4.1",
+    "lerna": "^8.2.2",
     "lint-staged": "^13.1.1",
-    "prettier": "^2.8.4"
+    "prettier": "^3.6.0"
   },
   "prettier": {
     "singleQuote": false,

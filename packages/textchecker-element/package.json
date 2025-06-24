@@ -21,7 +21,6 @@
         "lib/textchecker-element.js"
     ],
     "main": "lib/index.js",
-    "module": "module/index.js",
     "types": "lib/index.d.ts",
     "directories": {
         "lib": "lib",
@@ -30,7 +29,6 @@
     "files": [
         "bin/",
         "lib/",
-        "module/",
         "public-dist/"
     ],
     "scripts": {
@@ -38,10 +36,10 @@
         "predev": "npm run compile:textlint",
         "dev": "vite",
         "website": "npm run compile:textlint && vite build",
-        "build": "tsc -p . && tsc --project ./tsconfig.module.json",
+        "build": "tsc -p .",
         "build:public-lib": "vite build --mode production --config vite.lib.config.js && npm run build:public-lib-backward-compat",
         "build:public-lib-backward-compat": "cp public-dist/textchecker-element.esm.js public-dist/textchecker-element.es.js",
-        "clean": "rimraf lib/ module/",
+        "clean": "rimraf lib/",
         "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
         "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
         "watch": "tsc -p . --watch"
@@ -53,19 +51,19 @@
         "trailingComma": "none"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.10",
+        "@babel/core": "^7.27.4",
         "@textlint/script-compiler": "^0.17.1",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.13.0",
-        "@types/rimraf": "^3.0.0",
-        "mocha": "^10.8.2",
-        "prettier": "^2.3.0",
-        "rimraf": "^3.0.2",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^24.0.3",
+        "@types/rimraf": "^4.0.5",
+        "mocha": "^11.7.0",
+        "prettier": "^3.6.0",
+        "rimraf": "^6.0.1",
         "textlint-rule-preset-ja-technical-writing": "^12.0.2",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "ts-node-test-register": "^10.0.0",
-        "typescript": "^4.9.5",
-        "vite": "^4.4.4"
+        "typescript": "^5.8.3",
+        "vite": "^6.3.5"
     },
     "dependencies": {
         "@textlint/source-code-fixer": "^15.0.1",
