@@ -1,0 +1,964 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.8.2",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "@textlint/runtime-helper": [
+        {
+          "file": "packages/@textlint/runtime-helper/.gitignore",
+          "hash": "7437110248827637559"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/CHANGELOG.md",
+          "hash": "18063913056564587081"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/README.md",
+          "hash": "9430857925834151234"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/package.json",
+          "hash": "9249343769740165536",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "npm:@kvs/env",
+            "npm:@textlint/config-loader",
+            "npm:@textlint/kernel",
+            "npm:@textlint/module-interop",
+            "npm:@textlint/types",
+            "npm:@textlint/utils"
+          ]
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/src/index.ts",
+          "hash": "8509754442254671416"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/src/preset-to-rule.ts",
+          "hash": "9545689791386034057"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/src/worker-cache.ts",
+          "hash": "13576242175716309282"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/tsconfig.json",
+          "hash": "4475428483767998128"
+        },
+        {
+          "file": "packages/@textlint/runtime-helper/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ],
+      "@textlint/config-inliner": [
+        {
+          "file": "packages/@textlint/config-inliner/.gitignore",
+          "hash": "12628210243497361435"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/CHANGELOG.md",
+          "hash": "6714806435871069546"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/LICENSE",
+          "hash": "12349249135841222873"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/README.md",
+          "hash": "15009191665386354870"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/package.json",
+          "hash": "7552384683226970510",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "npm:@textlint/config-loader",
+            "npm:untildify"
+          ]
+        },
+        {
+          "file": "packages/@textlint/config-inliner/src/config-inliner.ts",
+          "hash": "4889753437883605335"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/src/rules/prh.ts",
+          "hash": "9766623420099150150"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/test/fixtures/prh/prh.yml",
+          "hash": "5837020740925109756"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/test/prh.test.ts",
+          "hash": "2787811385998776156"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/tsconfig.json",
+          "hash": "4475428483767998128"
+        },
+        {
+          "file": "packages/@textlint/config-inliner/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ],
+      "@textlint/webextension": [
+        {
+          "file": "packages/webextension/.gitignore",
+          "hash": "3735353335618952637"
+        },
+        {
+          "file": "packages/webextension/CHANGELOG.md",
+          "hash": "15843490086280823937"
+        },
+        {
+          "file": "packages/webextension/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/webextension/README.md",
+          "hash": "9892346832537645807"
+        },
+        {
+          "file": "packages/webextension/app/_locales/en/messages.json",
+          "hash": "13213869345425493224"
+        },
+        {
+          "file": "packages/webextension/app/images/Makefile",
+          "hash": "17891225068432528347"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-128.png",
+          "hash": "5039950669227162001"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-16.png",
+          "hash": "15281909084354992082"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-19.png",
+          "hash": "3075024015687517292"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-256.png",
+          "hash": "3715326834551470895"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-38.png",
+          "hash": "17131404192417276073"
+        },
+        {
+          "file": "packages/webextension/app/images/icon-48.png",
+          "hash": "5466770651543970456"
+        },
+        {
+          "file": "packages/webextension/app/images/textlint-icon_256x256.png",
+          "hash": "17892707687016493642"
+        },
+        {
+          "file": "packages/webextension/app/manifest.json",
+          "hash": "1576866416285032730"
+        },
+        {
+          "file": "packages/webextension/app/pages/edit-script.html",
+          "hash": "12908789483463233473"
+        },
+        {
+          "file": "packages/webextension/app/pages/install-dialog.html",
+          "hash": "16598018009603482565"
+        },
+        {
+          "file": "packages/webextension/app/pages/popup.html",
+          "hash": "802205011878648438"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/StateContext.tsx",
+          "hash": "7030800651919405975"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/component/InstalledTextlintList.tsx",
+          "hash": "17277569789622621229"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/component/TextlintrcEditor.tsx",
+          "hash": "1473954768775844616"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/pages/EditPage.css",
+          "hash": "5256468445840821038"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/pages/EditPage.tsx",
+          "hash": "2303643879529476082"
+        },
+        {
+          "file": "packages/webextension/app/scripts/InstalledApp/pages/InstalledAppPage.tsx",
+          "hash": "4605178705774468759"
+        },
+        {
+          "file": "packages/webextension/app/scripts/background.ts",
+          "hash": "9411262306409673204"
+        },
+        {
+          "file": "packages/webextension/app/scripts/background/database.ts",
+          "hash": "11428208163112532078"
+        },
+        {
+          "file": "packages/webextension/app/scripts/background/onTextlintWorker.ts",
+          "hash": "11848038164656466605"
+        },
+        {
+          "file": "packages/webextension/app/scripts/background/scriptWorkerSet.ts",
+          "hash": "692886552932170141"
+        },
+        {
+          "file": "packages/webextension/app/scripts/background/textlint.ts",
+          "hash": "7359915650513831914"
+        },
+        {
+          "file": "packages/webextension/app/scripts/contentScript.ts",
+          "hash": "6289647209512744174"
+        },
+        {
+          "file": "packages/webextension/app/scripts/edit-script.tsx",
+          "hash": "9174184994309989852"
+        },
+        {
+          "file": "packages/webextension/app/scripts/install-dialog.tsx",
+          "hash": "4905528124910571167"
+        },
+        {
+          "file": "packages/webextension/app/scripts/pageScript.ts",
+          "hash": "5460375135187439139"
+        },
+        {
+          "file": "packages/webextension/app/scripts/popup.tsx",
+          "hash": "6043889158513557476"
+        },
+        {
+          "file": "packages/webextension/app/scripts/shared/page-contents-shared.ts",
+          "hash": "5750076345517197262"
+        },
+        {
+          "file": "packages/webextension/app/scripts/utils/logger.ts",
+          "hash": "11849383663737676027"
+        },
+        {
+          "file": "packages/webextension/app/styles/popup.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "packages/webextension/package.json",
+          "hash": "1622082195591770126",
+          "deps": [
+            "npm:@types/codemirror",
+            "npm:@types/gatsbyjs__reach-router",
+            "npm:@types/minimatch",
+            "npm:@types/reach__router",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:@webextension-toolbox/webextension-toolbox",
+            "npm:copy-webpack-plugin",
+            "npm:css-loader",
+            "npm:path-browserify",
+            "npm:style-loader",
+            "npm:ts-loader",
+            "npm:typescript@5.7.2",
+            "npm:webpack",
+            "npm:webpack-sources",
+            "npm:webpack-watched-glob-entries-plugin",
+            "npm:@adobe/react-spectrum",
+            "npm:@gatsbyjs/reach-router",
+            "npm:@kvs/env",
+            "npm:@react-stately/data",
+            "npm:@spectrum-icons/workflow",
+            "npm:@textlint/config-loader",
+            "@textlint/script-parser",
+            "npm:@textlint/types",
+            "npm:codemirror",
+            "npm:comlink",
+            "npm:comlink-extension",
+            "npm:enable-webcomponents-in-content-scripts",
+            "npm:idb",
+            "npm:minimatch@3.0.6",
+            "npm:react",
+            "npm:react-codemirror2",
+            "npm:react-dom",
+            "textchecker-element",
+            "npm:webextension-polyfill-ts"
+          ]
+        },
+        {
+          "file": "packages/webextension/promo/Chrome-Webstore-Icon_128x128.png",
+          "hash": "11832849132330571112"
+        },
+        {
+          "file": "packages/webextension/promo/Promo-Image-Large_920x680.png",
+          "hash": "12036289877952447164"
+        },
+        {
+          "file": "packages/webextension/promo/Promo-Image-Marquee_1400x560.png",
+          "hash": "7466148008032222129"
+        },
+        {
+          "file": "packages/webextension/promo/Promo-Image-Small_440x280.png",
+          "hash": "7050801563652691670"
+        },
+        {
+          "file": "packages/webextension/promo/Screenshot_1280x800.png",
+          "hash": "509157333501974177"
+        },
+        {
+          "file": "packages/webextension/promo/Screenshot_640x400.png",
+          "hash": "13430818609271143272"
+        },
+        {
+          "file": "packages/webextension/tools/sync-version.js",
+          "hash": "12187865421636478684"
+        },
+        {
+          "file": "packages/webextension/tsconfig.json",
+          "hash": "6457940731001385534"
+        },
+        {
+          "file": "packages/webextension/webextension-toolbox.config.js",
+          "hash": "9273244729765491302"
+        }
+      ],
+      "textchecker-element": [
+        {
+          "file": "packages/textchecker-element/.babelrc",
+          "hash": "14469174521702149820"
+        },
+        {
+          "file": "packages/textchecker-element/.gitignore",
+          "hash": "2945791031828770913"
+        },
+        {
+          "file": "packages/textchecker-element/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/textchecker-element/.prettierignore",
+          "hash": "14183755111231350470"
+        },
+        {
+          "file": "packages/textchecker-element/.textlintrc.json",
+          "hash": "3197168409411796306"
+        },
+        {
+          "file": "packages/textchecker-element/CHANGELOG.md",
+          "hash": "6144638510025851896"
+        },
+        {
+          "file": "packages/textchecker-element/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/textchecker-element/README.md",
+          "hash": "7852894284763824351"
+        },
+        {
+          "file": "packages/textchecker-element/index.html",
+          "hash": "13149870002395759526"
+        },
+        {
+          "file": "packages/textchecker-element/index.ts",
+          "hash": "17413042874161688674"
+        },
+        {
+          "file": "packages/textchecker-element/package.json",
+          "hash": "17053829915867615964",
+          "deps": [
+            "npm:@babel/core@7.27.4",
+            "@textlint/script-compiler",
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:@types/rimraf",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:textlint-rule-preset-ja-technical-writing",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "npm:vite",
+            "npm:@textlint/source-code-fixer",
+            "npm:eventmit",
+            "npm:lit-html",
+            "npm:p-debounce",
+            "npm:text-caret-pos",
+            "npm:to-px"
+          ]
+        },
+        {
+          "file": "packages/textchecker-element/src/attach-to-text-area.ts",
+          "hash": "4251153924421450455"
+        },
+        {
+          "file": "packages/textchecker-element/src/icon-fixit.svg",
+          "hash": "9063014636028162951"
+        },
+        {
+          "file": "packages/textchecker-element/src/icon-textlint.svg",
+          "hash": "15395982096636688574"
+        },
+        {
+          "file": "packages/textchecker-element/src/icon-trash.svg",
+          "hash": "12600723065493939397"
+        },
+        {
+          "file": "packages/textchecker-element/src/index.ts",
+          "hash": "16309328943941339070"
+        },
+        {
+          "file": "packages/textchecker-element/src/text-checker-element.ts",
+          "hash": "1108727966554719580"
+        },
+        {
+          "file": "packages/textchecker-element/src/text-checker-popup-element.ts",
+          "hash": "17371324796355604471"
+        },
+        {
+          "file": "packages/textchecker-element/src/text-checker-store.ts",
+          "hash": "4819293536853068465"
+        },
+        {
+          "file": "packages/textchecker-element/src/util/logger.ts",
+          "hash": "4123963710075867431"
+        },
+        {
+          "file": "packages/textchecker-element/src/util/text-caret-pos.d.ts",
+          "hash": "2706439487837173516"
+        },
+        {
+          "file": "packages/textchecker-element/src/util/text-caret-pos.js",
+          "hash": "8296554042514130778"
+        },
+        {
+          "file": "packages/textchecker-element/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/textchecker-element/tsconfig.json",
+          "hash": "18052532966064314551"
+        },
+        {
+          "file": "packages/textchecker-element/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        },
+        {
+          "file": "packages/textchecker-element/vite.config.js",
+          "hash": "1956365268236844230"
+        },
+        {
+          "file": "packages/textchecker-element/vite.lib.config.js",
+          "hash": "6128378772942102353"
+        }
+      ],
+      "@textlint/script-parser": [
+        {
+          "file": "packages/@textlint/script-parser/.gitignore",
+          "hash": "7413744849540722195"
+        },
+        {
+          "file": "packages/@textlint/script-parser/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/script-parser/CHANGELOG.md",
+          "hash": "6989400868068630561"
+        },
+        {
+          "file": "packages/@textlint/script-parser/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/@textlint/script-parser/README.md",
+          "hash": "12600400371600197329"
+        },
+        {
+          "file": "packages/@textlint/script-parser/package.json",
+          "hash": "16103643851726171719",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/@textlint/script-parser/src/script-parser.ts",
+          "hash": "5093691016036485136"
+        },
+        {
+          "file": "packages/@textlint/script-parser/test/script-parser.test.ts",
+          "hash": "14734704103378465232"
+        },
+        {
+          "file": "packages/@textlint/script-parser/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/script-parser/tsconfig.json",
+          "hash": "4475428483767998128"
+        },
+        {
+          "file": "packages/@textlint/script-parser/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ],
+      "@textlint/config-partial-parser": [
+        {
+          "file": "packages/@textlint/config-partial-parser/.gitignore",
+          "hash": "7437110248827637559"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/CHANGELOG.md",
+          "hash": "726016860267154261"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/README.md",
+          "hash": "12995271675228071507"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/package.json",
+          "hash": "15545428467956206905",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "npm:@textlint/config-loader",
+            "npm:@textlint/kernel",
+            "npm:@textlint/types",
+            "npm:@textlint/utils"
+          ]
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/src/TextlintConfigDescriptor.ts",
+          "hash": "6921912987808350608"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/src/TextlintRcConfig.ts",
+          "hash": "8147974772789571434"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/src/config-util.ts",
+          "hash": "8969592942952891656"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/src/index.ts",
+          "hash": "14592108787077969235"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/src/parser.ts",
+          "hash": "14100760643821623695"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/index.test.ts",
+          "hash": "14900206027189138003"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-a/index.js",
+          "hash": "6984175867735876555"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-a/package.json",
+          "hash": "5403391336332006627"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-b/index.js",
+          "hash": "6984175867735876555"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-b/package.json",
+          "hash": "474719431920446209"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-c-sub1/index.js",
+          "hash": "6984175867735876555"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-c-sub1/package.json",
+          "hash": "7931375955122045226"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-c-sub2/index.js",
+          "hash": "6984175867735876555"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-c-sub2/package.json",
+          "hash": "16933905237639523316"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-preset-c/index.js",
+          "hash": "12089136344308963111"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/modules_fixtures/textlint-rule-preset-c/package.json",
+          "hash": "474719431920446209"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/snapshots/plguin/input.json",
+          "hash": "3014045107673829645"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/snapshots/plguin/output.json",
+          "hash": "13799638229936156876"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/snapshots/rules/input.json",
+          "hash": "8132526939739641289"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/snapshots/rules/output.json",
+          "hash": "17916390817333468340"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/tsconfig.json",
+          "hash": "4475428483767998128"
+        },
+        {
+          "file": "packages/@textlint/config-partial-parser/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ],
+      "@textlint/website-generator": [
+        {
+          "file": "packages/@textlint/website-generator/.gitignore",
+          "hash": "14875135963964309027"
+        },
+        {
+          "file": "packages/@textlint/website-generator/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/website-generator/.prettierignore",
+          "hash": "6292802935825853580"
+        },
+        {
+          "file": "packages/@textlint/website-generator/CHANGELOG.md",
+          "hash": "2857373191345088610"
+        },
+        {
+          "file": "packages/@textlint/website-generator/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/@textlint/website-generator/README.md",
+          "hash": "13802900974067029349"
+        },
+        {
+          "file": "packages/@textlint/website-generator/bin/cmd.js",
+          "hash": "7850738860527469575"
+        },
+        {
+          "file": "packages/@textlint/website-generator/package.json",
+          "hash": "17709849456454350094",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:@types/rimraf",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:rimraf",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "@textlint/script-compiler",
+            "npm:meow@9.0.0",
+            "npm:read-pkg",
+            "textchecker-element"
+          ]
+        },
+        {
+          "file": "packages/@textlint/website-generator/src/cli.ts",
+          "hash": "13250206403187819452"
+        },
+        {
+          "file": "packages/@textlint/website-generator/src/index.ts",
+          "hash": "3063417165659169973"
+        },
+        {
+          "file": "packages/@textlint/website-generator/src/website-generator.ts",
+          "hash": "571635399336024128"
+        },
+        {
+          "file": "packages/@textlint/website-generator/template/README.md",
+          "hash": "10940549190915612820"
+        },
+        {
+          "file": "packages/@textlint/website-generator/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/website-generator/tools/website-generator.mjs",
+          "hash": "1882790131317924953"
+        },
+        {
+          "file": "packages/@textlint/website-generator/tsconfig.json",
+          "hash": "4475428483767998128"
+        },
+        {
+          "file": "packages/@textlint/website-generator/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ],
+      "@textlint/script-compiler": [
+        {
+          "file": "packages/@textlint/script-compiler/.gitignore",
+          "hash": "4610861911644840641"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/.mocharc.json",
+          "hash": "2248943244691436913"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/.textlintrc.json",
+          "hash": "10309494475868646929"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/CHANGELOG.md",
+          "hash": "16314437548676946784"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/LICENSE",
+          "hash": "15536698237300577004"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/README.md",
+          "hash": "1169452570630343567"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/bin/cmd.js",
+          "hash": "7850738860527469575"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/example/index.html",
+          "hash": "14288510347629354187"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/example/load-meta.js",
+          "hash": "6624992500419647277"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/example/webindex.html",
+          "hash": "15027563762625571339"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/package.json",
+          "hash": "712437415231083106",
+          "deps": [
+            "npm:@types/mocha",
+            "npm:@types/node",
+            "npm:@types/webpack",
+            "npm:mocha",
+            "npm:prettier",
+            "npm:textlint-rule-no-dropping-the-ra",
+            "npm:textlint-rule-preset-ja-technical-writing",
+            "npm:textlint-rule-prh",
+            "npm:ts-node",
+            "npm:ts-node-test-register",
+            "npm:typescript",
+            "npm:@babel/core@7.27.4",
+            "@textlint/config-inliner",
+            "npm:@textlint/config-loader",
+            "@textlint/config-partial-parser",
+            "npm:@textlint/kernel",
+            "@textlint/runtime-helper",
+            "@textlint/script-parser",
+            "npm:@textlint/textlint-plugin-markdown",
+            "npm:@textlint/textlint-plugin-text",
+            "npm:@textlint/types",
+            "npm:babel-loader@8.2.2",
+            "npm:babel-plugin-static-fs",
+            "npm:meow@9.0.0",
+            "npm:node-polyfill-webpack-plugin@2.0.1",
+            "npm:read-pkg",
+            "npm:rimraf@3.0.2",
+            "npm:terser-webpack-plugin",
+            "npm:webpack@5.99.9"
+          ]
+        },
+        {
+          "file": "packages/@textlint/script-compiler/patch/README.md",
+          "hash": "4316005277547437047"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/patch/kuromoji.js",
+          "hash": "4874096216807592260"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/prh.yml",
+          "hash": "1118178034282741730"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/CodeGenerator/API.ts",
+          "hash": "12122937277958721918"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/CodeGenerator/CodeGeneraterOptions.ts",
+          "hash": "13791128364177193025"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/CodeGenerator/worker-codegen.ts",
+          "hash": "11120104648488861895"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/cli.ts",
+          "hash": "8390393153709135659"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/compiler.ts",
+          "hash": "1088275650370031678"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/src/index.ts",
+          "hash": "1341589770429986780"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/test/tsconfig.json",
+          "hash": "3076601259403068096"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/tsconfig.json",
+          "hash": "4635920069673716360"
+        },
+        {
+          "file": "packages/@textlint/script-compiler/tsconfig.module.json",
+          "hash": "16097615852846224365"
+        }
+      ]
+    },
+    "nonProjectFiles": [
+      {
+        "file": ".githooks/pre-commit",
+        "hash": "3330979106792140172"
+      },
+      {
+        "file": ".github/release.yml",
+        "hash": "8613510115739673397"
+      },
+      {
+        "file": ".github/workflows/codeql-analysis.yml",
+        "hash": "2632031741811370766"
+      },
+      {
+        "file": ".github/workflows/test.yml",
+        "hash": "9454561128885761394"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "8071722397416765325"
+      },
+      {
+        "file": ".node-version",
+        "hash": "10191260854531648324"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "7331895323229835034"
+      },
+      {
+        "file": ".yarnrc",
+        "hash": "12084929647039696741"
+      },
+      {
+        "file": "CHANGELOG.md",
+        "hash": "9364203630032880062"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "15536698237300577004"
+      },
+      {
+        "file": "README.md",
+        "hash": "4870773426706140088"
+      },
+      {
+        "file": "docs/create-textlint-worker.md",
+        "hash": "15627092446262543424"
+      },
+      {
+        "file": "docs/resources/textlint_editor.png",
+        "hash": "3178737623010279568"
+      },
+      {
+        "file": "lerna.json",
+        "hash": "3852935685889207107"
+      },
+      {
+        "file": "netlify.toml",
+        "hash": "17693409864322619675"
+      },
+      {
+        "file": "nx.json",
+        "hash": "5225326721185939544"
+      },
+      {
+        "file": "package.json",
+        "hash": "17143182286923407607"
+      },
+      {
+        "file": "yarn.lock",
+        "hash": "16932119847733394152"
+      }
+    ]
+  }
+}

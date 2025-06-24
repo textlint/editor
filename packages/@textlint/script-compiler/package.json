@@ -52,7 +52,7 @@
         "trailingComma": "none"
     },
     "dependencies": {
-        "@babel/core": "^7.12.10",
+        "@babel/core": "^7.27.4",
         "@textlint/config-inliner": "^0.17.1",
         "@textlint/config-loader": "^15.0.1",
         "@textlint/config-partial-parser": "^0.17.1",
@@ -72,17 +72,17 @@
         "webpack": "^5.91.0"
     },
     "devDependencies": {
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.13.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^24.0.3",
         "@types/webpack": "^5.28.5",
-        "mocha": "^10.8.2",
-        "prettier": "^2.3.0",
+        "mocha": "^11.7.0",
+        "prettier": "^3.6.0",
         "textlint-rule-no-dropping-the-ra": "^3.0.0",
-        "textlint-rule-preset-ja-technical-writing": "^6.0.0",
+        "textlint-rule-preset-ja-technical-writing": "^12.0.2",
         "textlint-rule-prh": "^6.0.0",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "ts-node-test-register": "^10.0.0",
-        "typescript": "^4.9.5"
+        "typescript": "^5.8.3"
     },
     "publishConfig": {
         "access": "public"
