@@ -97,6 +97,11 @@ export const createWebpackConfig = ({
             new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
                 resource.request = resource.request.replace(/^node:/, "");
             }),
+            // parse-entities@2.0.0 for Web Worker
+            new webpack.NormalModuleReplacementPlugin(
+                /parse-entities\/decode-entity\.browser\.js/,
+                require.resolve("parse-entities/decode-entity.js")
+            ),
             // Node.js polyfill
             new NodePolyfillPlugin({})
         ],
