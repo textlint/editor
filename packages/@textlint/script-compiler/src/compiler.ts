@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import path from "path";
-import webpack from "webpack";
+import webpack, { Stats } from "webpack";
 import type { TextlintScriptMetadata } from "@textlint/script-parser";
 // @ts-ignore
 import rimraf from "rimraf";
@@ -202,7 +202,7 @@ export const compile = async (options: compileOptions) => {
                 config: rawConfig
             }
         });
-        webpack([config], (error: null | (Error & { details?: string }), stats?) => {
+        webpack(config, (error: null | (Error & { details?: string }), stats?: Stats) => {
             if (error) {
                 console.error(error.stack || error);
                 if (error.details) {
