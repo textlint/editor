@@ -23,6 +23,9 @@ importers:
       '@textlint/config-loader':
         specifier: ^15.0.1
         version: 15.2.2
+      '@textlint/types':
+        specifier: ^15.0.1
+        version: 15.2.2
       untildify:
         specifier: ^4.0.0
         version: 4.0.0
@@ -302,6 +305,9 @@ importers:
   packages/textchecker-element:
     dependencies:
       '@textlint/source-code-fixer':
+        specifier: ^15.0.1
+        version: 15.2.2
+      '@textlint/types':
         specifier: ^15.0.1
         version: 15.2.2
       eventmit:

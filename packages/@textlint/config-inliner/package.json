@@ -43,6 +43,7 @@
     },
     "dependencies": {
         "@textlint/config-loader": "^15.0.1",
+        "@textlint/types": "^15.0.1",
         "untildify": "^4.0.0"
     },
     "devDependencies": {
