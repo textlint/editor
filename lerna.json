@@ -1,9 +1,9 @@
 {
-    "npmClient": "pnpm",
-    "version": "0.18.0",
-    "includeMergedTags": true,
-    "ignoreChanges": [
-        "**/test/**",
-        "**/*.md"
-    ]
+  "npmClient": "pnpm",
+  "version": "0.18.1",
+  "includeMergedTags": true,
+  "ignoreChanges": [
+    "**/test/**",
+    "**/*.md"
+  ]
 }
