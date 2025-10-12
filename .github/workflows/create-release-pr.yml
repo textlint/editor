@@ -35,6 +35,9 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Update Version
         run: |
           git config --global user.email "${GIT_AUTHOR_EMAIL}"
