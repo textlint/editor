@@ -1,4 +1,9 @@
 {
-    "npmClient": "yarn",
-    "version": "0.18.0"
+    "npmClient": "pnpm",
+    "version": "0.18.0",
+    "includeMergedTags": true,
+    "ignoreChanges": [
+        "**/test/**",
+        "**/*.md"
+    ]
 }
