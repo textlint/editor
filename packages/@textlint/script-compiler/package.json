@@ -55,6 +55,7 @@
         "@textlint/config-loader": "^15.0.1",
         "@textlint/config-partial-parser": "^0.18.0",
         "@textlint/kernel": "^15.0.1",
+        "@textlint/module-interop": "^15.0.1",
         "@textlint/runtime-helper": "^0.18.0",
         "@textlint/script-parser": "^0.18.0",
         "@textlint/textlint-plugin-markdown": "^15.0.1",

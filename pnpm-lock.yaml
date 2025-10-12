@@ -158,6 +158,9 @@ importers:
       '@textlint/kernel':
         specifier: ^15.0.1
         version: 15.2.2
+      '@textlint/module-interop':
+        specifier: ^15.0.1
+        version: 15.2.2
       '@textlint/runtime-helper':
         specifier: ^0.18.0
         version: 0.18.0
