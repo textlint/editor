@@ -1,6 +1,6 @@
 {
     "name": "@textlint/runtime-helper",
-    "version": "0.18.2",
+    "version": "0.18.3",
     "description": "A runtime helper",
     "homepage": "https://github.com/textlint/editor/tree/master/packages/@textlint/runtime-helper/",
     "bugs": {

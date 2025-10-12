@@ -1,6 +1,6 @@
 {
     "name": "@textlint/script-parser",
-    "version": "0.18.2",
+    "version": "0.18.3",
     "description": "A parser for textlint script",
     "keywords": [
         "textlint"
