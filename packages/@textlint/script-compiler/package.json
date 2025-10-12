@@ -1,6 +1,6 @@
 {
   "name": "@textlint/script-compiler",
-  "version": "0.18.4",
+  "version": "0.18.5",
   "description": "textlint script compiler tool",
   "keywords": [
     "textlint",
