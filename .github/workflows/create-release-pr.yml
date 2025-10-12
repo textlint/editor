@@ -1,0 +1,121 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version type to bump'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+
+permissions: {}
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Git Identity
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(cat lerna.json | jq -r .version)
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Version bump
+        run: pnpm run ci:versionup:${GITHUB_EVENT_INPUTS_VERSION_TYPE}
+        env:
+          GITHUB_EVENT_INPUTS_VERSION_TYPE: ${{ github.event.inputs.version_type }}
+
+      - name: Get new version
+        id: new_version
+        run: |
+          NEW_VERSION=$(cat lerna.json | jq -r .version)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            CHANGELOG=$(git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Save changelog to file for PR body
+          cat > /tmp/changelog.md <<EOF
+          ## Changes in v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}
+
+          $CHANGELOG
+
+          ## Packages
+
+          $(pnpm list -r --json --depth -1 2>/dev/null | jq -r '.[] | select(.private == null or .private == false) | "- \(.name)@\(.version)"')
+          EOF
+
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/changelog.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
+
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
+        run: |
+          BRANCH_NAME="release/v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}"
+
+          # Create and push branch
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+
+          # Create PR
+          gh pr create \
+            --base master \
+            --head "$BRANCH_NAME" \
+            --title "chore(release): v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}" \
+            --body "$(cat /tmp/changelog.md)"
+
+      - name: Output summary
+        run: |
+          echo "## Release PR Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Previous version: v${STEPS_CURRENT_VERSION_OUTPUTS_CURRENT_VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- New version: v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- Version type: ${GITHUB_EVENT_INPUTS_VERSION_TYPE}" >> $GITHUB_STEP_SUMMARY
+        env:
+          STEPS_CURRENT_VERSION_OUTPUTS_CURRENT_VERSION: ${{ steps.current_version.outputs.current_version }}
+          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
+          GITHUB_EVENT_INPUTS_VERSION_TYPE: ${{ github.event.inputs.version_type }}
