@@ -158,14 +158,13 @@ jobs:
         run: |
           gh pr comment "$PR_NUMBER" \
             --repo "$REPOSITORY" \
-            --body "❌ **Release ${VERSION:+v}$VERSION failed**
+            --body "❌ **Release failed**
 
           Please check the workflow logs for details.
           🔗 Workflow run: $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID"
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          VERSION: ${{ needs.release.outputs.version || '' }}
           SERVER_URL: ${{ github.server_url }}
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
