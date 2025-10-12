@@ -41,6 +41,7 @@
     "build:public-lib-backward-compat": "cp public-dist/textchecker-element.esm.js public-dist/textchecker-element.es.js",
     "clean": "rimraf lib/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "website-generator": "textlint-website-generator",
     "prepublishOnly": "npm run build:public-lib && npm run build && npm run website-generator",
     "watch": "tsc -p . --watch"
   },
