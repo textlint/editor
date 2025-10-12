@@ -3,119 +3,86 @@ name: Create Release PR
 on:
   workflow_dispatch:
     inputs:
-      version_type:
-        description: 'Version type to bump'
+      semver:
+        description: 'New Version(semver)'
         required: true
+        default: 'patch'
         type: choice
         options:
           - patch
           - minor
           - major
-        default: 'patch'
 
-permissions: {}
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   create-release-pr:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
-          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Git Identity
+      - name: Update Version
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Get current version
-        id: current_version
-        run: |
-          CURRENT_VERSION=$(cat lerna.json | jq -r .version)
-          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Version bump
-        run: pnpm run ci:versionup:${GITHUB_EVENT_INPUTS_VERSION_TYPE}
+          git config --global user.email "${GIT_AUTHOR_EMAIL}"
+          git config --global user.name "${GIT_AUTHOR_NAME}"
+          pnpm run ci:versionup:${SEMVER}
         env:
-          GITHUB_EVENT_INPUTS_VERSION_TYPE: ${{ github.event.inputs.version_type }}
+          SEMVER: ${{ github.event.inputs.semver }}
+          GIT_AUTHOR_NAME: ${{ github.actor }}
+          GIT_AUTHOR_EMAIL: ${{ github.actor }}@users.noreply.github.com
 
-      - name: Get new version
-        id: new_version
-        run: |
-          NEW_VERSION=$(cat lerna.json | jq -r .version)
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+      - name: Set PACKAGE_VERSION
+        run: echo "PACKAGE_VERSION=$(cat lerna.json | jq -r .version)" >> $GITHUB_ENV
 
-      - name: Generate changelog
-        id: changelog
-        run: |
-          # Get commits since last tag
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -n "$LAST_TAG" ]; then
-            CHANGELOG=$(git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
-          else
-            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
-          fi
-
-          # Save changelog to file for PR body
-          cat > /tmp/changelog.md <<EOF
-          ## Changes in v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}
-
-          $CHANGELOG
-
-          ## Packages
-
-          $(pnpm list -r --json --depth -1 2>/dev/null | jq -r '.[] | select(.private == null or .private == false) | "- \(.name)@\(.version)"')
-          EOF
-
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          cat /tmp/changelog.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Set GitHub Release Note
+        id: release_note
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const result = await exec.getExecOutput(`gh api "/repos/{owner}/{repo}/releases/generate-notes" -f tag_name="v${process.env.PACKAGE_VERSION}" --jq .body`, [], {
+              ignoreReturnCode: true,
+            })
+            core.setOutput('stdout', result.stdout)
         env:
-          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
+          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
+        id: cpr
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(release): v${{ env.PACKAGE_VERSION }}"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          assignees: ${{ github.actor }}
+          signoff: false
+          branch: release/${{ env.PACKAGE_VERSION }}
+          branch-suffix: timestamp
+          delete-branch: true
+          title: 'v${{ env.PACKAGE_VERSION }}'
+          body: |
+            ${{ steps.release_note.outputs.stdout }}
+          labels: "Type: Release"
+
+      - name: Check Pull Request
         run: |
-          BRANCH_NAME="release/v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}"
-
-          # Create and push branch
-          git checkout -b "$BRANCH_NAME"
-          git push origin "$BRANCH_NAME"
-
-          # Create PR
-          gh pr create \
-            --base master \
-            --head "$BRANCH_NAME" \
-            --title "chore(release): v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}" \
-            --body "$(cat /tmp/changelog.md)"
-
-      - name: Output summary
-        run: |
-          echo "## Release PR Created" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Previous version: v${STEPS_CURRENT_VERSION_OUTPUTS_CURRENT_VERSION}" >> $GITHUB_STEP_SUMMARY
-          echo "- New version: v${STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION}" >> $GITHUB_STEP_SUMMARY
-          echo "- Version type: ${GITHUB_EVENT_INPUTS_VERSION_TYPE}" >> $GITHUB_STEP_SUMMARY
+          echo "Pull Request Number - ${STEPS_CPR_OUTPUTS_PULL_REQUEST_NUMBER}"
+          echo "Pull Request URL - ${STEPS_CPR_OUTPUTS_PULL_REQUEST_URL}"
         env:
-          STEPS_CURRENT_VERSION_OUTPUTS_CURRENT_VERSION: ${{ steps.current_version.outputs.current_version }}
-          STEPS_NEW_VERSION_OUTPUTS_NEW_VERSION: ${{ steps.new_version.outputs.new_version }}
-          GITHUB_EVENT_INPUTS_VERSION_TYPE: ${{ github.event.inputs.version_type }}
+          STEPS_CPR_OUTPUTS_PULL_REQUEST_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
+          STEPS_CPR_OUTPUTS_PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
