@@ -9,14 +9,14 @@ import { TextlintScriptMetadata } from "@textlint/script-parser";
 
 export type MessageId = string;
 export type TextlintWorkerCommandLint = {
-    id?: MessageId;
+    id: MessageId;
     command: "lint";
     text: string;
     ext: string;
     ruleId?: string;
 };
 export type TextlintWorkerCommandFix = {
-    id?: MessageId;
+    id: MessageId;
     command: "fix";
     text: string;
     ext: string;
@@ -36,17 +36,17 @@ export type TextlintWorkerCommandResponseInit = {
     metadata: TextlintScriptMetadata;
 };
 export type TextlintWorkerCommandResponseLint = {
-    id: MessageId | undefined;
+    id: MessageId;
     command: "lint:result";
     result: TextlintResult;
 };
 export type TextlintWorkerCommandResponseFix = {
-    id: MessageId | undefined;
+    id: MessageId;
     command: "fix:result";
     result: TextlintFixResult;
 };
 export type TextlintWorkerCommandResponseError = {
-    id?: MessageId | undefined;
+    id?: MessageId;
     command: "error";
     error: Error;
 };
@@ -188,6 +188,12 @@ self.addEventListener('message', (event) => {
         case "merge-config":
             return assignConfig(data.textlintrc);
         case "lint":
+            if (data.id === undefined) {
+                self.postMessage({
+                    command: "error",
+                    error: new TypeError("Property 'id' is missing but required for lint command message")
+                });
+            }
             return kernel.lintText(data.text, {
                 rules: rules,
                 filterRules: config.filterRules,
@@ -211,6 +217,12 @@ self.addEventListener('message', (event) => {
                 })
             });
         case "fix":
+            if (data.id === undefined) {
+                self.postMessage({
+                    command: "error",
+                    error: new TypeError("Property 'id' is missing but required for fix command message")
+                });
+            }
             return kernel.fixText(data.text, {
                 rules: rules,
                 filterRules: config.filterRules,
